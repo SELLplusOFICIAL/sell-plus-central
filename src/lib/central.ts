@@ -23,36 +23,20 @@ export function corsOptions() {
 
 /** Calcula el origen público real de la petición (nunca localhost ni dominios internos). */
 export function publicOrigin(req: NextRequest): string {
-  // 1) Origen fijado por variable de entorno (producción con dominio propio).
-  const fijada = (process.env.NEXT_PUBLIC_BASE_URL || '').trim().replace(/\/+$/, '')
-  if (fijada) return fijada
-
   const candidatos = [
     req.headers.get('x-forwarded-host')?.split(',')[0].trim(),
     req.headers.get('host'),
   ].filter(Boolean) as string[]
 
   for (const host of candidatos) {
-    // 2) Dominio de fábrica del entorno de desarrollo (sandbox).
+    // Solo confiamos en dominios públicamente alcanzables (el proxy puede
+    // inyectar hosts internos tipo *.fcapp.run que el PC del usuario no ve).
     if (host.includes('space-z.ai')) {
       const proto = req.headers.get('x-forwarded-proto') || 'https'
       return `${proto}://${host}`
     }
   }
-
-  // 3) Producción estándar (ej. Vercel): cualquier dominio público sirve.
-  //    Se descartan localhost, IPs y hosts internos sin punto.
-  const host = candidatos[0]
-  const proto = req.headers.get('x-forwarded-proto') || 'https'
-  if (
-    host &&
-    host.includes('.') &&
-    !/^(localhost|127\.|0\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)
-  ) {
-    return `${proto}://${host}`
-  }
-
-  // 4) Fallback: la URL pública de fábrica (estable para este chat)
+  // Fallback: la URL pública de fábrica (estable para este chat)
   return PUBLIC_BASE
 }
 

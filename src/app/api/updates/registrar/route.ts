@@ -11,9 +11,7 @@ export const dynamic = 'force-dynamic'
  */
 export async function POST(req: NextRequest) {
   const key = req.headers.get('x-central-key')
-  // La clave se puede cambiar en producción con la variable CENTRAL_ADMIN_KEY.
-  const claveValida = process.env.CENTRAL_ADMIN_KEY || 'sellplus-admin-2026'
-  if (!key || key !== claveValida) {
+  if (key !== 'sellplus-admin-2026') {
     return NextResponse.json(
       { error: 'no_autorizado' },
       { status: 401, headers: CORS_HEADERS }

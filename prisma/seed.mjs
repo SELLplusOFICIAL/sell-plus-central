@@ -26,10 +26,12 @@ const datos = JSON.parse(readFileSync(join(__dirname, "datos-iniciales.json"), "
 
 const db = new PrismaClient();
 
-/** Convierte fechas: número = milisegundos epoch; cadena ISO = Date. */
-function fechas(obj) {
+/** Convierte fechas (número = ms epoch, cadena ISO = Date) y booleanos (1/0 de SQLite). */
+const CAMPOS_BOOLEANOS = new Set(["activo", "publicado"]);
+
+function normalizar(obj) {
   if (obj === null || typeof obj !== "object") return obj;
-  if (Array.isArray(obj)) return obj.map(fechas);
+  if (Array.isArray(obj)) return obj.map(normalizar);
   const out = {};
   for (const [k, v] of Object.entries(obj)) {
     if (
@@ -38,8 +40,10 @@ function fechas(obj) {
       (typeof v === "number" || (typeof v === "string" && /^\d{4}-\d{2}-\d{2}T/.test(v)))
     ) {
       out[k] = new Date(v);
+    } else if (CAMPOS_BOOLEANOS.has(k) && typeof v === "number") {
+      out[k] = v !== 0;
     } else if (typeof v === "object" && v !== null) {
-      out[k] = fechas(v);
+      out[k] = normalizar(v);
     } else {
       out[k] = v;
     }
@@ -52,7 +56,7 @@ async function cargarSiVacia(modelo, filas) {
   const total = await db[modelo].count();
   if (total > 0) return `omitido (${total} filas existentes)`;
   for (const fila of filas ?? []) {
-    const { id, ...resto } = fechas(fila);
+    const { id, ...resto } = normalizar(fila);
     await db[modelo].create({ data: { id, ...resto } });
   }
   return `cargado (${(filas ?? []).length} filas)`;
