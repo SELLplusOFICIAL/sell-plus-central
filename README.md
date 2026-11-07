@@ -1,50 +1,72 @@
-# Sell-Plus Central
+# 🏪 Sell-Plus Central
 
-Centro de control del programa **Sell-Plus** (punto de venta para Windows).
-Desde este sitio el dueño dirige todo: recibe las tiendas conectadas, publica
-actualizaciones que el programa se instala solo, envía manuales en "Aprende",
-analiza diagnósticos y conversa con el asistente del proyecto.
+Centro de control del sistema **Sell-Plus** (POS Electron para Windows):
+publica versiones, entrega instaladores al auto-actualizador, recibe las
+solicitudes del dueño de la tienda y guarda la bitácora de actividad y los
+análisis del **Paladín** (guardián del sistema).
 
-## Módulos
+- **Software**: versión actual 3.3.3 "Ventas inteligentes"
+- **Central**: Next.js 16 (App Router) + Prisma + Tailwind 4
+- **Base de datos**: SQLite en desarrollo local · PostgreSQL en producción
+- **Instaladores**: GitHub Releases (la Central los entrega por redirección)
 
-- **Panel** — tiendas conectadas (latido cada 15 min), resumen general.
-- **Actualizaciones** — catálogo de versiones; publica instaladores adjuntos
-  o servidos desde GitHub Releases (redirección automática para el
-  Auto-Actualizador integrado del programa desde la v3.1.0).
-- **Aprende** — manuales y tutoriales (PDF) para el dueño y el personal.
-- **Diagnóstico** — análisis de reportes de las tiendas.
-- **Chat** — asistente del proyecto con memoria de todo el proceso.
+---
 
-## Stack
+## Estructura del repositorio
 
-Next.js 16 (App Router) · React 19 · Tailwind 4 · shadcn/ui · Prisma
-(SQLite en desarrollo local, PostgreSQL/Neon en Vercel).
-
-## Scripts
-
-| Comando | Qué hace |
+| Carpeta | Qué contiene |
 | --- | --- |
-| `npm run dev` | Desarrollo en `http://localhost:3000` |
-| `npm run vercel-build` | Build de Vercel: esquema Postgres + tablas + datos iniciales + compilación |
-| `npm run build` | Build standalone para servidor propio |
-| `npm run db:push` | Aplica `prisma/schema.prisma` a la base local (SQLite) |
+| `src/app` | Interfaz de la Central y todas las APIs (`/api/updates/check`, `/api/solicitudes`, `/api/paladin`, …) |
+| `src/components/central` | Pestañas de la interfaz: Inicio, Actualizaciones, Solicitudes, Aprende, Paladín… |
+| `prisma` | Esquema de datos. `schema.prisma` = SQLite (local) · `schema.postgres.prisma` = PostgreSQL (Vercel) |
+| `prisma/seed.mjs` + `prisma/datos-iniciales.json` | Carga idempotente de los datos reales al desplegar |
+| `scripts/use-postgres-schema.js` | Cambia el esquema a PostgreSQL dentro del build de Vercel |
+| `work/pos` | Código fuente del POS (Electron) y su auto-actualizador |
+| `work/installer`, `work/installer-64.nsi` | Kit del instalador NSIS para Windows |
+| `central-files/updates` | (local) instaladores de prueba — los reales viven en Releases |
 
-## Estructura clave
+## Desarrollo local
 
+```bash
+cp .env.example .env        # Windows: copy .env.example .env
+npm install                 # o: bun install
+npm run db:push             # crea db/custom.db con el esquema
+node prisma/seed.mjs        # (opcional) carga los datos iniciales
+npm run dev                 # http://localhost:3000
 ```
-src/app/api/updates/           → catálogo y edición de actualizaciones
-src/app/api/client/            → puertas del Auto-Actualizador (check/download/heartbeat)
-src/app/api/tutoriales/        → sección Aprende (listado y archivos)
-central-files/                 → archivos servidos (tutoriales; updates solo en servidor propio)
-prisma/seed.mjs                → carga idempotente de datos iniciales
-prisma/schema.postgres.prisma  → variante PostgreSQL usada por vercel-build
-DESPLEGAR-EN-VERCEL.md         → guía paso a paso del despliegue
-```
 
-## Reglas de oro
+## Producción (Vercel + Neon + GitHub Releases)
 
-1. La base de datos de las tiendas (`C:\Sell-Plus\resources\app\db\custom.db`)
-   **jamás** se toca: las actualizaciones se instalan encima, preservándola.
-2. Las credenciales viven solo en variables de entorno (`DATABASE_URL`,
-   opcionalmente `ZAI_CONFIG_B64`); nunca en el código ni en el repositorio.
-3. Las versiones del programa son acumulativas y solo de 64 bits.
+La guía completa, paso a paso y con capturas de los clics, está en
+**[DESPLEGAR-EN-VERCEL.md](./DESPLEGAR-EN-VERCEL.md)**. Resumen:
+
+1. Publicar este repositorio en GitHub (público).
+2. En Vercel: importar el repo + una variable `DATABASE_URL` (PostgreSQL de Neon).
+3. El build crea las tablas y carga los datos solos (`vercel-build`).
+4. Subir el instalador a **Releases** y pegar su URL en la pestaña Actualizaciones.
+
+## Publicar una nueva versión del software
+
+1. Se construye la mejora (aquí trabaja el equipo de desarrollo) y se genera
+   `Sell-Plus-<versión>-Instalador-Windows-64bits.exe`.
+2. En GitHub: **Releases → Draft a new release** → tag `v<versión>` → arrastrar
+   el .exe → **Publish release**.
+3. En la Central: pestaña **Actualizaciones** → **Usar URL de GitHub** → pegar
+   el enlace del .exe. (También existe la API `POST /api/updates/registrar`
+   con la cabecera `X-Central-Key`.)
+4. El auto-actualizador de cada tienda detecta la versión nueva en ≤ 15 min,
+   descarga, verifica el SHA-256 e instala en silencio conservando los datos.
+
+## Notas técnicas
+
+- **Contrato del auto-actualizador** (no romper):
+  `GET /api/updates/check?version=X.Y.Z` → `{ hasUpdate, version, url,
+  sha256, downloadUrl, notasVersion, … }`. La descarga sigue redirecciones.
+- **Clave de administrador**: se envía en la cabecera `X-Central-Key`.
+  Por defecto es `sellplus-admin-2026`; en producción conviene definir la
+  variable `CENTRAL_ADMIN_KEY` con un valor privado.
+- **Rutas heredadas**: algunas APIs (chat, tienda, conversations, client/*…)
+  provienen de la plantilla original y ya no se usan; no afectan al sistema.
+- El **código del POS** (`work/pos`) lee la URL de la Central del archivo
+  `db/central-url.txt` dentro de su carpeta de instalación; si no existe,
+  usa la URL de fábrica incluida en el código.

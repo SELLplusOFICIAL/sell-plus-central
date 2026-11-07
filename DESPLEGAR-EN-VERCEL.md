@@ -1,147 +1,179 @@
-# 🚀 Desplegar Sell-Plus Central en Vercel
+# 🚀 Desplegar Sell-Plus Central — sitio permanente (GitHub + Vercel)
 
-Esta guía convierte tu **Sell-Plus Central** en un sitio permanente en internet,
-gratis, con la cuenta de Vercel. Al terminar tendrás una dirección fija tipo:
+Esta guía convierte tu **Sell-Plus Central** en un sitio fijo en internet,
+gratis, que ya no depende del entorno de desarrollo. Al terminar tendrás una
+dirección fija tipo:
 
 ```
 https://sell-plus-central.vercel.app
 ```
 
-que el Auto-Actualizador de tu programa usará para siempre.
+que tu programa Sell-Plus usará **para siempre**, con las 6 versiones, los
+tutoriales, las solicitudes y el historial ya cargados.
+
+**Tiempo total: 30–40 minutos**, la mayoría esperando instalaciones.
 
 ---
 
-## Qué hace este despliegue automáticamente
+## Lo que vas a montar
 
-Al importar el proyecto, Vercel ejecuta el script **`vercel-build`**, que en un solo paso:
+| Pieza | Servicio | Precio | Para qué |
+| --- | --- | --- | --- |
+| Código | GitHub | Gratis | Guarda el proyecto para siempre (historial incluido) |
+| Sitio + APIs | Vercel | Gratis | Sirve la Central en tu dirección fija |
+| Base de datos | Neon (dentro de Vercel) | Gratis | PostgreSQL con tus versiones, solicitudes y actividad |
+| Instaladores .exe | GitHub Releases | Gratis | Hasta 2 GB por archivo, descarga directa |
 
-1. Cambia el esquema de Prisma a **PostgreSQL** (`scripts/use-postgres-schema.js`).
-2. Genera el cliente de Prisma.
-3. Crea todas las tablas (`prisma db push`).
-4. Carga tus datos actuales: versiones 3.0.1 y 3.1.0, el tutorial "Manual del dueño",
-   la base de conocimiento, los problemas conocidos, tus equipos conectados y el chat
-   (`prisma/seed.mjs`, idempotente: puede repetirse sin duplicar nada).
-5. Compila el sitio (`next build`).
-
-Solo necesitas darle a Vercel una cosa: la **cadena de conexión de la base de datos**.
+Todo lo hace el propio build de Vercel: **crea las tablas y carga tus datos
+automáticamente**. Solo tienes que crear cuentas, arrastrar y copiar/pegar.
 
 ---
 
-## Paso 1 · Crear tu cuenta de GitHub (gratis)
+## Paso 0 · Prepara tu PC (10 min)
 
-1. Entra a **https://github.com** y pulsa **Sign up**.
-2. Pon tu correo, una contraseña y un nombre de usuario.
-   - Sugerencia de usuario: algo simple, ej. `tu-nombre-tienda` (aparecerá en las URLs).
-3. Verifica tu correo electrónico (te llega un mensaje con un botón **Verify**).
+1. **Instala GitHub Desktop** (la forma fácil de subir el proyecto):
+   entra a `https://desktop.github.com` → **Download** → instala y ábrelo.
+2. Inicia sesión con tu cuenta de GitHub (o crea la cuenta ahí mismo:
+   te pide correo, contraseña y nombre de usuario — **verifica el correo**
+   cuando llegue el mensaje de GitHub).
+3. Descarga el paquete **`sell-plus-central-github.zip`** que te entregó el
+   equipo y descomprímelo en una carpeta sencilla, por ejemplo
+   `C:\sell-plus-central`.
+4. (Solo si quieres conservar los instaladores históricos en Releases)
+   descarga de la Central actual el instalador más reciente:
+   `https://preview-chat-84403353-6e78-4cf3-8a17-b0d05bfe9666.space-z.ai/api/updates/download/3.3.3`
+   y guárdalo en `Descargas` — lo usarás en el Paso 6.
 
-> GitHub guardará el **código** del sitio y los **instaladores** (Releases).
-> El instalador se descargará desde GitHub sin que nadie necesite contraseña:
-> por eso el repositorio se crea **Público** (el código no contiene secretos;
-> las contraseñas viven en las variables de entorno de Vercel).
+> El ZIP ya viene con su historial git hecho y con el `.gitignore` correcto:
+> no sube la base de datos local, ni el `.env`, ni los .exe.
 
-## Paso 2 · Crear el repositorio
+## Paso 1 · Publica el repositorio en GitHub (5 min)
 
-1. Ya dentro de GitHub, pulsa el **+** (arriba a la derecha) → **New repository**.
-2. Nombre del repositorio: `sell-plus-central`
-3. Visibilidad: **Public** ✅ (imprescindible para las descargas de instaladores).
-4. NO marques ninguna casilla de "Add a README" ni ".gitignore" (lo dejamos vacío).
-5. Pulsa **Create repository**.
+1. En GitHub Desktop: **File → Add local repository…** → elige la carpeta
+   `C:\sell-plus-central` → **Add repository**.
+   (Si avisa que no es un repositorio git, es que descomprimiste otra
+   carpeta interior; elige la que contiene `package.json`.)
+2. Pulsa el botón **Publish repository** (arriba).
+3. Nombre: `sell-plus-central` · Descripción: la que quieras.
+4. ⚠️ **Deja DESMARCADA la casilla "Keep this code private"**
+   (el repositorio debe ser **público** para que las descargas de
+   instaladores funcionen sin contraseña; el código no contiene secretos:
+   las contraseñas viven en Vercel).
+5. **Publish**. Ya tienes tu código en `github.com/tu-usuario/sell-plus-central`.
 
-## Paso 3 · Subir los archivos del proyecto
+## Paso 2 · Crea la cuenta de Vercel (2 min)
 
-En la página del repositorio recién creado, pulsa el enlace **"uploading an existing file"**
-(o el botón **Uploads**). Arrastra en **dos tandas**:
+1. Entra a `https://vercel.com` → **Sign Up** → **Continue with GitHub**
+   → autoriza. Así Vercel ve tu repositorio sin configurar nada más.
 
-**Tanda A — las 5 carpetas** (arrastra las carpetas completas):
+## Paso 3 · Crea la base de datos (3 min)
 
-```
-src/   prisma/   public/   scripts/   central-files/
-```
+1. En el panel de Vercel: pestaña **Storage** → **Create Database** →
+   elige **Neon Postgres**.
+2. Nombre: `sell-plus-central-db` → región: la más cercana a tu país
+   (por ejemplo Washington D.C.) → **Create**.
+3. Abre la base creada y busca el recuadro **`.env.local` tab / Connection
+   string**. Copia la cadena **"Direct connection"** (la que **NO** dice
+   `-pooler`). Se ve así:
+   `postgresql://usuario:contraseña@ep-xxxx…neon.tech/neondb?sslmode=require`
 
-**Tanda B — los archivos sueltos** de la raíz del proyecto:
+> Esa cadena es la contraseña de tu base: **no la publiques** ni la mandes
+> por chat. Solo va en el paso siguiente.
 
-```
-package.json   package-lock.json   next.config.ts   tsconfig.json
-postcss.config.mjs   tailwind.config.ts   components.json   eslint.config.mjs
-next-env.d.ts   .gitignore   .env.example   README.md   DESPLEGAR-EN-VERCEL.md
-```
+## Paso 4 · Despliega la Central (5–10 min)
 
-> ⚠️ **No subas nunca**: la carpeta `db/`, el archivo `.env`, ni ningún `.exe`
-> (los instaladores grandes van por "Releases" en el Paso 5).
-> El ZIP que te entregamos ya viene limpio, simplemente no añadas nada extra.
+1. En Vercel: **Add New… → Project** → aparece `sell-plus-central` → **Import**.
+2. Antes de pulsar Deploy, en **Environment Variables** añade:
+   - Name: `DATABASE_URL` — Value: *la cadena que copiaste en el Paso 3*
+   - (Recomendado) Name: `CENTRAL_ADMIN_KEY` — Value: una clave privada tuya,
+     ej. `sellplus-2026-clave-secreta`. Es la que usarás para acciones de
+     administrador en lugar de la histórica.
+3. **Deploy** y espera. El build hace todo solo:
+   cambia el esquema a PostgreSQL → crea las tablas → **carga tus 6
+   versiones, tutoriales, solicitudes, Paladín y actividad** → compila.
+4. Al final verás 🎉 **Congratulations** con tu dirección fija.
+   Puedes cambiarla (ej. `mi-central.vercel.app`) en *Settings → Domains*.
 
-Abajo, pulsa **Commit changes** (mensaje opcional: `Central inicial`).
+**Verifica** (ábrelo en el navegador):
+- `https://tu-central.vercel.app/api/health` → debe responder
+  `{"ok":true,...,"ultimaVersion":"3.3.3"}`
+- La portada debe mostrar la versión 3.3.3 y el resumen del Paladín.
 
-## Paso 4 · Crear la base de datos PostgreSQL (gratis)
+## Paso 5 · Sube el instalador a GitHub Releases (5 min)
 
-1. Entra a **https://vercel.com** y regístrate con **Continue with GitHub**
-   (usa la cuenta que acabas de crear; así Vercel ve tu repositorio).
-2. En el panel de Vercel: pestaña **Storage** → **Create Database** → **Neon Postgres**.
-3. Nombre: `sell-plus-central-db` → región la más cercana (ej. Washington D.C.) → **Create**.
-4. Abre la base creada y busca el recuadro **`.env.local` tab / Connection string**:
-   - Copia la cadena **"Direct connection"** (la que **NO** contiene `-pooler`).
-   - Se ve así: `postgresql://usuario:contraseña@ep-xxxx...neon.tech/neondb?sslmode=require`
+Los .exe pesan ~125 MB y no van en el repositorio: viven en **Releases**.
 
-> Esa cadena es la **contraseña de tu base de datos**: no la publiques en el
-> repositorio, solo va en la configuración de Vercel (siguiente paso).
+1. En tu repositorio de GitHub: pestaña **Releases** → **Draft a new release**.
+2. **Tag**: escribe `v3.3.3` (con la "v") → elige "New tag".
+3. Título: `Sell-Plus 3.3.3 — Ventas inteligentes`.
+4. Arrastra el archivo `Sell-Plus-3.3.3-Instalador-Windows-64bits.exe`
+   (el del Paso 0) → **Publish release**.
+5. En la página del release, clic derecho sobre el nombre del .exe →
+   **Copiar enlace** (empieza por
+   `https://github.com/tu-usuario/sell-plus-central/releases/download/…`).
 
-## Paso 5 · Importar el proyecto en Vercel
+## Paso 6 · Conecta el instalador con la Central (2 min)
 
-1. En Vercel: **Add New… → Project** → en "Import Git Repository" aparece
-   `sell-plus-central` → pulsa **Import**.
-2. En **Environment Variables** (antes de pulsar Deploy):
-   - Name: `DATABASE_URL`
-   - Value: *pega la cadena que copiaste en el Paso 4*
-3. Pulsa **Deploy** y espera 2-4 minutos (crea tablas y carga tus datos).
-
-Al terminar verás **🎉 Congratulations** con la dirección fija de tu Central.
-Puedes cambiarla (ej. `mi-central.vercel.app`) en *Settings → Domains*, solo
-con nombres que estén libres.
-
-## Paso 6 · Conectar los instaladores grandes (GitHub Releases)
-
-Los instaladores pesan ~84 MB: se guardan en **Releases** de tu repositorio
-y el sitio los entrega con redirección (más rápido y sin límites de espacio).
-
-1. En tu repositorio de GitHub: **Releases → Draft a new release**.
-2. Tag: `v3.1.0` (título: `Sell-Plus 3.1.0`).
-3. Arrastra el archivo `Sell-Plus-3.1.0-Instalador-Windows-64bits.exe` → **Publish release**.
-4. En la página del release, clic derecho sobre el nombre del .exe → **Copiar enlace**
-   (empieza por `https://github.com/.../releases/download/...`).
-5. En tu Central: pestaña **Actualizaciones** → tarjeta de v3.1.0 →
+1. Abre tu Central → pestaña **Actualizaciones** → tarjeta de la v3.3.3 →
    **Usar URL de GitHub** → pega el enlace → **Guardar URL**.
-   Aparecerá la etiqueta azul **GitHub** y el auto-actualizador lo descargará desde ahí.
+   Aparecerá la etiqueta azul **GitHub**.
+2. Prueba la descarga completa: en el navegador abre
+   `https://tu-central.vercel.app/api/updates/download/3.3.3`
+   → debe llevarte a GitHub y bajar el .exe.
 
-> Para cada versión futura repites lo mismo: subes el .exe a un release nuevo
-> y pegas su URL (o dejas el archivo adjunto pequeño en el sitio).
+> Cada versión futura repite el Paso 5 con su tag (`v3.4.0`, …) y su URL.
 
-## Paso 7 · Configurar tu PC (acceso directo + programa)
+## Paso 7 · Apunta tu programa a la Central permanente (2 min)
 
-Con la URL de Vercel (ej. `https://sell-plus-central.vercel.app`):
-
-1. Abre el **Kit de Acceso Directo** (`Kit-Acceso-Central.zip`) y ejecuta
-   `Configurar-Central.bat`.
-2. Escribe la URL de Vercel y presiona ENTER. El kit:
-   - Crea el acceso directo **"Sell-Plus Central"** en tu escritorio (con icono propio).
-   - Actualiza `C:\Sell-Plus\resources\app\db\central-url.txt` para que el
-     Auto-Actualizador consulte tu nueva Central permanente.
-
-Listo: tu Central ya es permanente y tu programa apunta a ella.
+1. Abre el Bloc de notas **como administrador**.
+2. Archivo → Abrir → pega esta ruta:
+   `C:\Sell-Plus\resources\app\db\central-url.txt`
+   (si la carpeta `db` no existe, créala dentro de `C:\Sell-Plus\resources\app`).
+3. Borra lo que tenga y escribe **solo** tu URL nueva:
+   `https://tu-central.vercel.app`
+4. Guarda y **reinicia Sell-Plus**. En ≤ 15 min aparecerá en la pestaña
+   Actividad de tu nueva Central como "latido".
+5. Actualiza tu acceso directo del escritorio: abre la URL nueva en el
+   navegador → menú ⋮ → *Guardar y compartir → Crear acceso directo*.
 
 ---
+
+## A partir de ahora: cómo seguir mejorando el software
+
+**Mejoras de la Central (el sitio):** el equipo edita el código → tú haces
+`git push` (o GitHub Desktop → *Fetch origin* / *Push origin*) → Vercel
+redespliega solo en 1–2 minutos. La base de datos **no se toca**.
+
+**Nuevas versiones del POS:** se genera el instalador → se sube a Releases
+con su tag → se pega su URL en la pestaña Actualizaciones → cada tienda lo
+recibe sola en ≤ 15 min, verificando el SHA-256.
+
+**Publicar sin abrir la web (opcional, para el equipo):**
+```bash
+curl -X POST https://tu-central.vercel.app/api/updates/registrar \
+  -H "Content-Type: application/json" \
+  -H "X-Central-Key: TU_CLAVE_PRIVADA" \
+  -d '{"version":"3.4.0","titulo":"…","notas":"…",
+       "fileName":"Sell-Plus-3.4.0-Instalador-Windows-64bits.exe",
+       "sha256":"…","fileSize":…,
+       "externalUrl":"https://github.com/tu-usuario/sell-plus-central/releases/download/v3.4.0/Sell-Plus-3.4.0-Instalador-Windows-64bits.exe"}'
+```
 
 ## Problemas frecuentes
 
 | Síntoma | Causa y solución |
 | --- | --- |
-| **Deploy falla con error de base de datos** | La `DATABASE_URL` está mal escrita o es la versión "pooled" (`-pooler`). Usa la cadena *Direct connection* completa, con `?sslmode=require`. |
-| **La web carga pero sin versiones ni tutorial** | El build no pudo cargar los datos: revisa en *Deployments → Runtime Logs* el paso `[seed]`. Repara la variable y haz **Redeploy**. |
-| **La descarga del instalador da error** | Falta pegar la URL del release (Paso 6) o el enlace copiado no es el del archivo `.exe`. |
-| **GitHub no me deja arrastrar todo** | Sube en tandas más pequeñas (el navegador admite ~100 archivos por vez). |
-| **El asistente de IA responde que no está configurado** | Es normal si no se definió `ZAI_CONFIG_B64`. El resto del sitio funciona completo; pide los cambios por el chat directo. |
+| Deploy falla con error de base de datos | La `DATABASE_URL` está mal copiada o es la versión `-pooler`. Usa la **Direct connection** completa, con `?sslmode=require`. |
+| La web abre pero sin versiones | Revisa en *Deployments → Runtime Logs* el paso `[seed]`; corrige la variable y haz **Redeploy**. |
+| La descarga del instalador da 404 | Falta el Paso 6 (pegar la URL del release) o el tag no se llama `v3.3.3`. |
+| El POS no aparece en Actividad | Revisa que `central-url.txt` tenga **solo** la URL y que reiniciaste Sell-Plus; espera 15 min. |
+| "Usar URL de GitHub" rechaza el enlace | El enlace debe empezar por `https://github.com/…` y terminar en `.exe`. |
+| GitHub no me deja subir el .exe | Comprueba que el archivo pesa menos de 2 GB y que el release está en *Draft* antes de subirlo. |
 
-## Actualizaciones futuras del sitio
+## Nota sobre privacidad
 
-Cuando el equipo de Sell-Plus te entregue una nueva versión del código:
-reemplaza los archivos cambiados en GitHub (o sube los nuevos) → Vercel
-redespliega solo → la base de datos **no se toca** (el seed es idempotente).
+El repositorio se crea **público** porque GitHub solo sirve descargas de
+Releases sin contraseña en repos públicos. El código **no contiene
+secretos** (la clave admin es una variable de entorno de Vercel). Si algún
+día prefieres un repositorio privado, pídelo al equipo: hay una variante
+alojando los .exe en Vercel Blob.
