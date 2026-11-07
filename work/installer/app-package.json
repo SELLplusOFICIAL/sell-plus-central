@@ -1,0 +1,8 @@
+{
+  "name": "sell-plus",
+  "productName": "Sell-Plus",
+  "version": "3.3.3",
+  "description": "Sell-Plus — Punto de venta con inventarios, lotes y Paladín (guardián del sistema)",
+  "main": "electron/main.js",
+  "author": "Sell-Plus"
+}

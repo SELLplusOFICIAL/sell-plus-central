@@ -1,0 +1,90 @@
+// ============================================================
+// SELL-PLUS CENTRAL — Esquema para PRODUCCIÓN (PostgreSQL)
+// ============================================================
+// Este archivo reemplaza a prisma/schema.prisma durante el despliegue en
+// Vercel (lo copia el script "vercel-build" vía scripts/use-postgres-schema.js).
+// La variante de desarrollo local sigue siendo SQLite: prisma/schema.prisma.
+// Ambos esquemas declaran EXACTAMENTE los mismos modelos.
+// ============================================================
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Registro de versiones del software Sell-Plus publicadas en la Central
+model Version {
+  id          Int      @id @default(autoincrement())
+  version     String   @unique
+  titulo      String   @default("")
+  notas       String   @default("")
+  fileName    String?
+  fileSize    Int?
+  sha256      String?
+  externalUrl String? // URL externa del instalador (ej. GitHub Releases). Si existe, la descarga redirige ahí
+  canal       String   @default("estable")
+  activo      Boolean  @default(true)
+  fecha       DateTime @default(now())
+}
+
+// Tutoriales y guías de la pestaña "Aprende" (pdf | video | guia)
+model Tutorial {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  descripcion String   @default("")
+  tipo        String   @default("guia")
+  contenido   String?
+  url         String?
+  fileName    String?
+  fileSize    Int?
+  minutos     Int?
+  orden       Int      @default(0)
+  publicado   Boolean  @default(true)
+  fecha       DateTime @default(now())
+}
+
+// Solicitudes de modificaciones que envía el dueño desde la Central
+model Solicitud {
+  id             Int      @id @default(autoincrement())
+  titulo         String
+  descripcion    String
+  prioridad      String   @default("media")
+  estado         String   @default("recibida")
+  respuesta      String?
+  // Indicador de trabajo en vivo (Petición #2)
+  tiempoEstimado String? // p. ej. "60–90 min"
+  progreso       Int      @default(0) // 0–100
+  fase           String? // fase actual del trabajo, p. ej. "Construyendo el Paladín"
+  fecha          DateTime @default(now())
+  actualizadoEn  DateTime @default(now()) @updatedAt
+}
+
+// Análisis del Paladín: guardián del sistema (solicitud #3 y #4)
+// origen = "publicacion" (paladín que aprueba cada build antes de publicarla)
+//      o "pos" (el Paladín que vive dentro del software del cliente)
+model PaladinReporte {
+  id           Int      @id @default(autoincrement())
+  origen       String   @default("publicacion")
+  versionPos   String? // versión analizada, p. ej. "3.3.2"
+  estadoGlobal String   @default("ok") // ok | alerta | fallo
+  resumen      String   @default("") // frase que resume el análisis
+  checks       String   @default("[]") // JSON: [{nombre, estado, detalle}]
+  okCount      Int      @default(0)
+  alertasCount Int      @default(0)
+  fallosCount  Int      @default(0)
+  duracionMs   Int?
+  fecha        DateTime @default(now())
+}
+
+// Bitácora de actividad (conexiones del software, descargas, sistema)
+model Actividad {
+  id      Int      @id @default(autoincrement())
+  tipo    String
+  detalle String
+  fecha   DateTime @default(now())
+}

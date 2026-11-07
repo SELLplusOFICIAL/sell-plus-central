@@ -1,0 +1,103 @@
+// Sell-Plus Punto de Venta — esquema de la base de datos local (custom.db)
+// v3.3.3 — añade MovimientoCaja (tabla nueva aditiva); todo lo demás idéntico al esquema 3.2.0
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Marcador de versión del esquema para actualizaciones seguras
+model SellPlusMeta {
+  clave String @id
+  valor String
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  nombre    String   @unique
+  pin       String
+  rol       String   @default("empleado") // dueno | empleado
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  ventas    Venta[]
+}
+
+model Producto {
+  id          String                 @id @default(cuid())
+  nombre      String
+  categoria   String                 @default("General")
+  codigo      String                 @default("")
+  precioVenta Float
+  costo       Float                  @default(0)
+  minimo      Int                    @default(5) // aviso de stock bajo
+  activo      Boolean                @default(true)
+  createdAt   DateTime               @default(now())
+  lotes       Lote[]
+  items       VentaItem[]
+  movimientos MovimientoInventario[]
+}
+
+// Lotes con caducidad — el corazón del inventario
+model Lote {
+  id              String    @id @default(cuid())
+  productoId      String
+  producto        Producto  @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  cantidad        Float
+  cantidadInicial Float
+  caducidad       DateTime?
+  proveedor       String    @default("")
+  costoUnitario   Float     @default(0)
+  activo          Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+}
+
+model Venta {
+  id        String      @id @default(cuid())
+  usuarioId String
+  usuario   Usuario     @relation(fields: [usuarioId], references: [id])
+  total     Float
+  metodo    String      @default("efectivo") // efectivo | tarjeta
+  recibido  Float       @default(0)
+  cambio    Float       @default(0)
+  createdAt DateTime    @default(now())
+  items     VentaItem[]
+}
+
+model VentaItem {
+  id         String   @id @default(cuid())
+  ventaId    String
+  venta      Venta    @relation(fields: [ventaId], references: [id], onDelete: Cascade)
+  productoId String
+  producto   Producto @relation(fields: [productoId], references: [id])
+  nombre     String
+  precio     Float
+  cantidad   Float
+  subtotal   Float
+}
+
+// Bitácora: entradas, ventas, mermas y ajustes de inventario
+model MovimientoInventario {
+  id         String   @id @default(cuid())
+  productoId String
+  producto   Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  tipo       String // entrada | venta | ajuste | merma
+  cantidad   Float
+  motivo     String   @default("")
+  usuario    String   @default("")
+  createdAt  DateTime @default(now())
+}
+
+// Dinero en caja: entradas y salidas de efectivo que no son ventas (v3.3.3)
+// Tabla NUEVA y aditiva: no toca ninguna tabla ni dato existente.
+model MovimientoCaja {
+  id        String   @id @default(cuid())
+  tipo      String // entrada | salida
+  monto     Float
+  motivo    String   @default("")
+  usuario   String   @default("")
+  createdAt DateTime @default(now())
+}

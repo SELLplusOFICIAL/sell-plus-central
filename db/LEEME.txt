@@ -1,0 +1,6 @@
+Esta carpeta contiene la base de datos local de DESARROLLO (db/custom.db).
+
+• No se sube al repositorio: los datos reales viajan en prisma/datos-iniciales.json
+  y el despliegue los carga automáticamente (prisma/seed.mjs).
+• Para crear tu base local:  npm run db:push   (o   bun run db:push)
+• Para llenarla con los datos iniciales:  node prisma/seed.mjs

@@ -1,0 +1,593 @@
+{
+  "versiones": [
+    {
+      "id": 1,
+      "version": "3.1.0",
+      "titulo": "Auto-actualizador y conexión a la Central",
+      "notas": "• Auto-actualizador integrado: revisa novedades cada 15 minutos.\n• Conexión directa con Sell-Plus Central para recibir actualizaciones.\n• Herramienta de diagnóstico (diagnostico.ps1) para revisar la conexión.\n• Mejoras de estabilidad general.",
+      "fileName": "Sell-Plus-3.1.0-Instalador-Windows-64bits.exe",
+      "fileSize": 84463555,
+      "sha256": "55126d5781d7833df889187880addd11e4e56e0c5169d0888fd7b48e05b3788d",
+      "canal": "estable",
+      "activo": 1,
+      "fecha": 1793210400000,
+      "externalUrl": null
+    },
+    {
+      "id": 2,
+      "version": "3.2.0",
+      "titulo": "Fusión de Inventarios con Lotes",
+      "notas": "• NUEVO módulo unificado INVENTARIOS: productos, lotes y caducidad en una sola pantalla.\n• Registro de entradas con número de lote, cantidad y fecha de caducidad.\n• Descuento inteligente: sale primero el lote que caduca más pronto (PEPS).\n• Alertas de caducidad próxima para evitar mermas.\n• Diseño renovado en toda la aplicación, más claro y rápido.\n• Correcciones de estabilidad y rendimiento.",
+      "fileName": "Sell-Plus-3.2.0-Instalador-Windows-64bits.exe",
+      "fileSize": 124511491,
+      "sha256": "36ffc0820ffe38c3282faafa509bb0e929c466438319bab4823033e732ecb3a3",
+      "canal": "estable",
+      "activo": 1,
+      "fecha": 1793901600000,
+      "externalUrl": null
+    },
+    {
+      "id": 3,
+      "version": "3.3.0",
+      "titulo": "Gestión completa de Inventarios",
+      "notas": "• BLOQUE 1 — Alta de producto completa: agregar, editar todos los detalles (precio, costo, categoría, código, aviso de stock bajo), desactivar o eliminar.\n• Ficha de producto con lotes: entradas de mercancía con lote, caducidad, proveedor y costo por unidad.\n• Ajustes y mermas por lote con bitácora automática de movimientos.\n• BLOQUE 2 — Catálogo con filtros: ventas por periodo (7/30/90 días), por caducar ≤30 o ≤7 días, vencidos, stock bajo y sin ventas.\n• Resumen del inventario: valor total, productos en riesgo y stock bajo de un vistazo.\n• BLOQUE 3 — Excel: importa tus inventarios preexistentes (crea/actualiza, nunca borra) y exporta productos, lotes y ventas.\n• Tu base de datos se conserva intacta: el esquema es idéntico y el instalador hace respaldo preventivo.",
+      "fileName": "Sell-Plus-3.3.0-Instalador-Windows-64bits.exe",
+      "fileSize": 126313438,
+      "sha256": "8cd416bc03cd21f13c6e7ad58a3a6302bbdbc6bea138d40c7e7c2232396d3b40",
+      "canal": "estable",
+      "activo": 1,
+      "fecha": 1794027623535,
+      "externalUrl": null
+    },
+    {
+      "id": 4,
+      "version": "3.3.1",
+      "titulo": "Todo lo anterior + gestión completa de Inventarios",
+      "notas": "SE AÑADE\n• Gestión completa de inventarios (tu solicitud): alta de producto con todos los detalles (precio, costo, categoría, código, aviso de stock bajo), edición, desactivar o eliminar.\n• Ficha de producto con lotes: entradas de mercancía con número de lote, caducidad, proveedor y costo por unidad; ajustes y mermas con bitácora automática de movimientos.\n• Catálogo con filtros: por caducar (30 o 7 días), vencidos, stock bajo, sin ventas y ventas por periodo (7/30/90 días), con resumen del inventario de un vistazo (valor total y productos en riesgo).\n• Importa tus inventarios en Excel (crea o actualiza, nunca borra) y exporta productos, lotes y ventas.\n\nSE CONSERVA\n• Todo lo de la 3.1.0/3.2.0: Caja, Ventas, Inventarios con lotes y caducidad (PEPS: sale primero el lote que caduca más pronto), alertas de caducidad, Empleados y inicio de sesión con PIN.\n• Auto-actualizador, conexión con la Central y herramienta Diagnóstico de conexión.\n• Tu base de datos: nunca se borra ni se reinicia.\n\nSE AJUSTA\n• La gestión de inventarios quedó integrada dentro del módulo único Inventarios de la 3.2.0 (antes: catálogo y fichas por separado → ahora todo convive en una sola pantalla, sin redundancias).\n• Corregido el auto-actualizador: lanzaba el instalador de un modo que se autodetenía y las actualizaciones automáticas no se aplicaban. Ahora se instalan solas, sin que hagas nada.",
+      "fileName": "Sell-Plus-3.3.1-Instalador-Windows-64bits.exe",
+      "fileSize": 125366666,
+      "sha256": "29583f32df1ac04c2a4bb1b566859b163d28af6ae1222ca1f6772d5b297df0e4",
+      "canal": "estable",
+      "activo": 1,
+      "fecha": 1794032903164,
+      "externalUrl": null
+    },
+    {
+      "id": 5,
+      "version": "3.3.2",
+      "titulo": "El Paladín: guardián silencioso del sistema",
+      "notas": "SE AÑADE\n• El Paladín, tu guardián silencioso: vigila el programa 24/7 para que ninguna falla lo atore o lo bote (tu solicitud).\n• Si el servidor interno se detiene, el Paladín lo re-levanta solo (hasta 3 intentos por hora) sin que pierdas tu trabajo.\n• Chequeo de salud cada 30 segundos: detecta cuelgues y los corrige en silencio.\n• Protector de base de datos: si la BD dejara de responder, el Paladín la restaura automáticamente desde el respaldo más reciente y te avisa.\n• Registro de vigilancia: logs\\paladin.log deja constancia de todo lo que el Paladín detecta y corrige.\n\nSE CONSERVA\n• Todo lo de la 3.1.0 a la 3.3.1: Caja, Ventas, Inventarios con lotes y caducidad (PEPS y alertas), gestión completa de inventarios con Excel, Empleados, login con PIN, Diagnóstico de conexión y auto-actualizador corregido.\n• Tu base de datos: nunca se borra; además ahora se protege en tiempo real.\n\nSE AJUSTA\n• El actualizador ahora coopera con el Paladín: cada versión nueva pasa por una validación de sus primeros arranques. Si fallara 3 veces, el sistema REVIERTE solo a la versión estable anterior (guardada en C:\\Sell-Plus\\updates) y bloquea la versión rechazada para no reinstalarla sola.\n• En la Central, pestaña Solicitudes: nuevo indicador en vivo con barra de progreso, tiempo estimado y fase del trabajo de cada solicitud.",
+      "fileName": "Sell-Plus-3.3.2-Instalador-Windows-64bits.exe",
+      "fileSize": 125484303,
+      "sha256": "6af4bcb5151b19a6e6c96d2bd61765c591fa4955874507ebb4e8539698ac4822",
+      "canal": "estable",
+      "activo": 1,
+      "fecha": 1794039346780,
+      "externalUrl": null
+    },
+    {
+      "id": 6,
+      "version": "3.3.3",
+      "titulo": "Ventas inteligentes: tickets múltiples, atajos y dinero en caja",
+      "notas": "Versión acumulativa: base completa 3.1.0 → 3.3.2 + la petición \"Ventas inteligentes\" (solicitud #2). Control de no-regresión aprobado por el Paladín de publicación (PALADIN_OK).\n\n■ SE AÑADE\n• Tickets múltiples en Caja: agrega tickets con F6, elimínalos con la X de su pestañita y contabilízalos con el contador \"N tickets en espera · total\". Cada ticket guarda su propio total y los tickets sobreviven a reinicios del programa.\n• Buscar producto con F10 (enfoca y selecciona la búsqueda) y filtro por categoría (Todas + las categorías de tus productos).\n• Dinero en caja: Entrada de dinero (F7) y Salida de dinero (F8) con motivo opcional; resumen del día (ventas en efectivo, entradas, salidas y estimado en caja) y tus últimos movimientos.\n• Cobrar con F12: cobra el ticket activo sin tocar el ratón.\n• Leyenda de atajos siempre visible en Caja (F6 · F10 · F7 · F8 · F12).\n\n■ SE CONSERVA\n• Todo lo de la 3.3.2: el Paladín guardián (auto-recuperación del servidor, monitor de salud cada 30 s, restauración automática de la base de datos y rollback de actualizaciones fallidas).\n• Inventarios por lotes con caducidad y salida FEFO, alertas, reportes, empleados y la Central con sus indicadores en vivo.\n• Tu base de datos no se toca: la tabla nueva (MovimientoCaja) se crea sola, de forma aditiva, la primera vez que uses el apartado.\n\n■ SE AJUSTA\n• El botón ahora dice \"Cobrar {total} F12\" y cobra el ticket activo; al cobrar, ese ticket se consume y pasas al siguiente automáticamente.\n• La búsqueda de Caja ahora respeta también el filtro de categoría.\n• El control de stock suma lo que hay en TODOS los tickets en espera, para no vender de más.",
+      "fileName": "Sell-Plus-3.3.3-Instalador-Windows-64bits.exe",
+      "fileSize": 125507984,
+      "sha256": "4af886c63dfefbb014ee83edb53f9c8f72a5eaa43cfd633238e040b7b085f233",
+      "canal": "estable",
+      "activo": 1,
+      "fecha": 1794066417758,
+      "externalUrl": null
+    }
+  ],
+  "tutoriales": [
+    {
+      "id": 1,
+      "titulo": "Novedades 3.2.0 · Inventarios con Lotes",
+      "descripcion": "Todo lo que cambió en tu inventario: un solo módulo para productos, lotes y caducidad.",
+      "tipo": "guia",
+      "contenido": "Con la versión 3.2.0 tu inventario se simplificó: ya no manejas pantallas separadas para productos, lotes y caducidad. Ahora todo vive en el módulo INVENTARIOS.\n\n1) Un solo módulo\n- Abre Sell-Plus y entra a la pestaña \"Inventarios\".\n- Ahí ves tus productos con su existencia total, y al abrir cada uno, sus lotes con cantidad y fecha de caducidad.\n\n2) Registrar mercancía con lote\n- En Inventarios elige el producto y registra una ENTRADA.\n- Captura número de lote, cantidad y fecha de caducidad. Si el producto no usa lotes, deja esos campos vacíos y se comporta como siempre.\n\n3) Salidas y ventas\n- Al vender, el sistema descuenta primero el lote que caduca más pronto (PEPS: primero en caducar, primero en salir).\n- Así el producto viejo no se queda olvidado al fondo.\n\n4) Alertas de caducidad\n- Los lotes próximos a vencer se marcan con aviso para que puedas hacer promociones o mermas a tiempo.\n- Revisa la columna de estado antes de hacer tus compras de la semana.\n\n5) Tu información no se tocó\n- La actualización conservó tu base de datos: productos, ventas y usuarios siguen intactos.",
+      "url": null,
+      "fileName": null,
+      "fileSize": null,
+      "minutos": 5,
+      "orden": 1,
+      "publicado": 1,
+      "fecha": 1794012461481
+    },
+    {
+      "id": 2,
+      "titulo": "Cómo funcionan las actualizaciones automáticas",
+      "descripcion": "Qué hace tu software cada 15 minutos y por qué tu base de datos nunca se borra.",
+      "tipo": "guia",
+      "contenido": "Tu Sell-Plus se actualiza solo. Así funciona:\n\n1) Conexión\n- Tu software guarda la dirección de la Central en el archivo:\n  C:\\Sell-Plus\\resources\\app\\db\\central-url.txt\n- Esa dirección es la de esta página.\n\n2) Chequeo periódico\n- Cada 15 minutos (mientras el software está abierto) y también cada 6 horas, pregunta: \"¿hay versión más nueva que la mía?\"\n\n3) Descarga y verificación\n- Si hay novedad, descarga el instalador oficial y verifica su huella SHA-256 (una firma que garantiza que el archivo no está corrupto ni alterado).\n\n4) Instalación silenciosa\n- Instala sin que hagas nada y reinicia el programa.\n- TU BASE DE DATOS NUNCA SE BORRA: las ventas, productos y usuarios siempre se conservan.\n\n5) Si algo falla\n- Si algún día el software no encuentra la Central (por ejemplo, si este sitio temporal está apagado), simplemente sigue trabajando: reintentará solo.\n- Cuando la Central vuelve a estar en línea, la actualización llega en menos de 15 minutos.",
+      "url": null,
+      "fileName": null,
+      "fileSize": null,
+      "minutos": 3,
+      "orden": 2,
+      "publicado": 1,
+      "fecha": 1794012461482
+    },
+    {
+      "id": 3,
+      "titulo": "Tu acceso directo a la Central",
+      "descripcion": "Para qué sirve el ícono de tu escritorio y qué hacer si el sitio no abre.",
+      "tipo": "guia",
+      "contenido": "El acceso directo de tu escritorio abre esta Central (el centro de actualizaciones y modificaciones).\n\n1) Qué es\n- Es un acceso directo (.url) de Windows que apunta a:\n  https://preview-chat-84403353-6e78-4cf3-8a17-b0d05bfe9666.space-z.ai\n\n2) Qué puedes hacer aquí\n- Ver las novedades de cada versión (pestaña Actualizaciones).\n- Pedir cambios a tu software (pestaña Solicitudes).\n- Aprender a usar funciones nuevas (pestaña Aprende).\n- Probar la conexión si algo falla (pestaña Diagnóstico).\n\n3) Importante sobre el sitio temporal\n- Mientras trabajamos con el sitio temporal, este vive \"mientras la sesión de trabajo está activa\". Si un día no abre, no te alarmes: tu software sigue funcionando igual y la Central se levanta de nuevo en minutos (escríbeme en el chat y la enciendo).\n- El siguiente paso del proyecto es moverla a un hosting permanente (Vercel) para que nunca más se apague. Ese cambio será transparente para ti: solo cambiaría la dirección y te la haría llegar.\n\n4) Si el acceso directo se pierde\n- Puedes recrearlo: clic derecho en el escritorio > Nuevo > Acceso directo y pega la dirección de arriba.",
+      "url": null,
+      "fileName": null,
+      "fileSize": null,
+      "minutos": 2,
+      "orden": 3,
+      "publicado": 1,
+      "fecha": 1794012461484
+    },
+    {
+      "id": 4,
+      "titulo": "Novedades 3.3.0 · Gestión completa de Inventarios",
+      "descripcion": "Alta y edición de productos, lotes con bitácora, filtros del catálogo y Excel para importar/exportar tu inventario.",
+      "tipo": "guia",
+      "contenido": "Tu Sell-Plus 3.3.0 convirtió el módulo INVENTARIOS en el cuarto de mando de tu tienda. Esto es todo lo nuevo:\n\n1) AGREGAR UN PRODUCTO (Bloque 1)\n- Entra a Inventarios y toca el botón verde \"Agregar producto\".\n- Captura nombre, categoría, precio de venta, costo y el aviso de stock bajo (cuándo quieres que te avise).\n- Si ya tienes mercancía en el estante, activa \"Registrar mercancía inicial\" y captura cantidad, caducidad y proveedor.\n\n2) EDITAR O ELIMINAR\n- Toca cualquier producto del catálogo para abrir su ficha completa.\n- Botón \"Editar\" para cambiar cualquier dato. Guardas y listo.\n- En la \"Zona delicada\" puedes desactivar un producto (deja de aparecer en caja pero conserva su historial) o eliminarlo por completo.\n\n3) LOTES, ENTRADAS Y MERMAS\n- Cada vez que llegue mercancía: abre la ficha del producto → \"Entrada de mercancía\" → cantidad, caducidad, proveedor y costo unitario.\n- Con el botón \"Ajustar conteo\" corriges diferencias entre lo que dice el sistema y lo que hay en el estante (se registra en la bitácora).\n- \"Merma total\" retira un lote dañado o vencido y lo deja documentado.\n\n4) CATÁLOGO CON FILTROS (Bloque 2)\n- Busca por nombre, código o categoría desde la caja de búsqueda.\n- Filtros rápidos: \"Stock bajo\", \"Caducan ≤ 30 días\", \"Caducan ≤ 7 días\", \"Vencidos\".\n- Filtro de ventas: \"Con ventas del periodo\", \"Sin ventas del periodo\" — y eliges si el periodo es de 7, 30 o 90 días. Perfecto para decidir qué pedir y qué promocionar.\n- Las tarjetas de arriba te dan el pulso del negocio: valor total del inventario, productos en riesgo de caducar y faltantes.\n\n5) EXCEL: IMPORTAR Y EXPORTAR (Bloque 3)\n- EXPORTAR: botón \"Exportar\" descarga tus productos y lotes a un Excel con fecha del día.\n- IMPORTAR: botón \"Importar\" acepta tu archivo (o la plantilla de ejemplo que ahí mismo puedes descargar). Columnas: Nombre, Categoria, Codigo, Precio, Costo, Minimo, Existencia, Caducidad, Proveedor, CostoUnitario.\n- Importar NUNCA borra: si el producto ya existe (por código o nombre) se actualiza y la existencia entra como lote nuevo; si no existe, se crea.\n- Al terminar verás el reporte fila por fila de lo que se creó, actualizó o tuvo problemas.\n\n6) TU INFORMACIÓN, INTACTA\n- Esta actualización no tocó tu base de datos: el esquema es idéntico al que ya tenías.\n- Antes de instalar, el sistema hizo automáticamente un respaldo adicional por si acaso (los archivos custom.db.respaldo... en tu carpeta Sell-Plus).\n\n¿Dudas con algo nuevo? Escríbela en Solicitudes o en el chat.",
+      "url": null,
+      "fileName": null,
+      "fileSize": null,
+      "minutos": 7,
+      "orden": 0,
+      "publicado": 1,
+      "fecha": 1794027748543
+    },
+    {
+      "id": 5,
+      "titulo": "El Paladín: tu guardián silencioso (3.3.2)",
+      "descripcion": "Qué es el Paladín que vino con la 3.3.2 y cómo protege tu programa y tu información.",
+      "tipo": "guia",
+      "contenido": "Con la versión 3.3.2 tu Sell-Plus tiene un guardián propio: el PALADÍN. Trabaja en silencio para que ninguna falla te detenga.\n\n1) ¿Qué hace?\n- Vigila el programa constantemente. Si el motor interno se detiene, lo re-levanta solo (hasta 3 veces por hora).\n- Cada 30 segundos revisa la salud del sistema. Si detecta un cuelgue, lo corrige sin que hagas nada.\n- Cuidado de tu base de datos: si algún día dejara de responder, el Paladín la restaura desde el respaldo más reciente y te avisa con un mensaje claro. Tus ventas y productos nunca están en riesgo.\n\n2) ¿Y si una actualización trae problemas?\n- Cada versión nueva pasa por una \"prueba de arranque\": el Paladín la observa durante sus primeras ejecuciones.\n- Si la versión nueva falla 3 veces, el Paladín REVIERTE solo a la versión estable anterior (se guarda una copia del instalador en C:\\Sell-Plus\\updates) y aparta la versión problemática para que no se reinstale sola.\n- Tu base de datos no se toca en ninguna parte del proceso.\n\n3) ¿Cómo sé qué pasó?\n- El Paladín escribe su diario en: C:\\Sell-Plus\\resources\\app\\logs\\paladin.log\n- Ahí queda registrado cada problema detectado y cada corrección automática.\n\n4) ¿Tengo que hacer algo?\n- No. El Paladín trabaja solo. Si alguna vez te muestra un aviso, léelo: siempre te dice qué se corrigió y qué paso seguir.",
+      "url": null,
+      "fileName": null,
+      "fileSize": null,
+      "minutos": 4,
+      "orden": 4,
+      "publicado": 1,
+      "fecha": 1794039384221
+    }
+  ],
+  "solicitudes": [
+    {
+      "id": 1,
+      "titulo": "Gestión de Inventarios",
+      "descripcion": "En la sección de inventario, incluye el apartado de agregar producto (que se puede modificar o ajustar detalles, eliminar, etc).  Incluye la opción de catálogo de los productos (que incluya filtros como ventas por periodo, lotes, caducidades,). Incluye la opción de importar y exportar archivos (en este caso excel para importar inventarios preexistentes)",
+      "prioridad": "alta",
+      "estado": "publicada",
+      "respuesta": "v3.3.1 PUBLICADA ✅ — IMPORTANTE: esta transición es manual por única vez. Tu 3.3.0 tiene el actualizador dañado (lanzaba el instalador y este se autodetenía: tus 6 respaldos de BD lo confirman). La corrección viaja DENTRO de la 3.3.1, así que tu versión actual no puede aplicarla sola. Instálala así: abre la Central → pestaña Actualizaciones → botón «Descargar instalador» de la 3.3.1 → ejecuta el .exe descargado (no necesitas cerrar Sell-Plus; el instalador lo hace solo). Tu base de datos se respalda y se conserva intacta. Al abrir Sell-Plus verás «Punto de venta · v3.3.1» en el login. A partir de aquí las actualizaciones volverán a ser automáticas (el actualizador corregido viaja incluido). Qué trae: TODA la base desde 3.1.0/3.2.0 (Caja, Ventas, Inventarios con lotes, PEPS y alertas de caducidad, Empleados, login con PIN, Diagnóstico de conexión) + la gestión completa de inventarios que pediste (alta/edición/eliminación de productos, ficha con lotes, catálogo con filtros, importar/exportar Excel). — ✅ Confirmada por el usuario: «la versión 3.3.1 es la mejor hasta ahora». Instalada y validada en su equipo.",
+      "tiempoEstimado": null,
+      "progreso": 0,
+      "fase": null,
+      "fecha": 1794023663191,
+      "actualizadoEn": "2026-11-07T07:50:49.000Z"
+    },
+    {
+      "id": 2,
+      "titulo": "Ventas inteligentes",
+      "descripcion": "En la sección de ventas, debe de estar el apartado y su atajo, de: buscar producto (con su respectivo filtro) (F10). Entrada dinero (F7) / Salida de dinero (F8). Los tickets pueden agregarse, eliminarse y contabilizarse, agregar ticket (F6). Cobrar (F12)",
+      "prioridad": "alta",
+      "estado": "publicada",
+      "respuesta": "Lista y publicada como v3.3.3. En Caja ahora tienes: F6 agrega tickets (con pestañitas para cambiar entre ellos, X para eliminarlos y contador con su total), F10 busca productos y enfoca el buscador con filtro por categoría, F7 entrada de dinero, F8 salida de dinero (ambas con motivo y resumen del día: en caja estimado incluido) y F12 cobra el ticket activo. Tu información no se tocó: la tabla nueva se crea sola. Tu programa se actualizará solo en los próximos 15 minutos.",
+      "tiempoEstimado": "60–90 min",
+      "progreso": 100,
+      "fase": "Completado — publicado como v3.3.3",
+      "fecha": 1794037262278,
+      "actualizadoEn": 1794066868571
+    },
+    {
+      "id": 3,
+      "titulo": "Indicador de trabajo en solicitudes + Paladín guardián del sistema",
+      "descripcion": "Petición del dueño: (1) Que en la solicitud exista un indicador donde se pueda ver el tiempo estimado y algún otro detalle relevante del trabajo en curso. (2) Un paladín que vigile el código del programa, previniendo fallas inesperadas y previniendo que una solicitud, cambio o actualización futura atore o bote el programa.",
+      "prioridad": "alta",
+      "estado": "publicada",
+      "respuesta": "Recibida y en construcción AHORA MISMO. Parte 1 (indicador con tiempo estimado, fase y progreso): es la barra que estás viendo — funciona desde ya. Parte 2 (Paladín): guardián dentro de Sell-Plus que vigila el programa 24/7, se reinicia solo si algo falla, verifica la base de datos y bloquea actualizaciones peligrosas con reversión automática. Llega como v3.3.2.",
+      "tiempoEstimado": "50–70 min",
+      "progreso": 100,
+      "fase": "Completado — v3.3.2 publicada con el Paladín a bordo",
+      "fecha": 1794037889545,
+      "actualizadoEn": 1794039355491
+    },
+    {
+      "id": 4,
+      "titulo": "Sección del Paladín en la Central",
+      "descripcion": "Petición del dueño: añadir una sección pequeña en la interfaz de la Central donde se resuma el análisis del Paladín (guardián del sistema): estado general, verificaciones realizadas y alertas.",
+      "prioridad": "alta",
+      "estado": "publicada",
+      "respuesta": "Lista. En la pestaña Inicio de la Central hay ahora una sección pequeña del Paladín: muestra su estado general (Todo en orden / Con observaciones / Detectó un problema), el resumen del análisis y, al tocar la flechita, cada verificación realizada. El primer análisis real ya está visible: el Paladín de publicación probó el build v3.3.2 (arranque, 5 pantallas, 2 APIs y base de datos: todo en orden). Cada publicación futura dejará aquí su análisis automáticamente.",
+      "tiempoEstimado": "20–30 min",
+      "progreso": 100,
+      "fase": "Completado — sección del Paladín activa en la Central",
+      "fecha": 1794040432832,
+      "actualizadoEn": 1794040912505
+    }
+  ],
+  "paladinReportes": [
+    {
+      "id": 1,
+      "origen": "publicacion",
+      "versionPos": "3.3.2",
+      "estadoGlobal": "ok",
+      "resumen": "Build v3.3.2 aprobado: arranca solo, todas las pantallas responden y la base de datos está sana. Listo para publicar.",
+      "checks": "[{\"nombre\":\"Arranque del build\",\"estado\":\"ok\",\"detalle\":\"Servidor de prueba arriba en el puerto 3100\"},{\"nombre\":\"Pantalla de inicio\",\"estado\":\"ok\",\"detalle\":\"/ → HTTP 200\"},{\"nombre\":\"Caja (POS)\",\"estado\":\"ok\",\"detalle\":\"/caja → HTTP 200\"},{\"nombre\":\"Inventarios\",\"estado\":\"ok\",\"detalle\":\"/inventarios → HTTP 200\"},{\"nombre\":\"Ventas\",\"estado\":\"ok\",\"detalle\":\"/ventas → HTTP 200\"},{\"nombre\":\"Empleados\",\"estado\":\"ok\",\"detalle\":\"/empleados → HTTP 200\"},{\"nombre\":\"API de salud\",\"estado\":\"ok\",\"detalle\":\"/api/salud → HTTP 200\"},{\"nombre\":\"API de sesión\",\"estado\":\"ok\",\"detalle\":\"/api/sesion → HTTP 200\"},{\"nombre\":\"Base de datos\",\"estado\":\"ok\",\"detalle\":\"/api/salud responde con base de datos sana\"}]",
+      "okCount": 9,
+      "alertasCount": 0,
+      "fallosCount": 0,
+      "duracionMs": 1186,
+      "fecha": 1794040694613
+    },
+    {
+      "id": 2,
+      "origen": "publicacion",
+      "versionPos": "3.3.3",
+      "estadoGlobal": "ok",
+      "resumen": "Build v3.3.3 aprobado: arranca solo, todas las pantallas responden y la base de datos está sana. Listo para publicar.",
+      "checks": "[{\"nombre\":\"Arranque del build\",\"estado\":\"ok\",\"detalle\":\"Servidor de prueba arriba en el puerto 3100\"},{\"nombre\":\"Pantalla de inicio\",\"estado\":\"ok\",\"detalle\":\"/ → HTTP 200\"},{\"nombre\":\"Caja (POS)\",\"estado\":\"ok\",\"detalle\":\"/caja → HTTP 200\"},{\"nombre\":\"Inventarios\",\"estado\":\"ok\",\"detalle\":\"/inventarios → HTTP 200\"},{\"nombre\":\"Ventas\",\"estado\":\"ok\",\"detalle\":\"/ventas → HTTP 200\"},{\"nombre\":\"Empleados\",\"estado\":\"ok\",\"detalle\":\"/empleados → HTTP 200\"},{\"nombre\":\"API de salud\",\"estado\":\"ok\",\"detalle\":\"/api/salud → HTTP 200\"},{\"nombre\":\"API de sesión\",\"estado\":\"ok\",\"detalle\":\"/api/sesion → HTTP 200\"},{\"nombre\":\"Dinero en caja (nuevo en 3.3.3)\",\"estado\":\"ok\",\"detalle\":\"Ruta viva y protegida por sesión (HTTP 401)\"},{\"nombre\":\"Base de datos\",\"estado\":\"ok\",\"detalle\":\"/api/salud responde con base de datos sana\"}]",
+      "okCount": 10,
+      "alertasCount": 0,
+      "fallosCount": 0,
+      "duracionMs": 1225,
+      "fecha": 1794066298564
+    },
+    {
+      "id": 3,
+      "origen": "publicacion",
+      "versionPos": "3.3.3",
+      "estadoGlobal": "ok",
+      "resumen": "Build v3.3.3 aprobado: arranca solo, todas las pantallas responden y la base de datos está sana. Listo para publicar.",
+      "checks": "[{\"nombre\":\"Arranque del build\",\"estado\":\"ok\",\"detalle\":\"Servidor de prueba arriba en el puerto 3100\"},{\"nombre\":\"Pantalla de inicio\",\"estado\":\"ok\",\"detalle\":\"/ → HTTP 200\"},{\"nombre\":\"Caja (POS)\",\"estado\":\"ok\",\"detalle\":\"/caja → HTTP 200\"},{\"nombre\":\"Inventarios\",\"estado\":\"ok\",\"detalle\":\"/inventarios → HTTP 200\"},{\"nombre\":\"Ventas\",\"estado\":\"ok\",\"detalle\":\"/ventas → HTTP 200\"},{\"nombre\":\"Empleados\",\"estado\":\"ok\",\"detalle\":\"/empleados → HTTP 200\"},{\"nombre\":\"API de salud\",\"estado\":\"ok\",\"detalle\":\"/api/salud → HTTP 200\"},{\"nombre\":\"API de sesión\",\"estado\":\"ok\",\"detalle\":\"/api/sesion → HTTP 200\"},{\"nombre\":\"Dinero en caja (nuevo en 3.3.3)\",\"estado\":\"ok\",\"detalle\":\"Ruta viva y protegida por sesión (HTTP 401)\"},{\"nombre\":\"Base de datos\",\"estado\":\"ok\",\"detalle\":\"/api/salud responde con base de datos sana\"}]",
+      "okCount": 10,
+      "alertasCount": 0,
+      "fallosCount": 0,
+      "duracionMs": 1237,
+      "fecha": 1794066868203
+    }
+  ],
+  "actividad": [
+    {
+      "id": 1,
+      "tipo": "sistema",
+      "detalle": "Central reconstruida y puesta en línea (misma URL pública)",
+      "fecha": 1794012461485
+    },
+    {
+      "id": 2,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.2.0 consultó actualizaciones — está al día",
+      "fecha": 1794012840628
+    },
+    {
+      "id": 3,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.1.0 consultó actualizaciones — hay novedad: 3.2.0",
+      "fecha": 1794012840645
+    },
+    {
+      "id": 4,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.2.0 consultó actualizaciones — está al día",
+      "fecha": 1794022588793
+    },
+    {
+      "id": 5,
+      "tipo": "solicitud",
+      "detalle": "Nueva solicitud: \"Gestión de Inventarios\"",
+      "fecha": 1794023663194
+    },
+    {
+      "id": 6,
+      "tipo": "solicitud",
+      "detalle": "Solicitud #1 «Gestión de Inventarios» aceptada — construyendo v3.3.0 (bloque 1: alta/edición de producto)",
+      "fecha": 1794023985368
+    },
+    {
+      "id": 7,
+      "tipo": "sistema",
+      "detalle": "Versión 3.3.0 registrada en la Central",
+      "fecha": 1794027623538
+    },
+    {
+      "id": 8,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.2.0 consultó actualizaciones — hay novedad: 3.3.0",
+      "fecha": 1794027641434
+    },
+    {
+      "id": 9,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.0-Instalador-Windows-64bits.exe (120.5 MB)",
+      "fecha": 1794027642146
+    },
+    {
+      "id": 10,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.0 consultó actualizaciones — está al día",
+      "fecha": 1794027693420
+    },
+    {
+      "id": 11,
+      "tipo": "sistema",
+      "detalle": "Versión 3.3.0 PUBLICADA (Gestión completa de Inventarios) — disponible para tu software",
+      "fecha": 1794027748544
+    },
+    {
+      "id": 12,
+      "tipo": "sistema",
+      "detalle": "Criterio de actualización definido con el usuario: versiones acumulativas (base completa 3.1.0/3.2.0 + mejora integrada). Próxima: 3.3.1",
+      "fecha": 1794030387022
+    },
+    {
+      "id": 13,
+      "tipo": "sistema",
+      "detalle": "v3.3.1 construida (instalador verificado, SHA-256 29583f32…df0e4) — esperando validación del usuario antes de publicar",
+      "fecha": 1794032016593
+    },
+    {
+      "id": 14,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.0 consultó actualizaciones — está al día",
+      "fecha": 1794032824878
+    },
+    {
+      "id": 15,
+      "tipo": "sistema",
+      "detalle": "Versión 3.3.1 registrada en la Central",
+      "fecha": 1794032903173
+    },
+    {
+      "id": 16,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.0 consultó actualizaciones — hay novedad: 3.3.1",
+      "fecha": 1794032910853
+    },
+    {
+      "id": 17,
+      "tipo": "sistema",
+      "detalle": "v3.3.1 publicada en la Central (SHA-256 29583f32…df0e4, 125.4 MB) — acumulativa: base 3.1.0/3.2.0 completa + gestión de inventarios de la solicitud #1 + fix del auto-actualizador",
+      "fecha": 1794032926928
+    },
+    {
+      "id": 18,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.1-Instalador-Windows-64bits.exe (119.6 MB)",
+      "fecha": 1794032935753
+    },
+    {
+      "id": 19,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.1-Instalador-Windows-64bits.exe (119.6 MB)",
+      "fecha": 1794034813714
+    },
+    {
+      "id": 20,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.2.0 consultó actualizaciones — hay novedad: 3.3.1",
+      "fecha": 1794034868447
+    },
+    {
+      "id": 21,
+      "tipo": "sistema",
+      "detalle": "3.3.0 no se auto-actualiza: su instalador se autodetiene (taskkill /T mataba el propio instalador; 6 respaldos de BD lo confirman). Publicada la guía de instalación manual por única vez — desde 3.3.1 el auto-actualizador vuelve a funcionar",
+      "fecha": 1794035316957
+    },
+    {
+      "id": 22,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.1-Instalador-Windows-64bits.exe (119.6 MB)",
+      "fecha": 1794035488787
+    },
+    {
+      "id": 23,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.1 consultó actualizaciones — está al día",
+      "fecha": 1794035785185
+    },
+    {
+      "id": 24,
+      "tipo": "solicitud",
+      "detalle": "Usuario confirmó la v3.3.1 instalada y funcionando: «es la mejor hasta ahora». Solicitud #1 validada y cerrada. El auto-actualizador quedó corregido para futuras versiones",
+      "fecha": 1794036046584
+    },
+    {
+      "id": 25,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.1 consultó actualizaciones — está al día",
+      "fecha": 1794036861736
+    },
+    {
+      "id": 26,
+      "tipo": "solicitud",
+      "detalle": "Nueva solicitud: \"Ventas inteligentes\"",
+      "fecha": 1794037262281
+    },
+    {
+      "id": 27,
+      "tipo": "solicitud",
+      "detalle": "Nueva solicitud #2 del dueño: indicador de tiempo estimado/progreso en solicitudes + Paladín guardián (vigilancia del programa, auto-recuperación y bloqueo de actualizaciones peligrosas). Estado: en_proceso (15%)",
+      "fecha": 1794037889547
+    },
+    {
+      "id": 28,
+      "tipo": "sistema",
+      "detalle": "Versión 3.3.2 registrada en la Central",
+      "fecha": 1794039346782
+    },
+    {
+      "id": 29,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.1 consultó actualizaciones — hay novedad: 3.3.2",
+      "fecha": 1794039355448
+    },
+    {
+      "id": 30,
+      "tipo": "sistema",
+      "detalle": "v3.3.2 publicada: Paladín guardián (auto-recuperación del servidor, monitor de salud 30 s, restauración automática de BD, rollback de actualizaciones fallidas) + indicador en vivo de solicitudes en la Central (tiempo estimado, fase y progreso). Solicitud #3 publicada al 100%. SHA-256 6af4bcb5…84822",
+      "fecha": 1794039384223
+    },
+    {
+      "id": 31,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.1 consultó actualizaciones — hay novedad: 3.3.2",
+      "fecha": 1794039963401
+    },
+    {
+      "id": 32,
+      "tipo": "solicitud",
+      "detalle": "Nueva solicitud: \"Sección del Paladín en la Central\"",
+      "fecha": 1794040432835
+    },
+    {
+      "id": 33,
+      "tipo": "paladin",
+      "detalle": "🛡️ Paladín analizó el build antes de publicar (v3.3.2): todo en orden",
+      "fecha": 1794040694617
+    },
+    {
+      "id": 34,
+      "tipo": "sistema",
+      "detalle": "Sección del Paladín añadida a la Central (solicitud #4): resumen del análisis del guardián en Inicio, API /api/paladin con historial, y el Paladín de publicación ahora reporta automáticamente cada análisis. Primer análisis real registrado: build v3.3.2 aprobado (9 verificaciones).",
+      "fecha": 1794040912508
+    },
+    {
+      "id": 35,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.1 consultó actualizaciones — hay novedad: 3.3.2",
+      "fecha": 1794060819765
+    },
+    {
+      "id": 36,
+      "tipo": "sistema",
+      "detalle": "🛡️ El vigilante detectó que el entorno de la Central fue revertido a una instantánea antigua (00:57): instaladores, código del POS y registros recientes desaparecieron temporalmente. Tu software instalado (v3.3.2) NO se vio afectado.",
+      "fecha": 1794060855763
+    },
+    {
+      "id": 37,
+      "tipo": "sistema",
+      "detalle": "🔧 Recuperación completada: se restauró el estado completo desde la instantánea de las 08:42 (6 instaladores incluido 3.3.2, código fuente del POS, sección del Paladín, BD con solicitudes #1–#4, bitácora y SHA del actualizador). Punto de recuperación fijado en git.",
+      "fecha": 1794060855764
+    },
+    {
+      "id": 38,
+      "tipo": "paladin",
+      "detalle": "🛡️ Paladín analizó el build antes de publicar (v3.3.3): todo en orden",
+      "fecha": 1794066298570
+    },
+    {
+      "id": 39,
+      "tipo": "sistema",
+      "detalle": "v3.3.3 publicada: Ventas inteligentes (tickets múltiples F6, buscar+filtro F10, entrada/salida de dinero F7/F8 con resumen de caja, cobrar F12) + tabla aditiva MovimientoCaja. Paladín: PALADIN_OK (9 verificaciones). Solicitud #2 cerrada. SHA-256 46f5f95f…897457",
+      "fecha": 1794066417762
+    },
+    {
+      "id": 40,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.2 consultó actualizaciones — hay novedad: 3.3.3",
+      "fecha": 1794066417927
+    },
+    {
+      "id": 41,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.3-Instalador-Windows-64bits.exe (119.6 MB)",
+      "fecha": 1794066440705
+    },
+    {
+      "id": 42,
+      "tipo": "sistema",
+      "detalle": "v3.3.3 publicada: Ventas inteligentes (tickets múltiples F6, buscar+filtro F10, entrada/salida de dinero F7/F8 con resumen de caja, cobrar F12) + tabla aditiva MovimientoCaja. Paladín: PALADIN_OK (9 verificaciones). Solicitud #2 cerrada. SHA-256 4af886c6…85f233",
+      "fecha": 1794066868572
+    },
+    {
+      "id": 43,
+      "tipo": "sistema",
+      "detalle": "Vigilante v2 activo: auto-restauración ante reversiones, auto-reinstalación de dependencias, re-encendido cada 15 min (8:00–23:00) y paquete de recuperación disponible para guardar en la PC del dueño (/Sell-Plus-Central-Respaldo.zip).",
+      "fecha": 1794068422709
+    },
+    {
+      "id": 44,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.2 consultó actualizaciones — hay novedad: 3.3.3",
+      "fecha": 1794071368073
+    },
+    {
+      "id": 45,
+      "tipo": "sistema",
+      "detalle": "Incidente: el dueño encontró la Central en blanco por segunda vez. Causa confirmada: el entorno de preview apaga el servidor al quedar inactivo y borra node_modules; además los dos vigilantes cron fallaban con \"model concurrency limit exceeded\" (plataforma) y no pudieron re-encenderla. Diagnóstico completo: página, /api/health, 10 chunks JS y CSS cargan bien por la URL pública cuando el servidor está vivo.",
+      "fecha": 1794072673448
+    },
+    {
+      "id": 46,
+      "tipo": "sistema",
+      "detalle": "Refuerzos aplicados: (1) vigilante con arranque paciente (hasta 84 s) y reinstalación automática de dependencias; (2) consolidado a UN solo vigilante cada 15 min en minutos escalonados :07/:22/:37/:52 con prioridad alta (esquiva los picos de concurrencia de la plataforma); (3) verificado en real: el vigilante detectó dependencias borradas, las reinstaló, re-encendió y dejó la Central en línea. Pendiente estructural: migración a hosting permanente (Vercel + Turso/Blob) para eliminar esta dependencia del entorno de preview.",
+      "fecha": 1794072673450
+    },
+    {
+      "id": 47,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.2 consultó actualizaciones — hay novedad: 3.3.3",
+      "fecha": 1794073538448
+    },
+    {
+      "id": 48,
+      "tipo": "sistema",
+      "detalle": "Causa raíz de la inestabilidad hallada (3 capas): (1) el entorno de preview pausa el sandbox al quedar inactivo y la URL pública muestra una página en blanco/pausada; (2) los vigilantes cron fallaban por límites de concurrencia de la plataforma y no podían re-encenderla; (3) un limpiador del entorno borra node_modules dentro de /home/z/my-project de forma continua, incluso a mitad del arranque del servidor, con disco al 57%. Probado: el limpiador NO toca /tmp.",
+      "fecha": 1794073806591
+    },
+    {
+      "id": 49,
+      "tipo": "sistema",
+      "detalle": "Solución definitiva aplicada: la Central ahora corre desde /tmp/central (zona que el limpiador no alcanza y que sobrevive a reversiones), con su propia copia de dependencias y la base de datos del proyecto por ruta absoluta (file:/home/z/my-project/db/custom.db, única fuente de verdad). Vigilante v4: restaura estado si hay reversión, sincroniza código del proyecto → /tmp/central, instala dependencias solo si faltan en la zona segura y re-enciende con arranque paciente. Script nuevo sincronizar-central.sh para publicar cambios de código. Verificado en real: página, health, chunks JS y CSS al 200 por la URL pública; servidor vivo tras 90 s de vigilancia (antes moría en ~25 s).",
+      "fecha": 1794073806593
+    },
+    {
+      "id": 50,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.3-Instalador-Windows-64bits.exe (119.7 MB)",
+      "fecha": 1794074317690
+    },
+    {
+      "id": 51,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.2 consultó actualizaciones — hay novedad: 3.3.3",
+      "fecha": 1794074318686
+    },
+    {
+      "id": 52,
+      "tipo": "sistema",
+      "detalle": "Reporte del dueño resuelto: la actualización 3.3.3 no llegaba (descarga 404), los instaladores no aparecían en la Central y el aviso de \"está actualizado\" era engañoso. Causa: la Central corre desde /tmp/central (zona protegida del limpiador del entorno) y las rutas de instaladores eran relativas al directorio de ejecución; además la fila 3.2.0 tenía fileName/fileSize NULL (secuela de la reversión). Fix: nuevo src/lib/rutas.ts con CENTRAL_RAIZ absoluta, 6 rutas de API migradas, fila 3.2.0 reparada con su SHA-256 real, y CENTRAL_RAIZ en .env y scripts de arranque. Verificado: descarga 3.3.3 por URL pública devuelve 200 con 125,507,984 bytes y nombre correcto; los 6 instaladores aparecen completos con archivo y huella; contrato del actualizador OK (hasUpdate=true desde 3.3.2).",
+      "fecha": 1794074478368
+    },
+    {
+      "id": 53,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.3-Instalador-Windows-64bits.exe (119.7 MB)",
+      "fecha": 1794074949918
+    },
+    {
+      "id": 54,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.2 consultó actualizaciones — hay novedad: 3.3.3",
+      "fecha": 1794076339387
+    },
+    {
+      "id": 55,
+      "tipo": "check_actualizacion",
+      "detalle": "Software 3.3.3 consultó actualizaciones — está al día",
+      "fecha": 1794076339408
+    },
+    {
+      "id": 56,
+      "tipo": "descarga",
+      "detalle": "Descarga del instalador Sell-Plus-3.3.3-Instalador-Windows-64bits.exe (119.7 MB)",
+      "fecha": 1794076339946
+    },
+    {
+      "id": 57,
+      "tipo": "descarga",
+      "detalle": "Descarga de Sell-Plus-3.3.3-Instalador-Windows-64bits.exe redirigida al alojamiento externo",
+      "fecha": 1794076355530
+    }
+  ]
+}

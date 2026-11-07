@@ -1,0 +1,19 @@
+Los instaladores .exe NO viven en el repositorio (pesan ~125 MB y GitHub los
+rechaza). Su hogar definitivo es la pestaña **Releases** del repositorio:
+
+  https://github.com/TU-USUARIO/sell-plus-central/releases
+
+Regla de nombres (la Central la usa para reconocer los archivos):
+
+  Sell-Plus-<versión>-Instalador-Windows-64bits.exe
+  Ejemplo: Sell-Plus-3.3.3-Instalador-Windows-64bits.exe
+
+Y el tag de cada release se nombra:  v<versión>   (ejemplo: v3.3.3)
+
+Después de subir un instalador a su release, copia el enlace de descarga
+(empieza por https://github.com/.../releases/download/...) y pégalo en la
+Central → pestaña Actualizaciones → tarjeta de la versión → "Usar URL de
+GitHub". Desde ese momento la descarga del auto-actualizador redirige ahí.
+
+En desarrollo local esta carpeta puede contener los .exe para pruebas;
+el .gitignore evita que se suban por accidente.

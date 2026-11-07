@@ -1,0 +1,31 @@
+﻿==========================================================
+ KIT DE RECOPILACIÓN DE INFORMACIÓN — SELL-PLUS
+==========================================================
+
+¿Para qué es?
+  Le entrega a tu desarrollador (yo) la ficha técnica de tu
+  instalación de Sell-Plus, para construir la versión 3.3.0
+  con compatibilidad perfecta con tu base de datos.
+
+QUÉ COPIA (transparencia total):
+  • Archivos de configuración pequeños (texto): package.json,
+    central-url.txt, auto-actualizador.js, esquema interno.
+  • Un mapa de nombres de archivos (sin contenido).
+  • El número de versión del programa.
+
+QUÉ NO COPIA:
+  • Tu base de datos con ventas, productos o clientes. NO viaja
+    ninguna información comercial. Solo archivos de texto de
+    configuración.
+
+CÓMO USARLO (3 pasos)
+  1. Descomprime este kit en cualquier carpeta de tu PC.
+  2. Doble clic en:  Recopilar-Info.bat
+     - Si aparece el aviso azul de Windows SmartScreen:
+       "Más información" → "Ejecutar de todas formas".
+  3. En unos segundos aparecerá en tu ESCRITORIO el archivo:
+        Sell-Plus-Info.zip
+     Súbelo a la conversación (arrástralo al chat).
+
+Tu software sigue funcionando normal mientras lo ejecutas.
+Nada se instala, nada se modifica en tu Sell-Plus.

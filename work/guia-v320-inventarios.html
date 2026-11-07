@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Novedades Sell-Plus 3.2.0 — Inventarios</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde-oscuro: #14532d;
+    --verde: #166534;
+    --verde-medio: #16a34a;
+    --verde-suave: #dcfce7;
+    --verde-palido: #f0fdf4;
+    --tinta: #1c1917;
+    --gris: #57534e;
+    --ambar: #b45309;
+    --ambar-suave: #fef3c7;
+    --rojo: #b91c1c;
+    --rojo-suave: #fee2e2;
+  }
+  @page { size: 720px 1020px; margin: 0; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--verde-oscuro);
+    font-family: 'Inter', 'Liberation Sans', sans-serif;
+    color: var(--tinta);
+  }
+  .page {
+    width: 720px; height: 1020px;
+    position: relative;
+    page-break-after: always;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---------- PORTADA ---------- */
+  .portada { background: var(--verde-oscuro); color: #ffffff; padding: 84px 64px; display: flex; flex-direction: column; }
+  .portada .sello {
+    display: inline-block; align-self: flex-start;
+    border: 1px solid rgba(255,255,255,.45); border-radius: 999px;
+    padding: 7px 18px; font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600;
+  }
+  .portada h1 {
+    font-family: 'Playfair Display', 'Liberation Serif', serif;
+    font-size: 64px; line-height: 1.06; font-weight: 900; margin: 42px 0 0;
+  }
+  .portada .sub { font-size: 20px; line-height: 1.5; color: #d1fae5; margin-top: 26px; max-width: 520px; font-weight: 300; }
+  .resumen-bloque {
+    margin-top: auto;
+    background: rgba(255,255,255,.07);
+    border-left: 4px solid #4ade80;
+    border-radius: 0 14px 14px 0;
+    padding: 26px 30px;
+  }
+  .resumen-bloque p { margin: 0 0 12px; font-size: 15.5px; line-height: 1.55; color: #ecfdf5; }
+  .resumen-bloque p:last-child { margin-bottom: 0; }
+  .resumen-bloque b { color: #ffffff; }
+  .pie-portada { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; font-size: 13px; color: #a7f3d0; letter-spacing: 1px; }
+
+  /* ---------- PÁGINAS DE CONTENIDO ---------- */
+  .contenido { padding: 52px 64px 64px; display: flex; flex-direction: column; }
+  .cabecera-seccion { border-bottom: 3px solid var(--verde); padding-bottom: 12px; margin-bottom: 20px; }
+  .cabecera-seccion .kicker { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--verde-medio); font-weight: 700; margin-bottom: 8px; }
+  .cabecera-seccion h2 { font-family: 'Playfair Display', 'Liberation Serif', serif; font-size: 36px; font-weight: 900; margin: 0; color: var(--verde-oscuro); }
+  h3 { font-size: 18px; font-weight: 700; color: var(--verde-oscuro); margin: 16px 0 6px; }
+  p { font-size: 14px; line-height: 1.56; color: var(--gris); margin: 0 0 10px; }
+  p b, li b { color: var(--tinta); }
+  ul { margin: 6px 0 12px; padding-left: 20px; }
+  li { font-size: 14px; line-height: 1.55; color: var(--gris); margin-bottom: 6px; }
+
+  .tarjeta {
+    background: var(--verde-palido);
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 13px 18px;
+    margin: 8px 0 10px;
+    break-inside: avoid;
+  }
+  .tarjeta.ambar { background: var(--ambar-suave); border-color: #fde68a; }
+  .tarjeta.roja { background: var(--rojo-suave); border-color: #fecaca; }
+  .tarjeta .titulo-t { font-weight: 700; font-size: 15px; margin-bottom: 6px; color: var(--verde-oscuro); }
+  .tarjeta.ambar .titulo-t { color: var(--ambar); }
+  .tarjeta.roja .titulo-t { color: var(--rojo); }
+
+  .fila-dato { display: flex; gap: 14px; margin: 10px 0 6px; }
+  .dato {
+    flex: 1; border: 1.5px solid #e7e5e4; border-radius: 12px; padding: 10px 14px;
+  }
+  .dato .num { font-size: 22px; font-weight: 900; color: var(--verde); }
+  .dato .et { font-size: 12px; color: var(--gris); letter-spacing: .4px; margin-top: 2px; }
+
+  .pasos { margin: 8px 0 4px; }
+  .paso { display: flex; gap: 14px; margin-bottom: 10px; }
+  .paso .n {
+    flex: 0 0 30px; height: 30px; border-radius: 999px;
+    background: var(--verde); color: #fff; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+  .paso div { flex: 1; }
+  .paso b { display: block; font-size: 14.5px; color: var(--tinta); }
+  .paso span { font-size: 13.5px; color: var(--gris); line-height: 1.5; }
+
+  .pie-pagina {
+    position: absolute; left: 64px; right: 64px; bottom: 28px;
+    display: flex; justify-content: space-between;
+    font-size: 11.5px; color: #a8a29e; letter-spacing: 1.2px; text-transform: uppercase;
+    border-top: 1px solid #e7e5e4; padding-top: 10px;
+  }
+
+  .simulacion { border: 1.5px dashed #bbf7d0; border-radius: 12px; padding: 10px 16px; background: #fff; margin: 8px 0 10px; }
+  .sim-linea { display: flex; align-items: center; justify-content: space-between; padding: 7px 4px; border-bottom: 1px solid #f5f5f4; font-size: 13px; }
+  .sim-linea:last-child { border-bottom: none; }
+  .chip { border-radius: 999px; padding: 3px 11px; font-size: 11.5px; font-weight: 600; }
+  .chip.ok { background: var(--verde-suave); color: var(--verde); }
+  .chip.alerta { background: var(--ambar-suave); color: var(--ambar); }
+  .chip.malo { background: var(--rojo-suave); color: var(--rojo); }
+</style>
+</head>
+<body>
+
+<!-- PÁGINA 1 · PORTADA -->
+<div class="page portada">
+  <span class="sello">Actualización 3.2.0</span>
+  <h1>Inventarios:<br>todo junto,<br>en un solo lugar</h1>
+  <p class="sub">Productos, Lotes y Caducidad ahora viven en una misma pantalla. Esta guía rápida te muestra en 5 minutos todo lo que cambió en tu Sell-Plus.</p>
+  <div class="resumen-bloque">
+    <p><b>La idea:</b> antes tenías tres pantallas separadas (Productos, Lotes, Caducidad). Ahora es una sola sección llamada <b>Inventarios</b>, donde cada producto muestra sus lotes, sus fechas y sus avisos.</p>
+    <p><b>Lo que gana tu tienda:</b> menos clics, ninguna mercancía olvidada en un rincón y ventas que consumen primero lo que antes caduca.</p>
+    <p><b>Tus datos:</b> no pierdes nada. La actualización se instala sola y tu información queda intacta.</p>
+  </div>
+  <div class="pie-portada">
+    <span>Sell-Plus · Guía para el dueño</span>
+    <span>Noviembre 2026</span>
+  </div>
+</div>
+
+<!-- PÁGINA 2 · CÓMO FUNCIONA -->
+<div class="page contenido">
+  <div class="cabecera-seccion">
+    <div class="kicker">Novedades 3.2.0 · Parte 1</div>
+    <h2>Así funciona Inventarios</h2>
+  </div>
+
+  <p>Entra como <b>Dueño</b> y toca la pestaña <b>Inventarios</b> (sustituye a las antiguas secciones de Productos, Lotes y Caducidad). Arriba verás cinco números que resumen tu almacén: cuántos productos tienes, cuántas unidades en total, cuántos están con stock bajo, cuántos lotes están por caducar y cuántos ya vencieron.</p>
+
+  <div class="fila-dato">
+    <div class="dato"><div class="num">6</div><div class="et">productos de ejemplo</div></div>
+    <div class="dato"><div class="num">1</div><div class="et">lista única con lotes</div></div>
+    <div class="dato"><div class="num">3</div><div class="et">avisos automáticos</div></div>
+  </div>
+
+  <h3>Cada producto guarda sus lotes</h3>
+  <p>Toca cualquier producto y se despliega su ficha: cuántos lotes tiene, cuántas unidades quedan en cada lote y hasta cuándo es bueno cada uno. Las fechas se pintan solas:</p>
+
+  <div class="simulacion">
+    <div class="sim-linea"><span><b>Leche Lala Entera 1L</b> · 24 u.</span><span class="chip alerta">Vence en 18 días</span></div>
+    <div class="sim-linea"><span><b>Coca-Cola 600 ml</b> · 48 u.</span><span class="chip ok">Sin caducidad</span></div>
+    <div class="sim-linea"><span><b>Atún Dolores</b> · lote de 5 u.</span><span class="chip malo">VENCIDO 21 oct</span></div>
+  </div>
+
+  <h3>Entrada de mercancía en dos toques</h3>
+  <div class="pasos">
+    <div class="paso"><div class="n">1</div><div><b>Abre el producto y toca «+ Lote»</b><span>Escribe cuántas piezas entraron, la fecha de caducidad (si tiene) y el proveedor.</span></div></div>
+    <div class="paso"><div class="n">2</div><div><b>Guarda la entrada</b><span>El stock del producto sube al instante y queda anotado en la bitácora con tu nombre.</span></div></div>
+  </div>
+
+  <p>Cuando creas un producto nuevo puedes capturar de una vez su precio, su costo y su mercancía inicial con caducidad — ya no necesitas darlo de alta y luego buscar el lote en otra pantalla.</p>
+
+  <div class="pie-pagina"><span>Sell-Plus 3.2.0</span><span>Página 2</span></div>
+</div>
+
+<!-- PÁGINA 3 · AVISOS Y VENTAS -->
+<div class="page contenido">
+  <div class="cabecera-seccion">
+    <div class="kicker">Novedades 3.2.0 · Parte 2</div>
+    <h2>Avisos que trabajan por ti</h2>
+  </div>
+
+  <p>Inventarios no solo guarda datos: te avisa antes de que una pérdida ocurra. Los avisos viven en la propia lista (cada producto lleva sus etiquetas) y también en la pestaña <b>Alertas</b>, con una campanita que suma cuántas cosas necesitan tu atención.</p>
+
+  <div class="tarjeta ambar">
+    <div class="titulo-t">Por caducar (30 días)</div>
+    <p style="margin:0">Los lotes que vencen pronto aparecen primero, ordenados por días restantes. Así sabes qué poner en oferta o qué mover al estante de frente.</p>
+  </div>
+  <div class="tarjeta roja">
+    <div class="titulo-t">Vencidos — retirar del estante</div>
+    <p style="margin:0">Todo lote vencido se marca en rojo con su fecha. Retíralo con «Ajustar» o «Retirar» y la merma queda registrada en la bitácora.</p>
+  </div>
+  <div class="tarjeta">
+    <div class="titulo-t">Stock bajo</div>
+    <p style="margin:0">Cada producto tiene un mínimo configurable (por defecto 5 piezas). Cuando el total baja de ahí, aparece el aviso para reabastecer.</p>
+  </div>
+
+  <h3>La venta siempre descuenta lo que antes caduca</h3>
+  <p>Cuando María cobra una Leche Lala, el sistema toma las piezas del lote con la fecha más próxima. Sin hacer nada, tu tienda rota el inventario como los supermercados grandes y desperdicia menos.</p>
+
+  <h3>Todo queda anotado</h3>
+  <p>En <b>Alertas → Bitácora de inventario</b> verás entradas, ventas, mermas y ajustes con fecha, motivo y quién los hizo. Ideal para detectar fugas o recordar tus compras.</p>
+
+  <h3>¿Cómo llega esta actualización a mi caja?</h3>
+  <p>No tienes que hacer nada: tu Sell-Plus se conecta a la Central, descarga la 3.2.0, verifica su autenticidad (SHA-256) e instala en silencio conservando tus datos. Al reabrir verás la pestaña <b>Inventarios</b>. Y tranquilo: tu base de datos <b>nunca se borra</b> en las actualizaciones. Si algo no coincidiera, queda una copia <b>custom.db.respaldo</b> en la carpeta de instalación para que tu asistente la migre.</p>
+
+  <div class="pie-pagina"><span>Sell-Plus 3.2.0</span><span>Página 3</span></div>
+</div>
+
+</body>
+</html>
