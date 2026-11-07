@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "node scripts/use-postgres-schema.js && prisma generate && (prisma db push && node prisma/seed.mjs || echo '[aviso] Sin base de datos conectada: se omite la preparacion (se aplicara en el proximo despliegue con Neon)') && next build"
+}
