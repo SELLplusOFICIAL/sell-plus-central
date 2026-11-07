@@ -11,7 +11,7 @@
       "canal": "estable",
       "activo": 1,
       "fecha": 1793210400000,
-      "externalUrl": null
+      "externalUrl": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/v3.1.0/Sell-Plus-3.1.0-Instalador-Windows-64bits.exe"
     },
     {
       "id": 2,
@@ -24,7 +24,7 @@
       "canal": "estable",
       "activo": 1,
       "fecha": 1793901600000,
-      "externalUrl": null
+      "externalUrl": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/v3.2.0/Sell-Plus-3.2.0-Instalador-Windows-64bits.exe"
     },
     {
       "id": 3,
@@ -37,7 +37,7 @@
       "canal": "estable",
       "activo": 1,
       "fecha": 1794027623535,
-      "externalUrl": null
+      "externalUrl": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/v3.3.0/Sell-Plus-3.3.0-Instalador-Windows-64bits.exe"
     },
     {
       "id": 4,
@@ -50,7 +50,7 @@
       "canal": "estable",
       "activo": 1,
       "fecha": 1794032903164,
-      "externalUrl": null
+      "externalUrl": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/v3.3.1/Sell-Plus-3.3.1-Instalador-Windows-64bits.exe"
     },
     {
       "id": 5,
@@ -63,7 +63,7 @@
       "canal": "estable",
       "activo": 1,
       "fecha": 1794039346780,
-      "externalUrl": null
+      "externalUrl": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/v3.3.2/Sell-Plus-3.3.2-Instalador-Windows-64bits.exe"
     },
     {
       "id": 6,
@@ -76,7 +76,7 @@
       "canal": "estable",
       "activo": 1,
       "fecha": 1794066417758,
-      "externalUrl": null
+      "externalUrl": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/v3.3.3/Sell-Plus-3.3.3-Instalador-Windows-64bits.exe"
     }
   ],
   "tutoriales": [
