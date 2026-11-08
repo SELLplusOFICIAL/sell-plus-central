@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 /**
  * Registra (o reemplaza) una versión publicada.
  * Uso interno (desarrollador) — requiere cabecera X-Central-Key.
- * Body: { version, titulo, notas, fileName?, fileSize?, sha256?, canal? }
+ * Body: { version, titulo, notas, fileName?, fileSize?, sha256?, externalUrl?, canal? }
  */
 export async function POST(req: NextRequest) {
   if (!esAdminValido(req)) {
@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       fileName: body.fileName ?? null,
       fileSize: body.fileSize ?? null,
       sha256: body.sha256 ?? null,
+      externalUrl: typeof body.externalUrl === 'string' && body.externalUrl.trim() ? body.externalUrl.trim() : null,
       canal: body.canal ?? 'estable',
       activo: true,
     },
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest) {
       fileName: body.fileName ?? null,
       fileSize: body.fileSize ?? null,
       sha256: body.sha256 ?? null,
+      externalUrl: typeof body.externalUrl === 'string' && body.externalUrl.trim() ? body.externalUrl.trim() : null,
       canal: body.canal ?? 'estable',
       activo: true,
     },
