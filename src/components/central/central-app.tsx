@@ -5,6 +5,7 @@ import {
   Store,
   RefreshCw,
   MonitorCheck,
+  Monitor,
   MessageSquarePlus,
   Wrench,
   GraduationCap,
@@ -20,10 +21,11 @@ import ActualizacionesTab from '@/components/central/actualizaciones-tab'
 import SolicitudesTab from '@/components/central/solicitudes-tab'
 import DiagnosticoTab from '@/components/central/diagnostico-tab'
 import AprendeTab from '@/components/central/aprende-tab'
+import { PanelTab } from '@/components/central/panel-tab'
 import { ResumenData, CENTRAL_URL, centralUrlActual } from '@/lib/types'
 import { toast } from 'sonner'
 
-export type TabKey = 'inicio' | 'actualizaciones' | 'solicitudes' | 'diagnostico' | 'aprende'
+export type TabKey = 'inicio' | 'equipos' | 'actualizaciones' | 'solicitudes' | 'diagnostico' | 'aprende'
 
 type TabDef = {
   key: TabKey
@@ -34,6 +36,7 @@ type TabDef = {
 
 const TABS: TabDef[] = [
   { key: 'inicio', label: 'Inicio', icon: <MonitorCheck className="h-4 w-4" aria-hidden />, soloAdmin: true },
+  { key: 'equipos', label: 'Equipos', icon: <Monitor className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'actualizaciones', label: 'Actualizaciones', icon: <RefreshCw className="h-4 w-4" aria-hidden />, soloAdmin: false },
   { key: 'solicitudes', label: 'Solicitudes', icon: <MessageSquarePlus className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'diagnostico', label: 'Diagnóstico', icon: <Wrench className="h-4 w-4" aria-hidden />, soloAdmin: true },
@@ -101,6 +104,7 @@ export default function CentralApp() {
 
   const contenidoTab = (t: TabDef) => {
     if (t.key === 'inicio') return <InicioTab resumen={resumen} recargar={cargarResumen} irA={(k) => setTab(k)} />
+    if (t.key === 'equipos') return <PanelTab refreshKey={0} />
     if (t.key === 'actualizaciones') return <ActualizacionesTab />
     if (t.key === 'solicitudes') return <SolicitudesTab recargarResumen={cargarResumen} />
     if (t.key === 'diagnostico') return <DiagnosticoTab resumen={resumen} />

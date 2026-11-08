@@ -524,7 +524,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
               <p className="mt-3 flex items-start gap-2 rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-[11px] leading-relaxed text-stone-500">
                 <RadioTower className="mt-0.5 h-3.5 w-3.5 shrink-0 text-stone-400" />
                 <span>
-                  Además, el actualizador instalado revisó hace{" "}
+                  Además, el actualizador instalado revisó{" "}
                   {relativeTime(stats.ultimaRevisionAnonima.fecha)}: «
                   {stats.ultimaRevisionAnonima.detalle}» ({stats.chequeosAnonimos24h} revisiones en
                   24 h). Esas cajas se actualizan solas; para verlas aquí por nombre solo necesitan
