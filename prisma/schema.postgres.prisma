@@ -96,10 +96,17 @@ model ClientMachine {
   id          Int      @id @default(autoincrement())
   machineId   String   @unique
   machineName String?
+  ubicacion   String?
   os          String?
   version     String?
   firstSeenAt DateTime @default(now())
   lastSeenAt  DateTime @default(now())
+  // Orden de actualización que el administrador manda desde el panel de flota
+  ordenActualizar  Boolean   @default(false)
+  ordenVersion     String?
+  ordenEnviadaEn   DateTime?
+  ordenEntregadaEn DateTime?
+  ordenCumplidaEn  DateTime?
 }
 
 // ============================================================

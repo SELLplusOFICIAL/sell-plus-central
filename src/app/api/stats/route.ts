@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 export async function GET() {
   try {
     const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const [clients, updates, reports, conversations, knowledge, pendingReports, latestPublished, activeClients, machines, solicitudesPendientes] =
+    const [clients, updates, reports, conversations, knowledge, pendingReports, latestPublished, activeClients, machines, solicitudesPendientes, ultimaRevisionAnonima, chequeosAnonimos24h] =
       await Promise.all([
         db.clientMachine.count(),
         db.version.count(),
@@ -19,6 +19,14 @@ export async function GET() {
         db.clientMachine.count({ where: { lastSeenAt: { gte: hace24h } } }),
         db.clientMachine.findMany({ orderBy: { lastSeenAt: "desc" }, take: 20 }),
         db.solicitud.count({ where: { estado: { not: "publicada" } } }),
+        // Pulso del actualizador heredado (cajas que aún no reportan identidad)
+        db.actividad.findFirst({
+          where: { tipo: "check_actualizacion" },
+          orderBy: { fecha: "desc" },
+        }),
+        db.actividad.count({
+          where: { tipo: "check_actualizacion", fecha: { gte: hace24h } },
+        }),
       ]);
 
     return NextResponse.json({
@@ -35,6 +43,11 @@ export async function GET() {
       latestPublished: latestPublished
         ? { version: latestPublished.version, title: latestPublished.titulo, publishedAt: latestPublished.fecha }
         : null,
+      // Pulso del actualizador heredado (sin identidad de equipo todavía)
+      ultimaRevisionAnonima: ultimaRevisionAnonima
+        ? { detalle: ultimaRevisionAnonima.detalle, fecha: ultimaRevisionAnonima.fecha.toISOString() }
+        : null,
+      chequeosAnonimos24h,
     });
   } catch (err) {
     console.error("[api/stats] Error:", err);

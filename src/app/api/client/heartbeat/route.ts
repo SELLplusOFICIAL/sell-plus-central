@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { compareVersions } from "@/lib/sellplus-ai";
+import { gestionarOrdenEquipo } from "@/lib/central";
 
 /**
  * Latido de los equipos con Sell-Plus instalado (reporte de vida).
- * POST JSON { machineId, machineName?, version, os? }  o GET con query params.
- * Devuelve si hay actualización disponible.
+ * POST JSON { machineId, machineName?, ubicacion?, version, os? }  o GET con query params.
+ * Devuelve si hay actualización disponible y la orden del administrador, si existe.
  */
-async function handle(machineId: string, version: string, machineName: string, os: string) {
+async function handle(
+  machineId: string,
+  version: string,
+  machineName: string,
+  os: string,
+  ubicacion: string
+) {
   const data = {
     version: version || "desconocida",
     machineName: machineName || null,
+    ubicacion: ubicacion || null,
     os: os || null,
     lastSeenAt: new Date(),
   };
@@ -27,7 +35,18 @@ async function handle(machineId: string, version: string, machineName: string, o
     if (!latest || compareVersions(u.version, latest.version) > 0) latest = u;
   }
   const hasUpdate = !!latest && compareVersions(latest.version, version) > 0;
-  return { ok: true, hasUpdate, latestVersion: latest?.version ?? null };
+
+  // Orden de actualización del administrador (flota identificada)
+  const ordenInfo = await gestionarOrdenEquipo(machineId, version, hasUpdate);
+
+  return {
+    ok: true,
+    hasUpdate,
+    latestVersion: latest?.version ?? null,
+    orden: ordenInfo.orden,
+    actualizarAhora: ordenInfo.orden === "actualizar_ahora",
+    versionDestino: ordenInfo.versionDestino,
+  };
 }
 
 export async function GET(req: NextRequest) {
@@ -41,7 +60,8 @@ export async function GET(req: NextRequest) {
       machineId,
       (searchParams.get("version") ?? "").trim(),
       (searchParams.get("name") ?? "").trim(),
-      (searchParams.get("os") ?? "").trim()
+      (searchParams.get("os") ?? "").trim(),
+      (searchParams.get("ubicacion") ?? "").trim()
     );
     return NextResponse.json(result, { headers: { "Access-Control-Allow-Origin": "*" } });
   } catch (err) {
@@ -61,7 +81,8 @@ export async function POST(req: NextRequest) {
       machineId,
       String(body.version ?? "").trim(),
       String(body.machineName ?? "").trim(),
-      String(body.os ?? "").trim()
+      String(body.os ?? "").trim(),
+      String(body.ubicacion ?? body.location ?? "").trim()
     );
     return NextResponse.json(result, { headers: { "Access-Control-Allow-Origin": "*" } });
   } catch (err) {

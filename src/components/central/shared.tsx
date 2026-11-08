@@ -15,6 +15,40 @@ export interface Stats {
   conversations: number;
   knowledgeEntries: number;
   latestPublished: { version: string; title: string; publishedAt: string } | null;
+  // Pulso del actualizador heredado (cajas que aún no reportan identidad)
+  ultimaRevisionAnonima: { detalle: string; fecha: string } | null;
+  chequeosAnonimos24h: number;
+}
+
+/** Equipo de la flota con los datos calculados por /api/equipos */
+export type EquipoFlota = ClientMachine & {
+  ultimaVersion: string | null;
+  necesitaActualizacion: boolean;
+  estadoOrden: "sin_orden" | "enviada" | "entregada";
+};
+
+export interface FlotaRespuesta {
+  equipos: EquipoFlota[];
+  ultimaVersion: string | null;
+  resumen: { total: number; alDia: number; desactualizados: number; conOrden: number };
+}
+
+/** Comparador numérico de versiones para el navegador: "3.10.0" > "3.9.0" */
+export function cmpVersiones(
+  a: string | null | undefined,
+  b: string | null | undefined
+): number {
+  const pa = String(a || "0")
+    .split(".")
+    .map((n) => parseInt(n, 10) || 0);
+  const pb = String(b || "0")
+    .split(".")
+    .map((n) => parseInt(n, 10) || 0);
+  for (let i = 0; i < 3; i++) {
+    const d = (pa[i] || 0) - (pb[i] || 0);
+    if (d) return d;
+  }
+  return 0;
 }
 
 export interface SoftwareUpdateDto {

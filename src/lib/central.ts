@@ -89,17 +89,85 @@ export async function logActividad(tipo: string, detalle: string) {
 }
 
 /**
+ * Gestiona la orden de actualización de un equipo identificado de la flota.
+ *  - Si el equipo tenía una orden y ya reporta la versión destino (o superior):
+ *    la orden se marca como cumplida y se registra en la bitácora.
+ *  - Si tenía la orden y todavía hay novedad pendiente: se marca la primera
+ *    entrega (ordenEntregadaEn) y la respuesta pide actualizar de inmediato.
+ */
+export async function gestionarOrdenEquipo(
+  machineId: string,
+  versionCliente: string,
+  tieneActualizacion: boolean
+): Promise<{ orden: string | null; versionDestino: string | null }> {
+  try {
+    const equipo = await db.clientMachine.findUnique({ where: { machineId } })
+    if (!equipo || !equipo.ordenActualizar) return { orden: null, versionDestino: null }
+
+    const versiones = await db.version.findMany({ where: { activo: true } })
+    const latest = pickLatest(versiones)
+    const destino = equipo.ordenVersion || latest?.version || null
+    if (!destino) return { orden: null, versionDestino: null }
+
+    // ¿Ya instaló la versión pedida (o una superior)? Orden cumplida.
+    if (cmpVersion(versionCliente, destino) >= 0) {
+      await db.clientMachine.update({
+        where: { machineId },
+        data: { ordenActualizar: false, ordenCumplidaEn: new Date() },
+      })
+      await logActividad(
+        'flota',
+        `✅ «${equipo.machineName || equipo.machineId}» instaló la v${destino} — orden de actualización cumplida`
+      )
+      return { orden: 'cumplida', versionDestino: destino }
+    }
+
+    // Aún desactualizado: la entrega la confirmamos solo la primera vez.
+    if (tieneActualizacion) {
+      if (!equipo.ordenEntregadaEn) {
+        await db.clientMachine.update({
+          where: { machineId },
+          data: { ordenEntregadaEn: new Date() },
+        })
+        await logActividad(
+          'flota',
+          `📤 Orden de actualización entregada a «${equipo.machineName || equipo.machineId}» (instalará v${destino})`
+        )
+      }
+      return { orden: 'actualizar_ahora', versionDestino: destino }
+    }
+
+    return { orden: 'pendiente', versionDestino: destino }
+  } catch {
+    // La orden nunca debe romper el chequeo principal
+    return { orden: null, versionDestino: null }
+  }
+}
+
+/**
  * Manejador compartido del chequeo de actualizaciones.
  * Contrato del auto-actualizador instalado:
  *   GET /api/updates/check?version=X.Y.Z
  *   -> { hasUpdate, version, url, sha256, ... } (superset con alias ES/EN)
+ * Identidad de flota (opcional, actualizador v2 en adelante):
+ *   &machine=ID&name=Nombre&ubicacion=Caja+1&os=Windows
+ *   Con identidad, el equipo queda registrado en la flota y recibe la orden
+ *   de actualización que el administrador mande desde el panel.
  */
 export async function handleCheck(req: NextRequest) {
   let versionCliente = req.nextUrl.searchParams.get('version') || ''
-  if (!versionCliente && (req.method === 'POST')) {
+  let machineId = (req.nextUrl.searchParams.get('machine') || '').trim()
+  let machineName = (req.nextUrl.searchParams.get('name') || '').trim()
+  let ubicacion = (req.nextUrl.searchParams.get('ubicacion') || '').trim()
+  let osCliente = (req.nextUrl.searchParams.get('os') || '').trim()
+  if (req.method === 'POST') {
     try {
       const body = await req.json()
-      versionCliente = body?.version || ''
+      versionCliente = versionCliente || body?.version || ''
+      machineId = machineId || String(body?.machine ?? body?.machineId ?? '').trim()
+      machineName = machineName || String(body?.name ?? body?.machineName ?? '').trim()
+      ubicacion = ubicacion || String(body?.ubicacion ?? body?.location ?? '').trim()
+      osCliente = osCliente || String(body?.os ?? '').trim()
     } catch {
       /* sin body */
     }
@@ -110,14 +178,40 @@ export async function handleCheck(req: NextRequest) {
   const latest = pickLatest(versiones)
   const hasUpdate = latest ? cmpVersion(latest.version, versionCliente) > 0 : false
 
+  // Registro de flota + gestión de la orden de actualización (si hay identidad)
+  let ordenInfo: { orden: string | null; versionDestino: string | null } = {
+    orden: null,
+    versionDestino: null,
+  }
+  if (machineId) {
+    try {
+      const datos = {
+        version: versionCliente,
+        machineName: machineName || null,
+        ubicacion: ubicacion || null,
+        os: osCliente || null,
+        lastSeenAt: new Date(),
+      }
+      await db.clientMachine.upsert({
+        where: { machineId },
+        update: datos,
+        create: { machineId, ...datos, firstSeenAt: new Date() },
+      })
+    } catch {
+      /* el registro de flota nunca rompe el chequeo */
+    }
+    ordenInfo = await gestionarOrdenEquipo(machineId, versionCliente, hasUpdate)
+  }
+
   const origin = publicOrigin(req)
   const downloadUrl = latest
     ? `${origin}/api/updates/download/${latest.version}`
     : null
 
+  const quien = machineName || machineId ? ` «${machineName || machineId}»` : ''
   await logActividad(
     'check_actualizacion',
-    `Software ${versionCliente} consultó actualizaciones — ${
+    `Software${quien} v${versionCliente} consultó actualizaciones — ${
       hasUpdate ? `hay novedad: ${latest?.version}` : 'está al día'
     }`
   )
@@ -146,6 +240,10 @@ export async function handleCheck(req: NextRequest) {
     notas,
     notasVersion: notas,
     changelog: notas,
+    // Orden de actualización del administrador (flota identificada)
+    orden: ordenInfo.orden,
+    actualizarAhora: ordenInfo.orden === 'actualizar_ahora',
+    versionDestino: ordenInfo.versionDestino,
     // Metadatos
     servidor: 'Sell-Plus Central',
     fecha: new Date().toISOString(),
