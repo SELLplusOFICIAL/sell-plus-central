@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { CORS_HEADERS, esAdminValido } from '@/lib/central'
+import { CORS_HEADERS, esAdminValido, logActividad } from '@/lib/central'
 
 export const dynamic = 'force-dynamic'
 
@@ -63,5 +63,70 @@ export async function PATCH(
   }
 
   const solicitud = await db.solicitud.update({ where: { id: solicitudId }, data })
+  return NextResponse.json({ ok: true, solicitud }, { headers: CORS_HEADERS })
+}
+
+/**
+ * POST — acciones sobre la solicitud.
+ * { accion: 'reenviar' } vuelve la solicitud a la fila de trabajo:
+ * útil cuando una tarea quedó congelada y el dueño quiere reactivarla
+ * con un toque desde el panel (como presionar el botón de marcha).
+ */
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  if (!esAdminValido(req)) {
+    return NextResponse.json({ error: 'no_autorizado' }, { status: 401, headers: CORS_HEADERS })
+  }
+
+  const { id } = await params
+  const solicitudId = parseInt(id, 10)
+  if (Number.isNaN(solicitudId)) {
+    return NextResponse.json({ error: 'id_invalido' }, { status: 400, headers: CORS_HEADERS })
+  }
+
+  const body = await req.json().catch(() => null)
+  if (body?.accion !== 'reenviar') {
+    return NextResponse.json(
+      { error: 'accion_invalida', mensaje: 'Acción no reconocida. Usa { accion: "reenviar" }.' },
+      { status: 400, headers: CORS_HEADERS }
+    )
+  }
+
+  const actual = await db.solicitud.findUnique({ where: { id: solicitudId } })
+  if (!actual) {
+    return NextResponse.json(
+      { error: 'no_encontrada', mensaje: 'Esa solicitud ya no existe.' },
+      { status: 404, headers: CORS_HEADERS }
+    )
+  }
+  if (actual.estado === 'publicada') {
+    return NextResponse.json(
+      {
+        error: 'ya_publicada',
+        mensaje: 'Esta solicitud ya está publicada. Si quieres otro cambio, crea una solicitud nueva.',
+      },
+      { status: 409, headers: CORS_HEADERS }
+    )
+  }
+
+  const cuando = new Date().toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })
+  const solicitud = await db.solicitud.update({
+    where: { id: solicitudId },
+    data: {
+      estado: 'recibida',
+      progreso: 5,
+      fase: 'Reenviada desde el panel — en espera de arranque',
+      tiempoEstimado: null,
+      respuesta: `🔁 Reenviada desde el panel: ${cuando}. Volvió a la fila de trabajo; el ciclo automático la pondrá en marcha en cuanto la detecte.`,
+    },
+  })
+
+  await logActividad(
+    'solicitud',
+    `Solicitud #${solicitudId} reenviada desde el panel (estaba: ${actual.estado}) — vuelve a la fila`
+  )
+
   return NextResponse.json({ ok: true, solicitud }, { headers: CORS_HEADERS })
 }

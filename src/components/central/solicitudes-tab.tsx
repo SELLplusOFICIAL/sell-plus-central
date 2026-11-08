@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { Send, MessageSquarePlus, Sparkles, Clock } from 'lucide-react'
+import { Send, MessageSquarePlus, Sparkles, Clock, RefreshCcw, Snowflake } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,6 +11,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SolicitudItem, haceCuando } from '@/lib/types'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
 
 const ESTADO_ESTILO: Record<string, { label: string; clase: string }> = {
@@ -26,12 +37,23 @@ const PRIORIDAD_ESTILO: Record<string, string> = {
   baja: 'bg-stone-100 text-stone-600 border-stone-200',
 }
 
+/** Minutos sin avance para considerar congelada una solicitud en trabajo */
+const CONGELADA_MS = 90 * 60 * 1000
+
 export default function SolicitudesTab({ recargarResumen }: { recargarResumen: () => void }) {
   const [solicitudes, setSolicitudes] = useState<SolicitudItem[] | null>(null)
   const [titulo, setTitulo] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [prioridad, setPrioridad] = useState('media')
   const [enviando, setEnviando] = useState(false)
+  const [reenviandoId, setReenviandoId] = useState<number | null>(null)
+  const [ahora, setAhora] = useState(() => Date.now())
+
+  // Refresca el reloj cada minuto para reevaluar las solicitudes congeladas
+  useEffect(() => {
+    const t = setInterval(() => setAhora(Date.now()), 60_000)
+    return () => clearInterval(t)
+  }, [])
 
   const llaveAdmin = (): Record<string, string> => {
     try {
@@ -61,6 +83,41 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
     const primera = setTimeout(cargar, 0)
     return () => clearTimeout(primera)
   }, [cargar])
+
+  /** ¿Lleva demasiado tiempo sin avance? (solo en trabajo activo) */
+  const estaCongelada = (s: SolicitudItem) => {
+    if (s.estado !== 'en_proceso' && s.estado !== 'lista') return false
+    if (!s.actualizadoEn) return false
+    return ahora - new Date(s.actualizadoEn).getTime() > CONGELADA_MS
+  }
+
+  /** Vuelve a poner la solicitud en la fila para que el ciclo automático la retome */
+  const reenviar = async (s: SolicitudItem) => {
+    setReenviandoId(s.id)
+    try {
+      const res = await fetch(`/api/solicitudes/${s.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...llaveAdmin() },
+        body: JSON.stringify({ accion: 'reenviar' }),
+      })
+      if (res.ok) {
+        toast.success(`Solicitud #${s.id} reenviada`, {
+          description: 'Volvió a la fila de trabajo: el ciclo automático la pone en marcha en cuanto la detecte.',
+        })
+        await cargar()
+        recargarResumen()
+      } else if (res.status === 401) {
+        toast.error('Llave de administrador incorrecta. Ingresa la correcta con el botón Admin.')
+      } else {
+        const data = await res.json().catch(() => null)
+        toast.error(data?.mensaje || 'No se pudo reenviar la solicitud. Intenta de nuevo.')
+      }
+    } catch {
+      toast.error('No hay conexión con la Central. Intenta de nuevo.')
+    } finally {
+      setReenviandoId(null)
+    }
+  }
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -212,6 +269,12 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                           {s.prioridad}
                         </Badge>
                         <Badge className={estado.clase}>{estado.label}</Badge>
+                        {estaCongelada(s) && (
+                          <Badge className="bg-orange-100 text-orange-800 border border-orange-300 gap-1 animate-pulse">
+                            <Snowflake className="h-3 w-3" aria-hidden />
+                            Congelada — sin avance
+                          </Badge>
+                        )}
                       </div>
                       {/* Progreso en vivo de la solicitud */}
                       <div className="space-y-1 rounded-lg border border-stone-100 bg-stone-50/70 p-2.5">
@@ -251,7 +314,44 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                           <p className="text-sm text-emerald-900 whitespace-pre-line">{s.respuesta}</p>
                         </div>
                       )}
-                      <p className="text-[11px] text-stone-400">{haceCuando(s.fecha)}</p>
+                      <div className="flex items-center justify-between gap-2 pt-0.5">
+                        <p className="text-[11px] text-stone-400">{haceCuando(s.fecha)}</p>
+                        {s.estado !== 'publicada' && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={reenviandoId === s.id}
+                                className="h-8 border-emerald-300 text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900"
+                              >
+                                <RefreshCcw className="h-3.5 w-3.5 mr-1" aria-hidden />
+                                {reenviandoId === s.id ? 'Reenviando…' : 'Reenviar'}
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>¿Reenviar la solicitud #{s.id}?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Vuelve al estado «Recibida», se limpia su avance y el ciclo de
+                                  trabajo automático la retoma en cuanto la detecte. Úsala cuando veas
+                                  una tarea atorada o congelada.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => reenviar(s)}
+                                  className="bg-emerald-800 hover:bg-emerald-900 text-white"
+                                >
+                                  <RefreshCcw className="h-4 w-4 mr-1.5" aria-hidden />
+                                  Sí, poner en marcha
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
                 </li>
