@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { VersionItem, fechaCorta, mb } from '@/lib/types'
+import ComparadorVersiones from '@/components/central/comparador-versiones'
 import { toast } from 'sonner'
 
 export default function ActualizacionesTab() {
@@ -155,6 +156,9 @@ export default function ActualizacionesTab() {
           })}
         </ol>
       )}
+
+      {/* Comparador de versiones: qué cambia entre una versión y otra, por área */}
+      {versiones && versiones.length >= 2 && <ComparadorVersiones versiones={versiones} />}
 
       <Collapsible>
         <Card className="shadow-sm border-stone-200">
