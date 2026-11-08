@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, PackageCheck, ShieldCheck, FileDown, Info } from 'lucide-react'
+import { RefreshCw, PackageCheck, ShieldCheck, FileDown, Info, Download } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -50,6 +50,29 @@ export default function ActualizacionesTab() {
           Actualizar
         </Button>
       </div>
+
+      {/* Kit de configuración para otras PCs (clientes) */}
+      <Card className="shadow-sm border-emerald-200 bg-emerald-50/60">
+        <CardContent className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
+          <div className="min-w-[230px] flex-1">
+            <p className="flex items-center gap-1.5 text-sm font-semibold text-emerald-900">
+              <Download className="h-4 w-4" aria-hidden />
+              ¿Instalando Sell-Plus en otra computadora?
+            </p>
+            <p className="mt-0.5 text-xs text-stone-600">
+              Baja el kit de configuración: apunta tu Sell-Plus a esta Central en un clic y abre
+              directamente las actualizaciones y soluciones (solo información y descargas).
+            </p>
+          </div>
+          <a
+            href="/Sell-Plus-Kit-Clientes.zip"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-800 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700"
+          >
+            <FileDown className="h-3.5 w-3.5" aria-hidden />
+            Descargar kit para tu PC
+          </a>
+        </CardContent>
+      </Card>
 
       {versiones === null ? (
         <div className="space-y-3">
