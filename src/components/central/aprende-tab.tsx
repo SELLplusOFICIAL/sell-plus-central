@@ -104,7 +104,7 @@ export default function AprendeTab() {
                     onClick={() => abrir(t)}
                     className="border-emerald-300 text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900"
                   >
-                    {EtiquetaAccion(t.tipo)}
+                    {EtiquetaAccion({ tipo: t.tipo })}
                   </Button>
                 </div>
               </CardContent>

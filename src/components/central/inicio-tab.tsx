@@ -1,126 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CheckCircle2, Clock, RefreshCw, Layers3, MessageSquarePlus, BookOpenCheck, Activity, ArrowRight, ShieldCheck, ChevronDown, ChevronUp, AlertTriangle, XCircle } from 'lucide-react'
+import { CheckCircle2, Clock, RefreshCw, Layers3, MessageSquarePlus, BookOpenCheck, Activity, ArrowRight, Sparkles, Copy, Check } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ResumenData, PaladinData, PaladinReporteItem, haceCuando } from '@/lib/types'
+import { ResumenData, haceCuando } from '@/lib/types'
 import type { TabKey } from './central-app'
-
-const ESTADO_PALADIN: Record<string, { texto: string; clase: string; iconoFondo: string; iconoColor: string }> = {
-  ok: { texto: 'Todo en orden', clase: 'bg-emerald-100 text-emerald-800 border-emerald-200', iconoFondo: 'bg-emerald-100', iconoColor: 'text-emerald-700' },
-  alerta: { texto: 'Con observaciones', clase: 'bg-amber-100 text-amber-800 border-amber-300', iconoFondo: 'bg-amber-100', iconoColor: 'text-amber-700' },
-  fallo: { texto: 'Detectó un problema', clase: 'bg-red-100 text-red-800 border-red-300', iconoFondo: 'bg-red-100', iconoColor: 'text-red-700' },
-}
-
-function IconoCheck({ estado }: { estado: string }) {
-  if (estado === 'fallo') return <XCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" aria-hidden />
-  if (estado === 'alerta') return <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" aria-hidden />
-  return <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden />
-}
-
-function PaladinSeccion() {
-  const [datos, setDatos] = useState<PaladinData | null>(null)
-  const [expandido, setExpandido] = useState(false)
-
-  useEffect(() => {
-    let vivo = true
-    const cargar = async () => {
-      try {
-        const res = await fetch('/api/paladin', { cache: 'no-store' })
-        if (res.ok && vivo) setDatos(await res.json())
-      } catch {
-        /* silencioso */
-      }
-    }
-    const primera = setTimeout(cargar, 0)
-    const t = setInterval(cargar, 60_000)
-    return () => {
-      vivo = false
-      clearTimeout(primera)
-      clearInterval(t)
-    }
-  }, [])
-
-  const ultimo: PaladinReporteItem | null = datos?.ultimo ?? null
-  const est = ultimo ? ESTADO_PALADIN[ultimo.estadoGlobal] ?? ESTADO_PALADIN.alerta : null
-  const origenTexto = ultimo?.origen === 'pos' ? 'análisis del programa en tu PC' : 'análisis del build antes de publicar'
-
-  return (
-    <Card className="shadow-sm border-stone-200 overflow-hidden">
-      <CardContent className="p-4 sm:p-5">
-        <div className="flex items-center gap-3">
-          <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${est ? est.iconoFondo : 'bg-stone-100'}`}>
-            <ShieldCheck className={`h-5 w-5 ${est ? est.iconoColor : 'text-stone-400'}`} aria-hidden />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm text-stone-800">Paladín · guardián del sistema</p>
-            <p className="text-xs text-stone-500 leading-snug">
-              {ultimo ? ultimo.resumen : 'El Paladín vigila tu programa y revisa cada actualización antes de dejarla salir. Su análisis aparecerá aquí.'}
-            </p>
-          </div>
-          <Badge className={`${est ? est.clase : 'bg-stone-100 text-stone-600 border-stone-200'} border shrink-0`}>
-            {est ? est.texto : 'En espera'}
-          </Badge>
-          {ultimo && ultimo.checks.length > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={expandido ? 'Ocultar detalle del análisis' : 'Ver detalle del análisis'}
-              onClick={() => setExpandido((v) => !v)}
-              className="h-8 w-8 shrink-0 text-stone-500 hover:text-stone-700"
-            >
-              {expandido ? <ChevronUp className="h-4 w-4" aria-hidden /> : <ChevronDown className="h-4 w-4" aria-hidden />}
-            </Button>
-          )}
-        </div>
-
-        {expandido && ultimo && (
-          <div className="mt-3 border-t border-stone-100 pt-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-400 mb-1">
-              Verificaciones de este análisis
-            </p>
-            <ul className="max-h-48 overflow-y-auto divide-y divide-stone-100 pr-1">
-              {ultimo.checks.map((c, i) => (
-                <li key={i} className="py-1.5 flex items-start gap-2">
-                  <IconoCheck estado={c.estado} />
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-stone-700">{c.nombre}</p>
-                    {c.detalle && <p className="text-[11px] text-stone-400 break-words">{c.detalle}</p>}
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {datos && datos.anteriores.length > 0 && (
-              <div className="mt-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-400 mb-1">
-                  Análisis anteriores
-                </p>
-                <ul className="space-y-1">
-                  {datos.anteriores.slice(0, 4).map((a) => (
-                    <li key={a.id} className="flex items-center gap-2 text-[11px] text-stone-500">
-                      <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${a.estadoGlobal === 'ok' ? 'bg-emerald-500' : a.estadoGlobal === 'fallo' ? 'bg-red-500' : 'bg-amber-500'}`} aria-hidden />
-                      <span className="truncate flex-1">{a.resumen}</span>
-                      <span className="shrink-0 text-stone-400">{haceCuando(a.fecha)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
-        <p className="text-[11px] text-stone-400 mt-2">
-          {ultimo
-            ? `${origenTexto}${ultimo.versionPos ? ` · v${ultimo.versionPos}` : ''} · ${haceCuando(ultimo.fecha)}${ultimo.duracionMs ? ` · tomó ${(ultimo.duracionMs / 1000).toFixed(0)} s` : ''}`
-            : 'Cada actualización pasa por su revisión antes de publicarse.'}
-        </p>
-      </CardContent>
-    </Card>
-  )
-}
 
 const ICONOS_TIPO: Record<string, React.ReactNode> = {
   check_actualizacion: <RefreshCw className="h-4 w-4 text-emerald-600 shrink-0" aria-hidden />,
@@ -139,6 +25,7 @@ export default function InicioTab({
   irA: (t: TabKey) => void
 }) {
   const [minutos, setMinutos] = useState(0)
+  const [copiada, setCopiada] = useState(false)
 
   useEffect(() => {
     const t = setInterval(() => setMinutos((m) => m + 1), 60_000)
@@ -160,6 +47,26 @@ export default function InicioTab({
   }
 
   const ultima = resumen.ultimaVersion
+
+  // Frase de contexto: se arma en el navegador del administrador (la llave nunca vive en el código)
+  const urlCentralNavegador = typeof window !== 'undefined' ? window.location.origin : ''
+  const llaveNavegador =
+    typeof window !== 'undefined' ? window.localStorage.getItem('central-admin-key') ?? '' : ''
+  const fraseContexto =
+    `Soy el administrador de Sell-Plus. Mi Central está en ${urlCentralNavegador || 'https://sell-plus-central-f7t1.vercel.app'} ` +
+    `(código en GitHub: SELLplusOFICIAL/sell-plus-central, con auto-despliegue a Vercel). ` +
+    `Mi llave de administrador es: ${llaveNavegador || '[mi llave de administrador]'}. ` +
+    `Revisa mi Central y su bitácora (API /api/actividad con header x-central-key) y ayúdame a seguir añadiendo funciones.`
+
+  const copiarFrase = async () => {
+    try {
+      await navigator.clipboard.writeText(fraseContexto)
+      setCopiada(true)
+      setTimeout(() => setCopiada(false), 2500)
+    } catch {
+      /* si el navegador bloquea el portapapeles, la frase es seleccionable a mano */
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -227,9 +134,6 @@ export default function InicioTab({
         </Card>
       </div>
 
-      {/* Paladín · resumen de su análisis (solicitud #4) */}
-      <PaladinSeccion />
-
       {/* Accesos rápidos */}
       <div className="grid sm:grid-cols-2 gap-3">
         <Card className="shadow-sm border-stone-200 hover:border-emerald-300 transition-colors cursor-pointer" onClick={() => irA('solicitudes')}>
@@ -257,6 +161,54 @@ export default function InicioTab({
           </CardContent>
         </Card>
       </div>
+
+      {/* Poder de IA */}
+      <Card className="shadow-sm border-violet-200 overflow-hidden">
+        <div className="bg-gradient-to-br from-violet-50 to-stone-50 p-5">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-lg bg-violet-100 flex items-center justify-center shrink-0">
+              <Sparkles className="h-5 w-5 text-violet-700" aria-hidden />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-stone-800">Poder de IA — tu desarrollador a un clic</h3>
+              <p className="text-sm text-stone-600 mt-1">
+                Esta Central ya trabaja sola en internet. Cuando quieras añadir funciones o cambios,
+                abre el chat de IA, pega la frase de contexto y el asistente retomará tu proyecto.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              onClick={() => window.open('https://chat.z.ai', '_blank', 'noopener')}
+              className="bg-violet-700 hover:bg-violet-800 text-white"
+            >
+              <Sparkles className="h-4 w-4 mr-1.5" aria-hidden />
+              Abrir chat de IA
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={copiarFrase}
+              className="border-violet-300 text-violet-800 hover:bg-violet-100"
+            >
+              {copiada ? (
+                <Check className="h-4 w-4 mr-1.5" aria-hidden />
+              ) : (
+                <Copy className="h-4 w-4 mr-1.5" aria-hidden />
+              )}
+              {copiada ? '¡Copiada!' : 'Copiar frase de contexto'}
+            </Button>
+          </div>
+          <pre className="mt-3 overflow-x-auto rounded-lg border border-violet-200 bg-white p-3 text-[11px] leading-relaxed text-stone-600 select-all whitespace-pre-wrap break-words">
+            {fraseContexto}
+          </pre>
+          <p className="mt-2 text-[11px] text-stone-500">
+            Consejo: si abres este mismo chat desde tu historial de Z.ai, continúa con todo el
+            contexto. Para subir cambios, el asistente te pedirá un token de GitHub.
+          </p>
+        </div>
+      </Card>
 
       {/* Bitácora */}
       <Card className="shadow-sm border-stone-200">

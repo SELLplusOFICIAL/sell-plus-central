@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { CORS_HEADERS } from '@/lib/central'
+import { CORS_HEADERS, esAdminValido } from '@/lib/central'
 
 export const dynamic = 'force-dynamic'
 

@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Lock,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -40,6 +41,7 @@ const TABS: TabDef[] = [
 ]
 
 const CLAVE_ADMIN_LS = 'central-admin-key'
+const URL_ASISTENTE_IA = 'https://chat.z.ai'
 
 export default function CentralApp() {
   const [tab, setTab] = useState<TabKey>('actualizaciones')
@@ -135,7 +137,19 @@ export default function CentralApp() {
               En línea
             </span>
           </div>
-          <div className="shrink-0">
+          <div className="flex shrink-0 items-center gap-1.5">
+            {esAdmin && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => window.open(URL_ASISTENTE_IA, '_blank', 'noopener')}
+                title="Poder de IA — hablar con el asistente que desarrolla tu software"
+                className="text-emerald-200/80 hover:bg-emerald-800 hover:text-white"
+              >
+                <Sparkles className="h-4 w-4" aria-hidden />
+                <span className="hidden sm:inline">IA</span>
+              </Button>
+            )}
             {esAdmin ? (
               <Button
                 size="sm"
