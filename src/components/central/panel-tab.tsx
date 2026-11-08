@@ -514,8 +514,9 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
               </ScrollArea>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Todavía no hay equipos reportando con identidad. En cuanto una caja instale la
-                próxima versión del programa, aparecerá aquí con su nombre, ubicación y versión.
+                Todavía no hay equipos reportando con identidad. En cuanto cada caja tenga la
+                versión 3.6.2 (o mayor), aparecerá aquí con su nombre, ubicación y versión — y
+                podrás mandarle la actualización desde este panel.
               </p>
             )}
 
