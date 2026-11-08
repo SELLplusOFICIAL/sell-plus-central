@@ -43,6 +43,10 @@ export type SolicitudItem = {
   estado: string
   respuesta: string | null
   fecha: string
+  progreso?: number | null
+  fase?: string | null
+  tiempoEstimado?: string | null
+  actualizadoEn?: string | null
 }
 
 export type TutorialItem = {
