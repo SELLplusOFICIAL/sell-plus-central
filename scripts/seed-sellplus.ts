@@ -120,38 +120,41 @@ const knownIssues = [
 async function main() {
   console.log("Sembrando Sell-Plus Central...");
 
-  const existingKnowledge = await db.knowledgeEntry.count();
+  // Migrado al modelo real `Tutorial`. Solicitud #9.
+  const existingKnowledge = await db.tutorial.count();
   if (existingKnowledge === 0) {
     for (const k of knowledge) {
-      await db.knowledgeEntry.create({ data: k });
+      await db.tutorial.create({
+        data: {
+          titulo: k.title,
+          descripcion: `Conocimiento del proyecto (${k.category})`,
+          contenido: k.content,
+          orden: k.order,
+          tipo: "guia",
+          publicado: false, // conocimiento interno para la IA, no visible en "Aprende"
+        },
+      });
     }
     console.log(`  Conocimiento: ${knowledge.length} entradas creadas.`);
   } else {
     console.log(`  Conocimiento: ya existen ${existingKnowledge} entradas, se omiten.`);
   }
 
-  const existingIssues = await db.knownIssue.count();
-  if (existingIssues === 0) {
-    for (const i of knownIssues) {
-      await db.knownIssue.create({ data: i });
-    }
-    console.log(`  Problemas conocidos: ${knownIssues.length} creados.`);
-  } else {
-    console.log(`  Problemas conocidos: ya existen ${existingIssues}, se omiten.`);
-  }
+  // Problemas conocidos: el modelo knownIssue se retiró del esquema; su
+  // contenido esencial ya vive en las entradas de conocimiento (categorías
+  // "reglas" e "historia"). Solicitud #9.
+  void knownIssues;
 
-  const existingUpdate = await db.softwareUpdate.findUnique({
+  const existingUpdate = await db.version.findUnique({
     where: { version: "3.0.1" },
   });
   if (!existingUpdate) {
-    await db.softwareUpdate.create({
+    await db.version.create({
       data: {
         version: "3.0.1",
-        title: "Versión base con monitoreo integrado",
-        type: "base",
-        status: "publicada",
-        publishedAt: new Date(),
-        changelog:
+        titulo: "Versión base con monitoreo integrado",
+        activo: true,
+        notas:
           "Versión funcionando y confirmada por el dueño el 06/11/2026.\n" +
           "- Registro de eventos interno (sellplus-servidor.log) con rotación automática.\n" +
           "- Mensajes de error visibles en pantalla si el arranque falla.\n" +

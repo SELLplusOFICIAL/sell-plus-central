@@ -1,24 +1,24 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+// Estadísticas del panel. Migradas a los modelos reales del esquema
+// (Version, Tutorial, Solicitud, PaladinReporte, Actividad, ClientMachine,
+// Conversation). Solicitud #9.
 export async function GET() {
   try {
-    const [clients, updates, reports, conversations, knowledge, pendingReports, latestPublished, activeClients, machines] =
+    const hace24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [clients, updates, reports, conversations, knowledge, pendingReports, latestPublished, activeClients, machines, solicitudesPendientes] =
       await Promise.all([
         db.clientMachine.count(),
-        db.softwareUpdate.count(),
-        db.diagnosticReport.count(),
+        db.version.count(),
+        db.paladinReporte.count(),
         db.conversation.count(),
-        db.knowledgeEntry.count(),
-        db.diagnosticReport.count({ where: { status: { not: "resuelto" } } }),
-        db.softwareUpdate.findFirst({
-          where: { status: "publicada" },
-          orderBy: { version: "desc" },
-        }),
-        db.clientMachine.count({
-          where: { lastSeenAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
-        }),
+        db.tutorial.count(),
+        db.paladinReporte.count({ where: { estadoGlobal: { in: ["fallo", "alerta"] } } }),
+        db.version.findFirst({ where: { activo: true }, orderBy: { fecha: "desc" } }),
+        db.clientMachine.count({ where: { lastSeenAt: { gte: hace24h } } }),
         db.clientMachine.findMany({ orderBy: { lastSeenAt: "desc" }, take: 20 }),
+        db.solicitud.count({ where: { estado: { not: "publicada" } } }),
       ]);
 
     return NextResponse.json({
@@ -30,8 +30,10 @@ export async function GET() {
       pendingReports,
       conversations,
       knowledgeEntries: knowledge,
+      solicitudesPendientes,
+      actividad24h: await db.actividad.count({ where: { fecha: { gte: hace24h } } }),
       latestPublished: latestPublished
-        ? { version: latestPublished.version, title: latestPublished.title, publishedAt: latestPublished.publishedAt }
+        ? { version: latestPublished.version, title: latestPublished.titulo, publishedAt: latestPublished.fecha }
         : null,
     });
   } catch (err) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { compareVersions } from "@/lib/sellplus-ai";
-import type { SoftwareUpdate } from "@prisma/client";
+import type { Version } from "@prisma/client";
 
 /**
  * API que consulta cada programa Sell-Plus instalado (auto-actualizador).
@@ -33,12 +33,13 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Elegir la más nueva de forma numérica (no lexicográfica)
-    const published = await db.softwareUpdate.findMany({
-      where: { status: "publicada" },
+    // Elegir la más nueva de forma numérica (no lexicográfica).
+    // Migrado al modelo real `Version`. Solicitud #9.
+    const publicadas = await db.version.findMany({
+      where: { activo: true },
     });
-    let latest: SoftwareUpdate | null = null;
-    for (const u of published) {
+    let latest: Version | null = null;
+    for (const u of publicadas) {
       if (!latest || compareVersions(u.version, latest.version) > 0) latest = u;
     }
 
@@ -52,16 +53,17 @@ export async function GET(req: NextRequest) {
         latest: latest
           ? {
               version: latest.version,
-              title: latest.title,
-              type: latest.type,
-              changelog: latest.changelog,
-              publishedAt: latest.publishedAt,
+              title: latest.titulo,
+              type: "actualizacion",
+              changelog: latest.notas,
+              publishedAt: latest.fecha,
               fileName: latest.fileName,
               fileSize: latest.fileSize,
-              fileSha256: latest.fileSha256,
-              downloadUrl: latest.fileName
-                ? `/api/client/download?version=${encodeURIComponent(latest.version)}`
-                : null,
+              fileSha256: latest.sha256,
+              downloadUrl:
+                latest.fileName || latest.externalUrl
+                  ? `/api/client/download?version=${encodeURIComponent(latest.version)}`
+                  : null,
             }
           : null,
       },

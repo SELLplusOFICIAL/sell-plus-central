@@ -20,10 +20,12 @@ async function handle(machineId: string, version: string, machineName: string, o
     create: { machineId, ...data, firstSeenAt: new Date() },
   });
 
-  const latest = await db.softwareUpdate.findFirst({
-    where: { status: "publicada" },
-    orderBy: { version: "desc" },
-  });
+  // Migrado al modelo real `Version`. Solicitud #9.
+  const activas = await db.version.findMany({ where: { activo: true } });
+  let latest: { version: string } | null = null;
+  for (const u of activas) {
+    if (!latest || compareVersions(u.version, latest.version) > 0) latest = u;
+  }
   const hasUpdate = !!latest && compareVersions(latest.version, version) > 0;
   return { ok: true, hasUpdate, latestVersion: latest?.version ?? null };
 }

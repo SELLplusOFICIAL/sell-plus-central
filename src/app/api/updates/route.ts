@@ -4,13 +4,15 @@ import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
 import { UPDATES_DIR } from '@/lib/rutas'
+import { logActividad } from '@/lib/central'
 
 export const dynamic = 'force-dynamic'
 
 // GET: lista de versiones (con estado del archivo en el servidor)
+// Migrado al modelo real `Version` (solicitud #9).
 export async function GET() {
   try {
-    const versiones = await db.updateVersion.findMany({ orderBy: { createdAt: 'desc' } })
+    const versiones = await db.version.findMany({ orderBy: { fecha: 'desc' } })
     const conArchivo = versiones.map((v) => {
       let archivoOk = false
       let sizeReal = v.fileSize
@@ -24,7 +26,7 @@ export async function GET() {
           if (archivoOk && !shaReal) {
             shaReal = crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex')
             // persistir el hash calculado
-            db.updateVersion.update({ where: { id: v.id }, data: { sha256: shaReal } }).catch(() => {})
+            db.version.update({ where: { id: v.id }, data: { sha256: shaReal } }).catch(() => {})
           }
         }
       }
@@ -40,7 +42,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const version = String(body.version || '').trim()
+    const version = String(body.version || '').trim().replace(/^v/i, '')
     if (!version) return Response.json({ ok: false, error: 'Falta version' }, { status: 400 })
 
     let fileName = body.fileName ? path.basename(String(body.fileName)) : ''
@@ -66,21 +68,20 @@ export async function POST(req: NextRequest) {
     }
 
     const datos = {
-      version,
-      nombre: String(body.nombre || `Sell-Plus ${version}`),
+      titulo: String(body.nombre || body.titulo || `Sell-Plus ${version}`),
       notas: String(body.notas || ''),
-      obligatoria: !!body.obligatoria,
-      publicado: body.publicado === undefined ? true : !!body.publicado,
       fileName,
       fileSize,
       sha256,
+      activo: body.publicado === undefined ? true : !!body.publicado,
     }
 
-    const v = await db.updateVersion.upsert({
+    const v = await db.version.upsert({
       where: { version },
       update: datos,
-      create: datos,
+      create: { version, ...datos },
     })
+    await logActividad('version', `Versión ${version} registrada/actualizada desde el panel`)
     return Response.json({ ok: true, version: v })
   } catch (e) {
     return Response.json({ ok: false, error: String(e) }, { status: 500 })
@@ -92,7 +93,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const version = req.nextUrl.searchParams.get('version')
     if (!version) return Response.json({ ok: false, error: 'Falta version' }, { status: 400 })
-    await db.updateVersion.deleteMany({ where: { version } })
+    await db.version.deleteMany({ where: { version } })
     return Response.json({ ok: true })
   } catch (e) {
     return Response.json({ ok: false, error: String(e) }, { status: 500 })

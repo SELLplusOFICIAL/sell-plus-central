@@ -37,25 +37,28 @@ function prepararConfigIa() {
  * catálogo de actualizaciones directamente de la base de datos.
  */
 export async function buildSellPlusSystemPrompt(): Promise<string> {
-  const [knowledge, issues, updates] = await Promise.all([
-    db.knowledgeEntry.findMany({ orderBy: { order: "asc" } }),
-    db.knownIssue.findMany({ orderBy: { createdAt: "asc" } }),
-    db.softwareUpdate.findMany({ orderBy: { version: "desc" } }),
+  // Migrado a los modelos reales del esquema (Tutorial, PaladinReporte, Version).
+  // Solicitud #9.
+  const [tutoriales, alertas, publicadas] = await Promise.all([
+    db.tutorial.findMany({ orderBy: { orden: "asc" } }),
+    db.paladinReporte.findMany({
+      where: { estadoGlobal: { in: ["fallo", "alerta"] } },
+      orderBy: { fecha: "desc" },
+      take: 5,
+    }),
+    db.version.findMany({ orderBy: { fecha: "desc" }, take: 10 }),
   ]);
 
-  const conocimiento = knowledge
-    .map((k) => `### ${k.title}\n${k.content}`)
+  const conocimiento = tutoriales
+    .map((k) => `### ${k.titulo}\n${k.contenido || k.descripcion}`)
     .join("\n\n");
 
-  const problemas = issues
-    .map(
-      (i) =>
-        `- ${i.title} (gravedad: ${i.severity})\n  Síntomas: ${i.symptoms}\n  Causa: ${i.cause}\n  Solución: ${i.solution}`
-    )
+  const problemas = alertas
+    .map((r) => `- [${r.estadoGlobal}] ${r.resumen}`)
     .join("\n");
 
-  const versiones = updates
-    .map((u) => `- v${u.version} [${u.status}] (${u.type}): ${u.title}`)
+  const versiones = publicadas
+    .map((u) => `- v${u.version} [${u.activo ? "publicada" : "borrador"}]: ${u.titulo}`)
     .join("\n");
 
   return `Eres el ingeniero principal y asistente oficial del proyecto **Sell-Plus**, un programa de punto de venta (POS) para Windows, desde el sitio **Sell-Plus Central**. Respondes SIEMPRE en español, de forma clara, concreta y en tono de compañero de trabajo.

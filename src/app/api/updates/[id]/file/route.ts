@@ -7,18 +7,24 @@ import { pipeline } from "stream/promises";
 import path from "path";
 import { UPDATES_DIR } from "@/lib/rutas";
 
+type Params = { params: Promise<{ id: string }> };
+
 /**
- * Adjunta el archivo instalador a una actualización existente.
+ * Adjunta el archivo instalador a una versión existente.
  * POST /api/updates/<id>/file  (multipart/form-data, campo "file")
  *
- * Guarda el archivo en <proyecto>/central-files/updates/ y registra
- * nombre, tamaño y huella SHA-256 en la base de datos. Si la versión ya
- * tenía un archivo, el anterior se reemplaza.
+ * Guarda el archivo en central-files/updates/ y registra
+ * nombre, tamaño y huella SHA-256 en la base de datos.
+ * Migrado al modelo real `Version`. Solicitud #9.
  */
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(req: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
-    const update = await db.softwareUpdate.findUnique({ where: { id } });
+    const { id: rawId } = await params;
+    const id = parseInt(rawId, 10);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: "No encontrada." }, { status: 404 });
+    }
+    const update = await db.version.findUnique({ where: { id } });
     if (!update) {
       return NextResponse.json({ error: "No encontrada." }, { status: 404 });
     }
@@ -48,18 +54,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       createWriteStream(dest)
     );
 
-    const saved = await db.softwareUpdate.update({
+    const saved = await db.version.update({
       where: { id },
       data: {
         fileName: safeName,
         fileSize: file.size,
-        fileSha256: hash.digest("hex"),
+        sha256: hash.digest("hex"),
       },
     });
 
     return NextResponse.json({ update: saved });
   } catch (err) {
     console.error("[api/updates/:id/file POST] Error:", err);
-    return NextResponse.json({ error: "No se pudo guardar el archivo." }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          "No se pudo guardar el archivo en el servidor (en producción la Central entrega los instaladores por URL externa, ej. GitHub Releases).",
+      },
+      { status: 503 }
+    );
   }
 }

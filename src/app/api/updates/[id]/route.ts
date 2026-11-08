@@ -3,11 +3,16 @@ import { db } from "@/lib/db";
 
 type Params = { params: Promise<{ id: string }> };
 
+// Migrado al modelo real `Version` (id numérico). Solicitud #9.
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
+    const { id: rawId } = await params;
+    const id = parseInt(rawId, 10);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: "No encontrada." }, { status: 404 });
+    }
     const body = await req.json();
-    const update = await db.softwareUpdate.findUnique({ where: { id } });
+    const update = await db.version.findUnique({ where: { id } });
     if (!update) {
       return NextResponse.json({ error: "No encontrada." }, { status: 404 });
     }
@@ -15,14 +20,10 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     const data: Record<string, unknown> = {};
 
     if (body.status === "publicada" || body.status === "borrador") {
-      data.status = body.status;
-      data.publishedAt = body.status === "publicada" ? new Date() : null;
+      data.activo = body.status === "publicada";
     }
-    if (body.title) data.title = String(body.title).trim();
-    if (body.changelog) data.changelog = String(body.changelog).trim();
-    if (body.type && ["funcion", "mejora", "correccion", "seguridad", "base"].includes(body.type)) {
-      data.type = body.type;
-    }
+    if (body.title) data.titulo = String(body.title).trim();
+    if (body.changelog) data.notas = String(body.changelog).trim();
     // URL externa del instalador (ej. GitHub Releases). Cadena vacía = quitarla.
     if (typeof body.externalUrl === "string") {
       const url = body.externalUrl.trim();
@@ -38,7 +39,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       }
     }
 
-    const updated = await db.softwareUpdate.update({ where: { id }, data });
+    const updated = await db.version.update({ where: { id }, data });
     return NextResponse.json({ update: updated });
   } catch (err) {
     console.error("[api/updates/:id PATCH] Error:", err);
@@ -48,8 +49,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
-    await db.softwareUpdate.delete({ where: { id } });
+    const { id: rawId } = await params;
+    const id = parseInt(rawId, 10);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: "No encontrada." }, { status: 404 });
+    }
+    await db.version.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[api/updates/:id DELETE] Error:", err);

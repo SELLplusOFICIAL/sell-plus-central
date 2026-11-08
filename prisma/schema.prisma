@@ -79,3 +79,49 @@ model Actividad {
   detalle String
   fecha   DateTime @default(now())
 }
+
+// ============================================================
+// Flota: equipos con Sell-Plus que reportan vida a la Central
+// ============================================================
+model ClientMachine {
+  id          Int      @id @default(autoincrement())
+  machineId   String   @unique
+  machineName String?
+  os          String?
+  version     String?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+}
+
+// ============================================================
+// Chat del dueño con la IA de la Central
+// ============================================================
+model Conversation {
+  id        String    @id @default(cuid())
+  title     String    @default("")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+// ============================================================
+// Datos de la tienda que muestra la pestaña Tienda de la Central
+// ============================================================
+model Tienda {
+  id        Int    @id @default(autoincrement())
+  nombre    String @default("Mi Tienda")
+  direccion String @default("")
+  telefono  String @default("")
+  moneda    String @default("MXN")
+}

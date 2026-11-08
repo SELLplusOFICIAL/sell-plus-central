@@ -1,12 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+// Reportes de diagnóstico. Migrados al modelo real `PaladinReporte`
+// (el log completo se guarda dentro del campo checks como JSON). Solicitud #9.
 export async function GET() {
   try {
-    const reports = await db.diagnosticReport.findMany({
-      orderBy: { createdAt: "desc" },
+    const rows = await db.paladinReporte.findMany({
+      where: { origen: { in: ["diagnostico", "diagnostico-auto"] } },
+      orderBy: { fecha: "desc" },
       take: 50,
     });
+    const reports = rows.map((r) => ({
+      id: String(r.id),
+      source: r.origen === "diagnostico-auto" ? "auto" : "manual",
+      status: r.estadoGlobal === "ok" ? "resuelto" : "nuevo",
+      machineId: null,
+      programVersion: r.versionPos,
+      createdAt: r.fecha,
+      summary: r.resumen,
+      severity: r.estadoGlobal,
+    }));
     return NextResponse.json({ reports });
   } catch (err) {
     console.error("[api/diagnostics GET] Error:", err);
@@ -31,16 +44,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const report = await db.diagnosticReport.create({
+    const report = await db.paladinReporte.create({
       data: {
-        logContent,
-        source: body.source === "auto" ? "auto" : "manual",
-        machineId: body.machineId ? String(body.machineId) : null,
-        programVersion: body.programVersion ? String(body.programVersion) : null,
-        status: "nuevo",
+        origen: body.source === "auto" ? "diagnostico-auto" : "diagnostico",
+        versionPos: body.programVersion ? String(body.programVersion) : null,
+        estadoGlobal: "alerta",
+        resumen: "Diagnóstico recibido, pendiente de análisis.",
+        checks: JSON.stringify([
+          { nombre: "log", estado: "recibido", detalle: logContent },
+        ]),
+        alertasCount: 1,
       },
     });
-    return NextResponse.json({ report }, { status: 201 });
+    return NextResponse.json(
+      {
+        report: {
+          id: String(report.id),
+          status: "nuevo",
+          programVersion: report.versionPos,
+          createdAt: report.fecha,
+        },
+      },
+      { status: 201 }
+    );
   } catch (err) {
     console.error("[api/diagnostics POST] Error:", err);
     return NextResponse.json({ error: "No se pudo guardar el reporte." }, { status: 500 });

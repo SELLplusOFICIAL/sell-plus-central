@@ -4,7 +4,7 @@ const db = new PrismaClient()
 
 async function main() {
   const sol = await db.solicitud.findUnique({ where: { id: 1 } })
-  if (sol && !sol.respuesta.includes('Confirmada por el usuario')) {
+  if (sol && sol.respuesta && !sol.respuesta.includes('Confirmada por el usuario')) {
     await db.solicitud.update({
       where: { id: 1 },
       data: {

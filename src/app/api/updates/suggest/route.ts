@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { callAi, extractJson } from "@/lib/sellplus-ai";
+import { callAi, compareVersions, extractJson } from "@/lib/sellplus-ai";
 
 interface Draft {
   version?: string;
@@ -20,25 +20,24 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const idea = String(body.idea ?? "").trim();
 
-    const [published, reports] = await Promise.all([
-      db.softwareUpdate.findMany({
-        where: { status: "publicada" },
-        orderBy: { version: "desc" },
-        take: 5,
-      }),
-      db.diagnosticReport.findMany({
-        where: { severity: { in: ["critica", "alta"] }, status: { not: "resuelto" } },
-        orderBy: { createdAt: "desc" },
+    // Migrado a los modelos reales `Version` y `PaladinReporte`. Solicitud #9.
+    const [activas, reports] = await Promise.all([
+      db.version.findMany({ where: { activo: true } }),
+      db.paladinReporte.findMany({
+        where: { estadoGlobal: { in: ["fallo", "alerta"] } },
+        orderBy: { fecha: "desc" },
         take: 5,
       }),
     ]);
+    activas.sort((a, b) => compareVersions(b.version, a.version));
+    const published = activas.slice(0, 5);
 
     const latest = published[0];
     const suggestionPrompt = `Eres el ingeniero principal de Sell-Plus (punto de venta para Windows 64 bits, Electron + Next.js + Prisma/SQLite, instalado en C:\\Sell-Plus). Genera un BORRADOR de la siguiente actualización del programa.
 
-Última versión publicada: ${latest ? `v${latest.version} — ${latest.title}` : "ninguna"}
+Última versión publicada: ${latest ? `v${latest.version} — ${latest.titulo}` : "ninguna"}
 Versiones anteriores: ${published.map((p) => `v${p.version}`).join(", ") || "ninguna"}
-Diagnósticos graves pendientes: ${reports.map((r) => r.summary || "(sin análisis)").join(" | ") || "ninguno"}
+Diagnósticos graves pendientes: ${reports.map((r) => r.resumen || "(sin análisis)").join(" | ") || "ninguno"}
 Idea del dueño: ${idea || "(el dueño no especificó; propón tú la mejora más útil para una tienda que usa el POS)"}
 
 Reglas:
@@ -64,7 +63,7 @@ Responde SOLO con un objeto JSON válido, sin texto adicional:
 
     // Si la versión sugerida ya existe, subir el parche automáticamente
     let version = String(draft.version);
-    const exists = await db.softwareUpdate.findUnique({ where: { version } });
+    const exists = await db.version.findUnique({ where: { version } });
     if (exists) {
       const parts = version.split(".").map((n) => parseInt(n, 10) || 0);
       parts[2] = (parts[2] ?? 0) + 1;

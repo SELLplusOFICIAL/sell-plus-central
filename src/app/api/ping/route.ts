@@ -15,11 +15,12 @@ async function registrar(req: NextRequest) {
     }
     const version = String(body.version || sp.get('version') || sp.get('v') || '').slice(0, 20)
     const hostname = String(body.hostname || sp.get('hostname') || sp.get('host') || '').slice(0, 80)
-    await db.heartbeat.create({
+    // Migrado a la bitácora real `Actividad` (el modelo Heartbeat ya no
+    // existe en el esquema). Solicitud #9.
+    await db.actividad.create({
       data: {
-        version,
-        hostname,
-        ip: (req.headers.get('x-forwarded-for') || '').slice(0, 60),
+        tipo: 'ping',
+        detalle: `Latido recibido — equipo: ${hostname || 'desconocido'} — versión: ${version || 'desconocida'} — ip: ${(req.headers.get('x-forwarded-for') || '').slice(0, 60)}`,
       },
     })
     return Response.json({

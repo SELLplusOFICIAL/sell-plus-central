@@ -14,28 +14,53 @@ interface Analysis {
 
 const VALID_SEVERITIES = ["critica", "alta", "media", "baja", "ok"];
 
+// Reporte de diagnóstico sobre el modelo real `PaladinReporte`. Solicitud #9.
+// El log original vive guardado dentro del campo checks como JSON.
+async function leerLog(paladinId: number): Promise<string> {
+  const r = await db.paladinReporte.findUnique({ where: { id: paladinId } });
+  if (!r) return "";
+  try {
+    const checks = JSON.parse(r.checks || "[]");
+    const c = Array.isArray(checks) ? checks.find((x: { nombre?: string }) => x?.nombre === "log") : null;
+    return String(c?.detalle ?? "");
+  } catch {
+    return "";
+  }
+}
+
+function severidadAGlobal(sev: string): string {
+  if (sev === "ok") return "ok";
+  if (sev === "critica" || sev === "alta") return "fallo";
+  return "alerta";
+}
+
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
+    const { id: rawId } = await params;
+    const id = parseInt(rawId, 10);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: "Reporte no encontrado." }, { status: 404 });
+    }
     const body = await req.json();
     const action = String(body.action ?? "");
 
-    const report = await db.diagnosticReport.findUnique({ where: { id } });
+    const report = await db.paladinReporte.findUnique({ where: { id } });
     if (!report) {
       return NextResponse.json({ error: "Reporte no encontrado." }, { status: 404 });
     }
 
     // --- Marcar como resuelto ---
     if (action === "resolve") {
-      const updated = await db.diagnosticReport.update({
+      const updated = await db.paladinReporte.update({
         where: { id },
-        data: { status: "resuelto" },
+        data: { estadoGlobal: "ok", alertasCount: 0, fallosCount: 0 },
       });
-      return NextResponse.json({ report: updated });
+      return NextResponse.json({ report: { id: String(updated.id), status: "resuelto" } });
     }
 
     // --- Analizar con IA ---
     if (action === "analyze") {
+      const logContent = await leerLog(id);
       const analysisPrompt = `Eres el diagnosticador oficial del programa Sell-Plus (punto de venta para Windows, Electron + Next.js + Prisma/SQLite, instalado en C:\\Sell-Plus). Analiza el siguiente registro o informe de diagnóstico de una tienda.
 
 Responde SOLO con un objeto JSON válido, sin texto adicional, con esta forma exacta:
@@ -49,9 +74,8 @@ Reglas de diagnóstico conocidas:
 
 REGISTRO A ANALIZAR:
 ---
-Versión del programa: ${report.programVersion ?? "desconocida"}
-Equipo: ${report.machineId ?? "desconocido"}
-${report.logContent.slice(0, 20000)}
+Versión del programa: ${report.versionPos ?? "desconocida"}
+${logContent.slice(0, 20000)}
 ---`;
 
       const answer = await callAi([{ role: "user", content: analysisPrompt }]);
@@ -62,19 +86,28 @@ ${report.logContent.slice(0, 20000)}
           ? parsed.severity.toLowerCase()
           : "media";
 
-      const updated = await db.diagnosticReport.update({
+      const resumen = parsed
+        ? `${parsed.summary ?? answer.slice(0, 300)}${parsed.cause ? ` — Causa probable: ${parsed.cause}` : ""}${parsed.recommendation ? ` — Recomendación: ${parsed.recommendation}` : ""}`
+        : answer.slice(0, 500);
+
+      const updated = await db.paladinReporte.update({
         where: { id },
         data: {
-          severity,
-          summary: parsed?.summary ?? answer.slice(0, 500),
-          cause: parsed?.cause ?? null,
-          recommendation: parsed?.recommendation ?? null,
-          updateNeeded: typeof parsed?.updateNeeded === "boolean" ? parsed.updateNeeded : null,
-          status: "analizado",
-          analyzedAt: new Date(),
+          estadoGlobal: severidadAGlobal(severity),
+          resumen,
+          fallosCount: severity === "critica" || severity === "alta" ? 1 : 0,
+          alertasCount: severity === "media" || severity === "baja" ? 1 : 0,
+          okCount: severity === "ok" ? 1 : 0,
         },
       });
-      return NextResponse.json({ report: updated });
+      return NextResponse.json({
+        report: {
+          id: String(updated.id),
+          status: "analizado",
+          severity,
+          summary: updated.resumen,
+        },
+      });
     }
 
     return NextResponse.json({ error: "Acción no reconocida." }, { status: 400 });
@@ -89,8 +122,12 @@ ${report.logContent.slice(0, 20000)}
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
-    await db.diagnosticReport.delete({ where: { id } });
+    const { id: rawId } = await params;
+    const id = parseInt(rawId, 10);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: "Reporte no encontrado." }, { status: 404 });
+    }
+    await db.paladinReporte.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[api/diagnostics/:id DELETE] Error:", err);

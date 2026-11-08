@@ -37,32 +37,42 @@ const regs = [
 ];
 
 (async () => {
+  // Migrado a los modelos reales del esquema. Solicitud #9.
   for (const r of regs) {
-    const exists = await db.knowledgeEntry.findFirst({ where: { title: r.title } });
+    const exists = await db.tutorial.findFirst({ where: { titulo: r.title } });
     if (exists) {
-      await db.knowledgeEntry.update({
+      await db.tutorial.update({
         where: { id: exists.id },
-        data: { content: r.content, order: r.order, category: r.category },
+        data: { contenido: r.content, orden: r.order, descripcion: `Conocimiento del proyecto (${r.category})` },
       });
       console.log("actualizada:", r.title.slice(0, 60));
     } else {
-      await db.knowledgeEntry.create({ data: r });
+      await db.tutorial.create({
+        data: {
+          titulo: r.title,
+          descripcion: `Conocimiento del proyecto (${r.category})`,
+          contenido: r.content,
+          orden: r.order,
+          tipo: "guia",
+          publicado: false,
+        },
+      });
       console.log("creada:", r.title.slice(0, 60));
     }
   }
 
   const dump = {
     exportado: new Date().toISOString(),
-    softwareUpdates: await db.softwareUpdate.findMany({ orderBy: { version: "asc" } }),
+    versiones: await db.version.findMany({ orderBy: { fecha: "asc" } }),
     tutoriales: await db.tutorial.findMany({ orderBy: { orden: "asc" } }),
-    knowledge: await db.knowledgeEntry.findMany({ orderBy: { order: "asc" } }),
-    knownIssues: await db.knownIssue.findMany({ orderBy: { createdAt: "asc" } }),
+    solicitudes: await db.solicitud.findMany({ orderBy: { fecha: "asc" } }),
+    paladinReportes: await db.paladinReporte.findMany({ orderBy: { fecha: "asc" } }),
     clientMachines: await db.clientMachine.findMany({ orderBy: { firstSeenAt: "asc" } }),
     conversations: await db.conversation.findMany({ include: { messages: true } }),
-    diagnosticReports: await db.diagnosticReport.findMany({ orderBy: { createdAt: "asc" } }),
+    actividad: await db.actividad.findMany({ orderBy: { fecha: "asc" } }),
   };
   fs.writeFileSync("prisma/datos-iniciales.json", JSON.stringify(dump, null, 2));
-  console.log("datos-iniciales.json regenerado | KB total:", dump.knowledge.length);
+  console.log("datos-iniciales.json regenerado | tutoriales:", dump.tutoriales.length);
   await db.$disconnect();
 })().catch((e) => {
   console.error(e);
