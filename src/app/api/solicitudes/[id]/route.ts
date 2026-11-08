@@ -119,7 +119,7 @@ export async function POST(
       progreso: 5,
       fase: 'Reenviada desde el panel — en espera de arranque',
       tiempoEstimado: null,
-      respuesta: `🔁 Reenviada desde el panel: ${cuando}. Volvió a la fila de trabajo; el ciclo automático la pondrá en marcha en cuanto la detecte.`,
+      respuesta: `🔁 Reenviada desde el panel (${cuando}) — volvió a la fila de trabajo; el ciclo automático la pondrá en marcha en cuanto la detecte.`,
     },
   })
 
