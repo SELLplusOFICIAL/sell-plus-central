@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { corsJson, corsOptions, CORS_HEADERS, logActividad } from '@/lib/central'
+import { corsJson, corsOptions, CORS_HEADERS, logActividad, esAdminValido, respuestaNoAutorizado } from '@/lib/central'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!esAdminValido(req)) return respuestaNoAutorizado()
   const solicitudes = await db.solicitud.findMany({ orderBy: { fecha: 'desc' } })
   return corsJson({ solicitudes })
 }
 
 export async function POST(req: NextRequest) {
+  if (!esAdminValido(req)) return respuestaNoAutorizado()
   const body = await req.json().catch(() => null)
   const titulo = (body?.titulo || '').toString().trim()
   const descripcion = (body?.descripcion || '').toString().trim()

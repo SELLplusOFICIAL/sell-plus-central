@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { logActividad, CORS_HEADERS, cmpVersion, pickLatest } from '@/lib/central'
+import { logActividad, CORS_HEADERS, cmpVersion, pickLatest, esAdminValido } from '@/lib/central'
 
 export const dynamic = 'force-dynamic'
 
 /**
  * Registra (o reemplaza) una versión publicada.
  * Uso interno (desarrollador) — requiere cabecera X-Central-Key.
- * Body: { version, titulo, notas, fileName?, fileSize?, sha256?, externalUrl?, canal? }
+ * Body: { version, titulo, notas, fileName?, fileSize?, sha256?, canal? }
  */
 export async function POST(req: NextRequest) {
-  const key = req.headers.get('x-central-key')
-  if (key !== 'sellplus-admin-2026') {
+  if (!esAdminValido(req)) {
     return NextResponse.json(
       { error: 'no_autorizado' },
       { status: 401, headers: CORS_HEADERS }
@@ -47,7 +46,6 @@ export async function POST(req: NextRequest) {
       fileName: body.fileName ?? null,
       fileSize: body.fileSize ?? null,
       sha256: body.sha256 ?? null,
-      externalUrl: body.externalUrl ?? null,
       canal: body.canal ?? 'estable',
       activo: true,
     },
@@ -58,7 +56,6 @@ export async function POST(req: NextRequest) {
       fileName: body.fileName ?? null,
       fileSize: body.fileSize ?? null,
       sha256: body.sha256 ?? null,
-      externalUrl: body.externalUrl ?? null,
       canal: body.canal ?? 'estable',
       activo: true,
     },

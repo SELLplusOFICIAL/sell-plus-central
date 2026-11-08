@@ -1,9 +1,11 @@
+import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
-import { corsJson, corsOptions } from '@/lib/central'
+import { corsJson, corsOptions, esAdminValido, respuestaNoAutorizado } from '@/lib/central'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!esAdminValido(req)) return respuestaNoAutorizado()
   const actividad = await db.actividad.findMany({
     orderBy: { fecha: 'desc' },
     take: 30,

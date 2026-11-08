@@ -42,11 +42,6 @@ export type SolicitudItem = {
   prioridad: string
   estado: string
   respuesta: string | null
-  // Indicador de trabajo en vivo
-  tiempoEstimado: string | null
-  progreso: number
-  fase: string | null
-  actualizadoEn: string
   fecha: string
 }
 
@@ -62,41 +57,20 @@ export type TutorialItem = {
   fecha: string
 }
 
-// ---- Paladín (guardián del sistema) ----
-export type PaladinCheckItem = {
-  nombre: string
-  estado: string // ok | alerta | fallo
-  detalle?: string
-}
-
-export type PaladinReporteItem = {
-  id: number
-  origen: string // publicacion | pos
-  versionPos: string | null
-  estadoGlobal: string // ok | alerta | fallo
-  resumen: string
-  checks: PaladinCheckItem[]
-  okCount: number
-  alertasCount: number
-  fallosCount: number
-  duracionMs: number | null
-  fecha: string
-}
-
-export type PaladinData = {
-  ultimo: PaladinReporteItem | null
-  anteriores: {
-    id: number
-    origen: string
-    versionPos: string | null
-    estadoGlobal: string
-    resumen: string
-    fecha: string
-  }[]
-}
-
 export const CENTRAL_URL =
   'https://preview-chat-84403353-6e78-4cf3-8a17-b0d05bfe9666.space-z.ai'
+
+/**
+ * Dirección de la Central tal como la ve el navegador.
+ * En el sitio publicado usa el origen actual (la dirección real del navegador);
+ * como respaldo (p. ej. render en servidor) devuelve la dirección histórica local.
+ */
+export function centralUrlActual(): string {
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin
+  }
+  return CENTRAL_URL
+}
 
 /** "hace 2 min", "hace 3 h", "hace 5 días" o fecha corta */
 export function haceCuando(iso: string): string {

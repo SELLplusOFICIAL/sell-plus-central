@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Copy, CheckCircle2, XCircle, Loader2, ShieldCheck, Wifi, FolderOpen } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ResumenData, CENTRAL_URL, haceCuando } from '@/lib/types'
+import { ResumenData, CENTRAL_URL, centralUrlActual, haceCuando } from '@/lib/types'
 import { toast } from 'sonner'
 
 type EstadoPrueba = 'inactiva' | 'probando' | 'ok' | 'error'
@@ -14,6 +14,11 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
   const [estado, setEstado] = useState<EstadoPrueba>('inactiva')
   const [detalle, setDetalle] = useState<string>('')
   const [copiado, setCopiado] = useState(false)
+  const [urlCentral, setUrlCentral] = useState<string>(CENTRAL_URL)
+
+  useEffect(() => {
+    setUrlCentral(centralUrlActual())
+  }, [])
 
   const probar = async () => {
     setEstado('probando')
@@ -40,7 +45,7 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
 
   const copiar = async () => {
     try {
-      await navigator.clipboard.writeText(CENTRAL_URL)
+      await navigator.clipboard.writeText(urlCentral)
       setCopiado(true)
       toast.success('Dirección copiada')
       setTimeout(() => setCopiado(false), 2000)
@@ -112,7 +117,7 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
         <CardContent className="space-y-3">
           <div className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 p-2.5">
             <code className="text-xs sm:text-sm font-mono text-stone-700 break-all flex-1 select-all">
-              {CENTRAL_URL}
+              {urlCentral}
             </code>
             <Button variant="outline" size="sm" onClick={copiar} className="shrink-0 border-stone-300">
               {copiado ? (
@@ -174,7 +179,7 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
             Tu software pregunta aquí (es la petición que aparece en mi bitácora):
           </p>
           <code className="block text-xs font-mono bg-stone-900 text-emerald-200 rounded-lg p-3 overflow-x-auto">
-            GET {CENTRAL_URL}/api/updates/check?version=3.2.0
+            GET {urlCentral}/api/updates/check?version=3.2.0
           </code>
           <p className="text-sm text-stone-600">
             Si tu versión es menor que la publicada, la Central responde{' '}

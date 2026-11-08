@@ -21,22 +21,17 @@ export function corsOptions() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
 }
 
-/** Calcula el origen público real de la petición (nunca localhost ni dominios internos). */
+/** Calcula el origen público real de la petición (nunca localhost). */
 export function publicOrigin(req: NextRequest): string {
-  const candidatos = [
-    req.headers.get('x-forwarded-host')?.split(',')[0].trim(),
-    req.headers.get('host'),
-  ].filter(Boolean) as string[]
-
-  for (const host of candidatos) {
-    // Solo confiamos en dominios públicamente alcanzables (el proxy puede
-    // inyectar hosts internos tipo *.fcapp.run que el PC del usuario no ve).
-    if (host.includes('space-z.ai')) {
-      const proto = req.headers.get('x-forwarded-proto') || 'https'
-      return `${proto}://${host}`
-    }
+  const fwdHost = req.headers.get('x-forwarded-host')
+  const proto = req.headers.get('x-forwarded-proto') || 'https'
+  if (fwdHost && !fwdHost.includes('localhost') && !fwdHost.includes('127.0.0.1')) {
+    return `${proto}://${fwdHost.split(',')[0].trim()}`
   }
-  // Fallback: la URL pública de fábrica (estable para este chat)
+  const host = req.headers.get('host') || ''
+  if (host && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+    return `${proto}://${host}`
+  }
   return PUBLIC_BASE
 }
 
@@ -116,11 +111,8 @@ export async function handleCheck(req: NextRequest) {
   const hasUpdate = latest ? cmpVersion(latest.version, versionCliente) > 0 : false
 
   const origin = publicOrigin(req)
-  // Si la versión tiene externalUrl (ej. GitHub Releases), el auto-actualizador
-  // descarga directo de ahí; si no, la Central sirve el archivo localmente.
-  const rutaInterna = latest ? `/api/updates/download/${latest.version}` : null
   const downloadUrl = latest
-    ? latest.externalUrl || `${origin}${rutaInterna}`
+    ? `${origin}/api/updates/download/${latest.version}`
     : null
 
   await logActividad(
@@ -146,7 +138,7 @@ export async function handleCheck(req: NextRequest) {
     url: hasUpdate ? downloadUrl : null,
     downloadUrl: hasUpdate ? downloadUrl : null,
     descargaUrl: hasUpdate ? downloadUrl : null,
-    ruta: hasUpdate ? rutaInterna : null,
+    ruta: hasUpdate ? `/api/updates/download/${latest?.version}` : null,
     sha256: hasUpdate ? latest?.sha256 ?? null : null,
     fileSize: hasUpdate ? latest?.fileSize ?? null : null,
     fileName: hasUpdate ? latest?.fileName ?? null : null,
@@ -160,4 +152,28 @@ export async function handleCheck(req: NextRequest) {
   }
 
   return corsJson(payload)
+}
+
+/**
+ * Llave de administración de la Central.
+ * En producción (Vercel) se define con la variable de entorno CENTRAL_ADMIN_KEY.
+ * Si no está definida (p. ej. la Central local de respaldo), se usa la llave histórica.
+ */
+export function expectedAdminKey(): string {
+  return process.env.CENTRAL_ADMIN_KEY || 'sellplus-admin-2026'
+}
+
+/** Verifica la cabecera X-Central-Key de una petición. */
+export function esAdminValido(req: {
+  headers: { get(name: string): string | null }
+}): boolean {
+  return req.headers.get('x-central-key') === expectedAdminKey()
+}
+
+/** Respuesta estándar para peticiones sin llave válida. */
+export function respuestaNoAutorizado() {
+  return NextResponse.json(
+    { error: 'no_autorizado', mensaje: 'Sección solo para el administrador.' },
+    { status: 401, headers: CORS_HEADERS }
+  )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { Send, MessageSquarePlus, Sparkles, Clock, Hammer, Loader2 } from 'lucide-react'
+import { Send, MessageSquarePlus, Sparkles } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -33,12 +33,24 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
   const [prioridad, setPrioridad] = useState('media')
   const [enviando, setEnviando] = useState(false)
 
+  const llaveAdmin = (): Record<string, string> => {
+    try {
+      const k = window.localStorage.getItem('central-admin-key')
+      return k ? { 'x-central-key': k } : {}
+    } catch {
+      return {}
+    }
+  }
+
   const cargar = useCallback(async () => {
     try {
-      const res = await fetch('/api/solicitudes', { cache: 'no-store' })
+      const res = await fetch('/api/solicitudes', { cache: 'no-store', headers: llaveAdmin() })
       if (res.ok) {
         const data = await res.json()
         setSolicitudes(data.solicitudes)
+      } else if (res.status === 401) {
+        setSolicitudes([])
+        toast.error('Esta sección es solo para el administrador. Ingresa tu llave con el botón Admin.')
       }
     } catch {
       toast.error('No se pudieron cargar las solicitudes')
@@ -47,12 +59,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
 
   useEffect(() => {
     const primera = setTimeout(cargar, 0)
-    // Auto-refresco: el indicador de trabajo en vivo se actualiza solo cada 30 s
-    const intervalo = setInterval(cargar, 30000)
-    return () => {
-      clearTimeout(primera)
-      clearInterval(intervalo)
-    }
+    return () => clearTimeout(primera)
   }, [cargar])
 
   const enviar = async (e: React.FormEvent) => {
@@ -65,7 +72,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
     try {
       const res = await fetch('/api/solicitudes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...llaveAdmin() },
         body: JSON.stringify({ titulo, descripcion, prioridad }),
       })
       if (res.ok) {
@@ -77,6 +84,8 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
         setPrioridad('media')
         await cargar()
         recargarResumen()
+      } else if (res.status === 401) {
+        toast.error('Llave de administrador incorrecta. Ingresa la correcta con el botón Admin.')
       } else {
         toast.error('No se pudo enviar. Intenta de nuevo o escríbeme en el chat.')
       }
@@ -189,51 +198,6 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                         </Badge>
                         <Badge className={estado.clase}>{estado.label}</Badge>
                       </div>
-                      {/* Indicador de trabajo en vivo (con tiempo estimado y fase) */}
-                      {(s.estado === 'en_proceso' || s.estado === 'lista') && (
-                        <div className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-3 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-700" aria-hidden />
-                            <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-900 flex-1">
-                              {s.progreso >= 100
-                                ? 'Trabajo terminado — listo para publicar'
-                                : 'Trabajo en curso · avance en vivo'}
-                            </p>
-                            <span className="text-xs font-extrabold text-emerald-800 tabular-nums">
-                              {s.progreso}%
-                            </span>
-                          </div>
-                          <div
-                            className="h-2 w-full overflow-hidden rounded-full bg-emerald-100"
-                            role="progressbar"
-                            aria-valuenow={s.progreso}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          >
-                            <div
-                              className="h-full rounded-full bg-gradient-to-r from-emerald-700 to-emerald-500 transition-all duration-700 ease-out"
-                              style={{ width: `${Math.max(4, s.progreso)}%` }}
-                            />
-                          </div>
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-emerald-950/80">
-                            {s.tiempoEstimado && (
-                              <span className="inline-flex items-center gap-1">
-                                <Clock className="h-3 w-3" aria-hidden />
-                                Tiempo estimado: <b>{s.tiempoEstimado}</b>
-                              </span>
-                            )}
-                            {s.fase && (
-                              <span className="inline-flex items-center gap-1">
-                                <Hammer className="h-3 w-3" aria-hidden />
-                                {s.fase}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[10px] text-emerald-800/60">
-                            Último avance {haceCuando(s.actualizadoEn)} · se actualiza solo cada 30 s
-                          </p>
-                        </div>
-                      )}
                       <p className="text-sm text-stone-600 whitespace-pre-line break-words">
                         {s.descripcion}
                       </p>

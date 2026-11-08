@@ -11,8 +11,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const key = req.headers.get('x-central-key')
-  if (key !== 'sellplus-admin-2026') {
+  if (!esAdminValido(req)) {
     return NextResponse.json({ error: 'no_autorizado' }, { status: 401, headers: CORS_HEADERS })
   }
 
@@ -23,21 +22,9 @@ export async function PATCH(
   }
 
   const body = await req.json().catch(() => null)
-  const data: {
-    estado?: string
-    respuesta?: string
-    tiempoEstimado?: string
-    progreso?: number
-    fase?: string
-  } = {}
+  const data: { estado?: string; respuesta?: string } = {}
   if (body?.estado && ESTADOS.includes(body.estado)) data.estado = body.estado
   if (typeof body?.respuesta === 'string') data.respuesta = body.respuesta.slice(0, 1000)
-  // Indicador de trabajo en vivo
-  if (typeof body?.tiempoEstimado === 'string') data.tiempoEstimado = body.tiempoEstimado.slice(0, 40)
-  if (typeof body?.progreso === 'number') {
-    data.progreso = Math.max(0, Math.min(100, Math.round(body.progreso)))
-  }
-  if (typeof body?.fase === 'string') data.fase = body.fase.slice(0, 120)
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json({ error: 'sin_cambios' }, { status: 400, headers: CORS_HEADERS })
