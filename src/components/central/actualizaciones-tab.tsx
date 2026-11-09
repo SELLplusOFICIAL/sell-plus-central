@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, PackageCheck, ShieldCheck, FileDown, Info, Download } from 'lucide-react'
+import { RefreshCw, PackageCheck, ShieldCheck, FileDown, Info, Download, ChevronDown } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,38 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { VersionItem, fechaCorta, mb } from '@/lib/types'
 import ComparadorVersiones from '@/components/central/comparador-versiones'
 import { toast } from 'sonner'
+
+/** Notas de una versión, plegadas por defecto para ahorrar espacio: se expanden con un clic. */
+function NotasPlegables({ notas }: { notas: string }) {
+  const [abiertas, setAbiertas] = useState(false)
+  const lineas = notas.split('\n').filter(Boolean)
+  return (
+    <div className="mb-3">
+      <button
+        type="button"
+        onClick={() => setAbiertas((a) => !a)}
+        aria-expanded={abiertas}
+        className="inline-flex items-center gap-1 rounded-md px-2 py-1 -mx-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+      >
+        <ChevronDown
+          className={`h-3.5 w-3.5 transition-transform ${abiertas ? 'rotate-180' : ''}`}
+          aria-hidden
+        />
+        {abiertas ? 'Ocultar detalles' : `Ver detalles (${lineas.length})`}
+      </button>
+      {abiertas && (
+        <ul className="space-y-1 mt-2">
+          {lineas.map((linea, i) => (
+            <li key={i} className="text-sm text-stone-600 flex gap-2">
+              <span className="text-emerald-600 mt-0.5" aria-hidden>•</span>
+              <span>{linea.replace(/^•\s*/, '')}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
 
 export default function ActualizacionesTab() {
   const [versiones, setVersiones] = useState<VersionItem[] | null>(null)
@@ -108,14 +140,7 @@ export default function ActualizacionesTab() {
                     <p className="text-[11px] text-stone-400">{fechaCorta(v.fecha)}</p>
                   </CardHeader>
                   <CardContent className="px-4 sm:px-5 pb-4 pt-0">
-                    <ul className="space-y-1 mb-3">
-                      {v.notas.split('\n').filter(Boolean).map((linea, i) => (
-                        <li key={i} className="text-sm text-stone-600 flex gap-2">
-                          <span className="text-emerald-600 mt-0.5" aria-hidden>•</span>
-                          <span>{linea.replace(/^•\s*/, '')}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <NotasPlegables notas={v.notas} />
 
                     {v.fileName ? (
                       <div className="rounded-lg bg-stone-50 border border-stone-200 p-3 space-y-1.5">
