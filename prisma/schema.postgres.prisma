@@ -141,3 +141,21 @@ model Tienda {
   telefono  String @default("")
   moneda    String @default("MXN")
 }
+
+// ============================================================
+// Acceso maestro (solicitud #37): códigos de un solo uso que el
+// administrador genera aquí, bajo su llave de la Central, para
+// recuperar el acceso a cualquier equipo con Sell-Plus cuando se
+// olvidaron todas las claves. El POS valida el código contra la
+// Central; usado o expirado, no vuelve a funcionar.
+// ============================================================
+model AccesoMaestro {
+  id       Int       @id @default(autoincrement())
+  codigo   String    @unique
+  estado   String    @default("activo") // activo | usado | revocado
+  creadoEn DateTime  @default(now())
+  expiraEn DateTime
+  usadoEn  DateTime?
+  equipo   String? // equipo del POS que lo usó (si se reportó)
+  nota     String? // nota opcional que escribe el administrador
+}

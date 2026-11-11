@@ -12,6 +12,7 @@ import {
   Lock,
   ShieldCheck,
   Sparkles,
+  KeyRound,
 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -22,10 +23,11 @@ import SolicitudesTab from '@/components/central/solicitudes-tab'
 import DiagnosticoTab from '@/components/central/diagnostico-tab'
 import AprendeTab from '@/components/central/aprende-tab'
 import { PanelTab } from '@/components/central/panel-tab'
+import AccesoTab from '@/components/central/acceso-tab'
 import { ResumenData, CENTRAL_URL, centralUrlActual } from '@/lib/types'
 import { toast } from 'sonner'
 
-export type TabKey = 'inicio' | 'equipos' | 'actualizaciones' | 'solicitudes' | 'diagnostico' | 'aprende'
+export type TabKey = 'inicio' | 'equipos' | 'actualizaciones' | 'solicitudes' | 'acceso' | 'diagnostico' | 'aprende'
 
 type TabDef = {
   key: TabKey
@@ -39,6 +41,7 @@ const TABS: TabDef[] = [
   { key: 'equipos', label: 'Equipos', icon: <Monitor className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'actualizaciones', label: 'Actualizaciones', icon: <RefreshCw className="h-4 w-4" aria-hidden />, soloAdmin: false },
   { key: 'solicitudes', label: 'Solicitudes', icon: <MessageSquarePlus className="h-4 w-4" aria-hidden />, soloAdmin: true },
+  { key: 'acceso', label: 'Acceso maestro', icon: <KeyRound className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'diagnostico', label: 'Diagnóstico', icon: <Wrench className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'aprende', label: 'Aprende', icon: <GraduationCap className="h-4 w-4" aria-hidden />, soloAdmin: false },
 ]
@@ -107,6 +110,7 @@ export default function CentralApp() {
     if (t.key === 'equipos') return <PanelTab refreshKey={0} />
     if (t.key === 'actualizaciones') return <ActualizacionesTab />
     if (t.key === 'solicitudes') return <SolicitudesTab recargarResumen={cargarResumen} />
+    if (t.key === 'acceso') return <AccesoTab />
     if (t.key === 'diagnostico') return <DiagnosticoTab resumen={resumen} />
     return <AprendeTab />
   }
