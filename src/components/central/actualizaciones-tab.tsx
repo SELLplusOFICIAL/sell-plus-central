@@ -21,11 +21,18 @@ import { VISIBLE_DESDE } from '@/lib/resumenes'
 import ComparadorVersiones from '@/components/central/comparador-versiones'
 import { toast } from 'sonner'
 
-/** Codename corto del título: «Cifra Viva 6.6.2 — …» → «Cifra Viva». */
-function codename(titulo: string): string {
-  const m = titulo.match(/«([^»]+)»/)
-  if (m) return m[1]
-  return titulo.split('—')[0].trim()
+/**
+ * Etiqueta corta de la versión: el codename («Cifra Viva») sin repetir el
+ * número, o la descripción corta para títulos antiguos (Sell-Plus 5.x — …).
+ */
+function etiqueta(titulo: string): string {
+  if (titulo.includes('Cifra')) {
+    const base = titulo.split('—')[0].trim()
+    return base.replace(/\s*v?\d+(?:\.\d+)*\s*$/, '').trim() || base
+  }
+  const partes = titulo.split('—')
+  const desc = partes.slice(1).join('—').trim()
+  return (desc || partes[0].trim()).slice(0, 60)
 }
 
 /**
@@ -193,7 +200,7 @@ export default function ActualizacionesTab() {
                   <div className="flex flex-wrap items-center gap-2">
                     <CardTitle className="text-base text-stone-900">v{v.version}</CardTitle>
                     <span className="text-sm font-semibold text-emerald-900">
-                      «{codename(v.titulo)}»
+                      «{etiqueta(v.titulo)}»
                     </span>
                     {esUltima && (
                       <Badge className="bg-emerald-700 hover:bg-emerald-700 text-white">
@@ -270,7 +277,7 @@ export default function ActualizacionesTab() {
                       className="flex items-baseline gap-2 border-b border-stone-100 py-1.5 text-sm"
                     >
                       <span className="font-mono text-xs text-stone-700 shrink-0">v{v.version}</span>
-                      <span className="text-xs text-stone-500 truncate flex-1">{codename(v.titulo)}</span>
+                      <span className="text-xs text-stone-500 truncate flex-1">{etiqueta(v.titulo)}</span>
                       <span className="text-[10px] text-stone-400 shrink-0">
                         {new Date(v.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}
                       </span>

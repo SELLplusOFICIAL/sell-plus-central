@@ -16,6 +16,17 @@ import { VersionItem, compararVersiones } from '@/lib/types'
 import { AREAS, NOMBRE_AREA, clasificarArea, huella, parseNotas } from '@/lib/areas'
 import { toast } from 'sonner'
 
+/** Etiqueta corta: codename sin versión o descripción corta de títulos viejos. */
+function etiqueta(titulo: string): string {
+  if (titulo.includes('Cifra')) {
+    const base = titulo.split('—')[0].trim()
+    return base.replace(/\s*v?\d+(?:\.\d+)*\s*$/, '').trim() || base
+  }
+  const partes = titulo.split('—')
+  const desc = partes.slice(1).join('—').trim()
+  return (desc || partes[0].trim()).slice(0, 40)
+}
+
 type Grupo = {
   anade: string[]
   ajusta: string[]
@@ -133,7 +144,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
             <SelectContent>
               {ordenadas.map((v) => (
                 <SelectItem key={v.id} value={v.version}>
-                  v{v.version} · {v.titulo.split('—')[0].trim()}
+                  v{v.version} · {etiqueta(v.titulo)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -146,7 +157,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
             <SelectContent>
               {ordenadas.map((v) => (
                 <SelectItem key={v.id} value={v.version}>
-                  v{v.version} · {v.titulo.split('—')[0].trim()}
+                  v{v.version} · {etiqueta(v.titulo)}
                 </SelectItem>
               ))}
             </SelectContent>
