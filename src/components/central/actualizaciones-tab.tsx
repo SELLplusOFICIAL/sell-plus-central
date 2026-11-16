@@ -151,7 +151,7 @@ export default function ActualizacionesTab() {
         <div>
           <h2 className="text-lg font-bold text-stone-800">Versiones de tu software</h2>
           <p className="text-xs text-stone-500">
-            Registro resumido: una línea por versión. Tu software se actualiza solo.
+            La versión oficial está siempre disponible aquí; las demás quedan como historial de cambios. Tu software se actualiza solo.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={cargar} disabled={cargando} className="border-stone-300 text-stone-700 hover:bg-emerald-50 hover:text-emerald-900">
@@ -205,7 +205,7 @@ export default function ActualizacionesTab() {
                     {esUltima && (
                       <Badge className="bg-emerald-700 hover:bg-emerald-700 text-white">
                         <PackageCheck className="h-3 w-3 mr-1" aria-hidden />
-                        Última disponible
+                        Versión oficial — siempre disponible
                       </Badge>
                     )}
                     <span className="text-[11px] text-stone-400 flex items-center gap-1">
@@ -214,6 +214,11 @@ export default function ActualizacionesTab() {
                     </span>
                   </div>
                   <p className="text-sm text-stone-600 mt-1.5">{v.resumen}</p>
+                  {esUltima && (
+                    <p className="text-xs text-emerald-800 mt-1">
+                      Esta es la versión que tu software instala y reinstala; la puedes descargar aquí siempre. El resto de versiones queda como historial de cambios.
+                    </p>
+                  )}
 
                   {esUltima && v.fileName && (
                     <div className="rounded-lg bg-white/70 border border-emerald-200 p-3 mt-3 space-y-1.5">
@@ -257,10 +262,10 @@ export default function ActualizacionesTab() {
                     <Archive className="h-4 w-4 text-stone-400" aria-hidden />
                     Versiones anteriores ({archivo.length})
                     <span className="text-stone-400 font-normal">
-                      · de la v{archivo[archivo.length - 1].version} a la v{archivo[0].version}
+                      · de la v{archivo[archivo.length - 1].version} a la v{archivo[0].version} — historial de cambios
                     </span>
                   </span>
-                  <Badge variant="secondary">Archivo</Badge>
+                  <Badge variant="secondary">Historial</Badge>
                 </CardTitle>
               </CardHeader>
             </CollapsibleTrigger>

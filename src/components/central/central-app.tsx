@@ -116,7 +116,7 @@ export default function CentralApp() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-stone-100">
+    <div className="flex min-h-screen flex-col bg-[#eaf3fb]">
       {/* Encabezado */}
       <header className="sticky top-0 z-40 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-800 text-white shadow-lg">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-4">
@@ -185,7 +185,7 @@ export default function CentralApp() {
       <main className="mx-auto w-full max-w-5xl flex-1 px-3 py-5 sm:px-4">
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)}>
           <div className="-mx-3 overflow-x-auto pb-1 sm:mx-0">
-            <TabsList className="inline-flex h-11 min-w-full border border-stone-200 bg-white shadow-sm sm:w-auto">
+            <TabsList className="inline-flex h-11 min-w-full border border-sky-200 bg-white shadow-sm sm:w-auto">
               {tabsVisibles.map((t) => (
                 <TabsTrigger
                   key={t.key}
@@ -209,7 +209,7 @@ export default function CentralApp() {
           })}
         </Tabs>
 
-        <div className="mt-6 text-center text-xs text-stone-400">
+        <div className="mt-6 text-center text-xs text-slate-500">
           Dirección estable de tu software:{' '}
           <span className="select-all font-mono">{urlCentral || CENTRAL_URL}</span>
         </div>

@@ -117,9 +117,9 @@ export default function InicioTab({
         <Card className="shadow-sm border-stone-200">
           <CardContent className="p-4 flex flex-col items-center text-center gap-1">
             <BookOpenCheck className="h-5 w-5 text-emerald-700" aria-hidden />
-            <span className="text-2xl font-bold text-stone-800">{resumen.tutorialesCount}</span>
+            <span className="text-2xl font-bold text-stone-800">1</span>
             <span className="text-[11px] sm:text-xs text-stone-500 leading-tight">
-              guías en Aprende
+              instructivo oficial (v6.7.0)
             </span>
           </CardContent>
         </Card>
@@ -224,12 +224,12 @@ export default function InicioTab({
               Aún no hay actividad registrada. Cuando tu software se conecte, lo verás aquí.
             </p>
           ) : (
-            <ul className="divide-y divide-stone-100">
+            <ul className="max-h-56 divide-y divide-stone-100 overflow-y-auto pr-1">
               {resumen.actividad.map((a) => (
                 <li key={a.id} className="py-2.5 flex items-start gap-2.5">
                   {ICONOS_TIPO[a.tipo] ?? ICONOS_TIPO.sistema}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-stone-700 break-words">{a.detalle}</p>
+                    <p className="text-sm text-stone-700 break-words line-clamp-2">{a.detalle}</p>
                     <p className="text-[11px] text-stone-400">{haceCuando(a.fecha)}</p>
                   </div>
                 </li>

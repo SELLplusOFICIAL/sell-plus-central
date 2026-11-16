@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { Send, MessageSquarePlus, Sparkles, Clock, RefreshCcw, Snowflake } from 'lucide-react'
+import { Send, MessageSquarePlus, Sparkles, Clock, RefreshCcw, Snowflake, History, ChevronDown } from 'lucide-react'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -48,6 +49,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
   const [enviando, setEnviando] = useState(false)
   const [reenviandoId, setReenviandoId] = useState<number | null>(null)
   const [ahora, setAhora] = useState(() => Date.now())
+  const [abiertasHistorial, setAbiertasHistorial] = useState<Set<number>>(new Set())
 
   // Refresca el reloj cada minuto para reevaluar las solicitudes congeladas
   useEffect(() => {
@@ -89,6 +91,19 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
     if (s.estado !== 'en_proceso' && s.estado !== 'lista') return false
     if (!s.actualizadoEn) return false
     return ahora - new Date(s.actualizadoEn).getTime() > CONGELADA_MS
+  }
+
+  /** Historial: resueltas y publicadas. Replegado por defecto, ocupa el mínimo. */
+  const activas = (solicitudes ?? []).filter((s) => s.estado !== 'publicada')
+  const historial = (solicitudes ?? []).filter((s) => s.estado === 'publicada')
+
+  const alternarHistorial = (id: number) => {
+    setAbiertasHistorial((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
   }
 
   /** Vuelve a poner la solicitud en la fila para que el ciclo automático la retome */
@@ -228,19 +243,21 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
       <div>
         <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-1.5">
           <Sparkles className="h-4 w-4 text-emerald-700" aria-hidden />
-          Tus solicitudes
+          Solicitudes en curso
         </h3>
         {solicitudes === null ? (
           <Skeleton className="h-24 w-full rounded-xl" />
-        ) : solicitudes.length === 0 ? (
+        ) : activas.length === 0 && historial.length === 0 ? (
           <Card className="shadow-sm border-dashed border-stone-300">
             <CardContent className="p-6 text-center text-sm text-stone-500">
               Aún no hay solicitudes. La primera que escribas aparecerá aquí con su estado.
             </CardContent>
           </Card>
         ) : (
+          <>
+          {activas.length > 0 && (
           <ul className="space-y-3">
-            {solicitudes.map((s) => {
+            {activas.map((s) => {
               const estado = ESTADO_ESTILO[s.estado] ?? ESTADO_ESTILO.recibida
               const pct =
                 typeof s.progreso === 'number' && s.progreso !== null
@@ -358,6 +375,77 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
               )
             })}
           </ul>
+          )}
+
+          {historial.length > 0 && (
+            <Card className="shadow-sm border-stone-200 mt-4">
+              <CollapsibleTrigger className="w-full text-left">
+                <CardHeader className="py-3 px-4 sm:px-5">
+                  <CardTitle className="text-sm text-stone-700 flex items-center justify-between gap-2">
+                    <span className="flex items-center gap-2 min-w-0">
+                      <History className="h-4 w-4 text-emerald-700 shrink-0" aria-hidden />
+                      <span className="truncate">
+                        Historial de solicitudes ({historial.length}) — resueltas y publicadas
+                      </span>
+                    </span>
+                    <ChevronDown className="h-4 w-4 text-stone-400 shrink-0" aria-hidden />
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="px-4 sm:px-5 pb-4 pt-0">
+                  <p className="text-xs text-stone-500 mb-2">
+                    Replegadas para ocupar el mínimo. Toca una línea para ver su detalle y la
+                    respuesta del desarrollador.
+                  </p>
+                  <ul className="divide-y divide-stone-100">
+                    {historial.map((s) => {
+                      const abierta = abiertasHistorial.has(s.id)
+                      return (
+                        <li key={s.id} className="py-1">
+                          <button
+                            type="button"
+                            onClick={() => alternarHistorial(s.id)}
+                            className="w-full flex items-center gap-2 py-1.5 px-1 -mx-1 text-left rounded-md hover:bg-stone-50"
+                            aria-expanded={abierta}
+                          >
+                            <ChevronDown
+                              className={`h-3.5 w-3.5 text-stone-400 shrink-0 transition-transform ${abierta ? 'rotate-180' : ''}`}
+                              aria-hidden
+                            />
+                            <span className="font-mono text-[11px] text-stone-400 shrink-0">#{s.id}</span>
+                            <span className="text-sm text-stone-700 truncate flex-1 min-w-0">{s.titulo}</span>
+                            <span className="text-[10px] text-stone-400 shrink-0 hidden sm:inline">
+                              {haceCuando(s.fecha)}
+                            </span>
+                            <Badge className="bg-emerald-800 text-white hover:bg-emerald-800 text-[10px] shrink-0">
+                              Publicada
+                            </Badge>
+                          </button>
+                          {abierta && (
+                            <div className="pb-3 pl-6 pr-2 space-y-2">
+                              <p className="text-xs text-stone-500 whitespace-pre-line break-words">
+                                {s.descripcion}
+                              </p>
+                              {s.respuesta && (
+                                <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-2.5">
+                                  <p className="text-[11px] font-bold text-emerald-800 mb-0.5">
+                                    Respuesta del desarrollador
+                                  </p>
+                                  <p className="text-xs text-emerald-900 whitespace-pre-line">{s.respuesta}</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          )}
+          </>
         )}
       </div>
     </div>

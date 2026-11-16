@@ -1,59 +1,94 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import { GraduationCap, BookOpen, FileText, PlayCircle, Clock3, X } from 'lucide-react'
+import { useState } from 'react'
+import { GraduationCap, ChevronDown, ShieldCheck } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { TutorialItem } from '@/lib/types'
-import { toast } from 'sonner'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
-function IconoTipo({ tipo }: { tipo: string }) {
-  if (tipo === 'pdf') return <FileText className="h-6 w-6 text-emerald-700" aria-hidden />
-  if (tipo === 'video') return <PlayCircle className="h-6 w-6 text-emerald-700" aria-hidden />
-  return <BookOpen className="h-6 w-6 text-emerald-700" aria-hidden />
-}
-
-function EtiquetaAccion({ tipo }: { tipo: string }) {
-  if (tipo === 'pdf') return 'Abrir PDF'
-  if (tipo === 'video') return 'Ver video'
-  return 'Leer guía'
-}
+/**
+ * Instructivo OFICIAL de la versión 6.7.0 — funciones y procesos básicos,
+ * escrito para empleados. Solo este instructivo vive aquí; el material que ya
+ * no servía fue retirado.
+ */
+const SECCIONES: { titulo: string; puntos: string[] }[] = [
+  {
+    titulo: '1. Abrir y cerrar el día',
+    puntos: [
+      'Entra con tu usuario y fija con cuánto dinero arranca la caja (apertura).',
+      'Cierre X: revisa cuánto hay en caja sin cerrar el día. Úsalo cuando quieras ver el corte al momento.',
+      'Cierre Z: cierra el día oficialmente. El corte queda guardado con ventas del día, efectivo, tarjeta y diferencias, y no se puede borrar.',
+    ],
+  },
+  {
+    titulo: '2. Vender en la Caja',
+    puntos: [
+      'Agrega productos escaneando el código de barras con la pistola o buscándolos por nombre.',
+      'Los tickets abiertos se muestran en pila arriba; toca un ticket para retomarlo. Los productos del ticket activo se ven en lista.',
+      'Botón Cobrar (o doble F12): cobra en efectivo, tarjeta u otro método y el ticket sale impreso.',
+      'F3 reimprime el último ticket si el papel se atascó o se perdió.',
+    ],
+  },
+  {
+    titulo: '3. Dinero en caja',
+    puntos: [
+      'Entrada (F7): registrar dinero que entra y no es venta (cambio inicial, fondos).',
+      'Salida (F8): registrar dinero que sale con motivo (pago a proveedor, retiro).',
+      'Ambas quedan registradas y aparecen en el corte del día.',
+    ],
+  },
+  {
+    titulo: '4. Inventario',
+    puntos: [
+      'El catálogo carga ligero y muestra el stock de cada producto.',
+      'Tarjetas de métricas: Productos, Valor del inventario, Por caducar (≤ 30 días) y Stock bajo.',
+      'Kardex: el historial completo de entradas y salidas de cada producto.',
+      'Importar Excel: crea o actualiza productos por lote; si un renglón falla, el sistema te dice exactamente cuál renglón y por qué.',
+    ],
+  },
+  {
+    titulo: '5. Avisos y notificaciones',
+    puntos: [
+      'La barra de avisos marca: productos vencidos, por caducar y con stock bajo.',
+      'Las ventanas emergentes te avisan sin salir de la caja; el botón Tickets abre el historial de tickets con reimpresión.',
+    ],
+  },
+  {
+    titulo: '6. Usuarios y permisos',
+    puntos: [
+      'EMPLEADO: opera la caja, el escáner y (según los permisos que active el administrador) agregar o eliminar productos. Solo ve las secciones permitidas.',
+      'ADMINISTRADOR: tiene todo — permisos, analítica, importaciones, usuarios y configuración.',
+      'Los permisos se guardan y se respetan en la PC y en el celular.',
+    ],
+  },
+  {
+    titulo: '7. El celular de la tienda',
+    puntos: [
+      'Instala CipherPoint Móvil en el celular, pon la dirección que aparece en el menú Móvil de la PC (mismo WiFi) y entra con un usuario del negocio.',
+      'El escáner del celular manda productos directo al ticket de la PC.',
+      'También hay mensajería con respuestas e impresión desde el celular.',
+    ],
+  },
+  {
+    titulo: '8. Actualizaciones',
+    puntos: [
+      'El software revisa la Central cada 15 minutos e instala las mejoras solo, sin borrar nada.',
+      'Tus ventas, productos, inventarios y usuarios NUNCA se borran al actualizar.',
+      'La versión oficial es la 6.7.0 «Cifra Fresca»: siempre disponible en la Central.',
+    ],
+  },
+]
 
 export default function AprendeTab() {
-  const [tutoriales, setTutoriales] = useState<TutorialItem[] | null>(null)
-  const [abierto, setAbierto] = useState<TutorialItem | null>(null)
+  const [abiertas, setAbiertas] = useState<Set<number>>(new Set([0]))
 
-  const cargar = useCallback(async () => {
-    try {
-      const res = await fetch('/api/tutoriales', { cache: 'no-store' })
-      if (res.ok) {
-        const data = await res.json()
-        setTutoriales(data.tutoriales)
-      }
-    } catch {
-      toast.error('No se pudieron cargar las guías')
-    }
-  }, [])
-
-  useEffect(() => {
-    const primera = setTimeout(cargar, 0)
-    return () => clearTimeout(primera)
-  }, [cargar])
-
-  const abrir = (t: TutorialItem) => {
-    if (t.tipo === 'pdf') {
-      if (t.id) window.open(`/api/tutoriales/${t.id}/file`, '_blank')
-      return
-    }
-    if (t.tipo === 'video' && t.url) {
-      window.open(t.url, '_blank')
-      return
-    }
-    setAbierto(t)
+  const alternar = (i: number) => {
+    setAbiertas((prev) => {
+      const next = new Set(prev)
+      if (next.has(i)) next.delete(i)
+      else next.add(i)
+      return next
+    })
   }
 
   return (
@@ -63,89 +98,69 @@ export default function AprendeTab() {
           <GraduationCap className="h-5 w-5 text-emerald-700" aria-hidden />
           Aprende
         </h2>
-        <p className="text-xs text-stone-500">
-          Guías cortas en español, sin tecnicismos. Cada vez que tu software estrene algo, aquí
-          encontrarás cómo sacarle provecho.
+        <p className="text-xs text-stone-500 mt-0.5">
+          Instructivo oficial de la versión 6.7.0 — características y procesos básicos del programa,
+          para empleados. Aquí solo vive este instructivo: lo que ya no servía fue retirado.
         </p>
       </div>
 
-      {tutoriales === null ? (
-        <div className="grid sm:grid-cols-2 gap-3">
-          <Skeleton className="h-32 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
-        </div>
-      ) : (
-        <div className="grid sm:grid-cols-2 gap-3">
-          {tutoriales.map((t) => (
-            <Card
-              key={t.id}
-              className="shadow-sm border-stone-200 hover:border-emerald-300 hover:shadow transition-all"
-            >
-              <CardContent className="p-4 h-full flex flex-col gap-2">
-                <div className="flex items-start gap-3">
-                  <div className="h-11 w-11 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-                    <IconoTipo tipo={t.tipo} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm text-stone-800 leading-snug break-words">
-                      {t.titulo}
-                    </p>
-                    <p className="text-xs text-stone-500 mt-0.5 line-clamp-2">{t.descripcion}</p>
-                  </div>
-                </div>
-                <div className="mt-auto flex items-center justify-between gap-2 pt-1">
-                  <div className="flex items-center gap-1.5 text-[11px] text-stone-400">
-                    <Clock3 className="h-3 w-3" aria-hidden />
-                    {t.minutos ? `${t.minutos} min de lectura` : t.tipo}
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => abrir(t)}
-                    className="border-emerald-300 text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900"
-                  >
-                    {EtiquetaAccion({ tipo: t.tipo })}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      <Card className="shadow-sm border-dashed border-stone-300 bg-stone-50/60">
-        <CardContent className="p-4 text-xs text-stone-500">
-          <Badge variant="secondary" className="mb-1.5">Nota</Badge>
-          <p>
-            El <strong>Manual del Dueño</strong> (PDF de 10 capítulos) te lo entregué en el kit de
-            instalación; si quieres que también viva aquí, pídelo en Solicitudes y lo publico en
-            esta pestaña.
+      <Card className="shadow-sm border-emerald-200 bg-emerald-50/60">
+        <CardContent className="flex flex-wrap items-center gap-2 px-4 py-3">
+          <ShieldCheck className="h-4 w-4 text-emerald-700 shrink-0" aria-hidden />
+          <p className="text-sm text-emerald-900 font-semibold flex-1 min-w-0">
+            Instructivo de funciones — Sell-Plus 6.7.0 «Cifra Fresca» (versión oficial)
           </p>
+          <Badge className="bg-emerald-800 text-white hover:bg-emerald-800 shrink-0">
+            Para empleados
+          </Badge>
         </CardContent>
       </Card>
 
-      {/* Diálogo de lectura */}
-      <Dialog open={abierto !== null} onOpenChange={(o) => !o && setAbierto(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
-          <DialogHeader className="text-left">
-            <DialogTitle className="text-base text-stone-800 pr-6 flex items-start gap-2">
-              <BookOpen className="h-5 w-5 text-emerald-700 shrink-0 mt-0.5" aria-hidden />
-              {abierto?.titulo}
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="flex-1 max-h-[65vh] pr-3">
-            <p className="text-sm text-stone-700 whitespace-pre-line leading-relaxed">
-              {abierto?.contenido}
-            </p>
-          </ScrollArea>
-          <div className="pt-2 border-t border-stone-100 flex justify-end">
-            <Button variant="outline" size="sm" onClick={() => setAbierto(null)} className="border-stone-300">
-              <X className="h-3.5 w-3.5 mr-1" aria-hidden />
-              Cerrar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <div className="space-y-2">
+        {SECCIONES.map((sec, i) => {
+          const abierta = abiertas.has(i)
+          return (
+            <Collapsible key={sec.titulo} open={abierta} onOpenChange={() => alternar(i)}>
+              <Card className="shadow-sm border-stone-200">
+                <CollapsibleTrigger asChild>
+                  <button
+                    type="button"
+                    className="w-full text-left"
+                    aria-expanded={abierta}
+                  >
+                    <CardContent className="flex items-center justify-between gap-2 px-4 py-3">
+                      <span className="text-sm font-bold text-stone-800 flex-1 min-w-0 break-words">
+                        {sec.titulo}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 text-stone-400 shrink-0 transition-transform ${abierta ? 'rotate-180' : ''}`}
+                        aria-hidden
+                      />
+                    </CardContent>
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="px-4 pb-4 pt-0">
+                    <ul className="space-y-1.5">
+                      {sec.puntos.map((p, j) => (
+                        <li key={j} className="text-sm text-stone-700 flex gap-2">
+                          <span className="text-emerald-600 mt-0.5 shrink-0" aria-hidden>•</span>
+                          <span>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+          )
+        })}
+      </div>
+
+      <p className="text-xs text-stone-500">
+        Este instructivo corresponde a la versión oficial 6.7.0. Si un empleado necesita aprender
+        algo que no está aquí, pídelo en Solicitudes y lo añado a este mismo instructivo.
+      </p>
     </div>
   )
 }
