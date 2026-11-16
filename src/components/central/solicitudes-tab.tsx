@@ -378,7 +378,8 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
           )}
 
           {historial.length > 0 && (
-            <Card className="shadow-sm border-stone-200 mt-4">
+            <Collapsible className="mt-4">
+            <Card className="shadow-sm border-stone-200">
               <CollapsibleTrigger className="w-full text-left">
                 <CardHeader className="py-3 px-4 sm:px-5">
                   <CardTitle className="text-sm text-stone-700 flex items-center justify-between gap-2">
@@ -444,6 +445,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                 </CardContent>
               </CollapsibleContent>
             </Card>
+            </Collapsible>
           )}
           </>
         )}
