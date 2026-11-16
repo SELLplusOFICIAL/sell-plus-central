@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { compareVersions } from "@/lib/sellplus-ai";
 import { gestionarOrdenEquipo } from "@/lib/central";
-import type { Version } from "@prisma/client";
 
 /**
  * API que consulta cada programa Sell-Plus instalado (auto-actualizador).
@@ -38,14 +37,21 @@ export async function GET(req: NextRequest) {
     }
 
     // Elegir la más nueva de forma numérica (no lexicográfica).
-    // Migrado al modelo real `Version`. Solicitud #9.
+    // Consulta ligera: los campos del contrato; las notas solo de la elegida.
     const publicadas = await db.version.findMany({
       where: { activo: true },
+      select: { id: true, version: true, titulo: true, fecha: true, fileName: true, fileSize: true, sha256: true, externalUrl: true },
     });
-    let latest: Version | null = null;
+    let latest: {
+      id: number; version: string; titulo: string; fecha: Date; fileName: string | null;
+      fileSize: number | null; sha256: string | null; externalUrl: string | null;
+    } | null = null;
     for (const u of publicadas) {
       if (!latest || compareVersions(u.version, latest.version) > 0) latest = u;
     }
+    const filaNotas = latest
+      ? await db.version.findUnique({ where: { id: latest.id }, select: { notas: true } })
+      : null;
 
     const hasUpdate = !!latest && compareVersions(latest.version, current) > 0;
 
@@ -68,7 +74,7 @@ export async function GET(req: NextRequest) {
               version: latest.version,
               title: latest.titulo,
               type: "actualizacion",
-              changelog: latest.notas,
+              changelog: filaNotas?.notas ?? "",
               publishedAt: latest.fecha,
               fileName: latest.fileName,
               fileSize: latest.fileSize,

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
 // URL pública de fábrica de la Central (fallback cuando el host de la petición es interno)
-export const URL_FABRICA = 'https://preview-chat-84403353-6e78-4cf3-8a17-b0d05bfe9666.space-z.ai'
+export const URL_FABRICA = 'https://sell-plus-central-f7t1.vercel.app'
 
 // Devuelve el origen PÚBLICO de la petición.
 // El gateway a veces expone un host interno (p. ej. *.fcapp.run) que nunca

@@ -1,8 +1,9 @@
+/** Versión en formato RESUMIDO: sin notas largas, con resumen de una línea. */
 export type VersionItem = {
   id: number
   version: string
   titulo: string
-  notas: string
+  resumen: string
   fileName: string | null
   fileSize: number | null
   sha256: string | null
@@ -22,7 +23,6 @@ export type ResumenData = {
   ultimaVersion: {
     version: string
     titulo: string
-    notas: string
     fecha: string
     fileName: string | null
     fileSize: number | null
@@ -61,13 +61,28 @@ export type TutorialItem = {
   fecha: string
 }
 
-export const CENTRAL_URL =
-  'https://preview-chat-84403353-6e78-4cf3-8a17-b0d05bfe9666.space-z.ai'
+/**
+ * Comparación numérica de versiones ("6.10.0" > "6.9.0"): devuelto >0 si a>b,
+ * <0 si a<b, 0 si iguales. Nunca comparar versiones como texto.
+ */
+export function compararVersiones(a: string, b: string): number {
+  const pa = (a || '').trim().replace(/^v/i, '').split(/[.\-]/).map((p) => parseInt(p, 10) || 0)
+  const pb = (b || '').trim().replace(/^v/i, '').split(/[.\-]/).map((p) => parseInt(p, 10) || 0)
+  for (let i = 0; i < 3; i++) {
+    const xa = pa[i] ?? 0
+    const xb = pb[i] ?? 0
+    if (xa !== xb) return xa - xb
+  }
+  return 0
+}
+
+/** Dirección estable de la Central (la que vive en central-url.txt del software). */
+export const CENTRAL_URL = 'https://sell-plus-central-f7t1.vercel.app'
 
 /**
  * Dirección de la Central tal como la ve el navegador.
  * En el sitio publicado usa el origen actual (la dirección real del navegador);
- * como respaldo (p. ej. render en servidor) devuelve la dirección histórica local.
+ * como respaldo (render en servidor) devuelve la dirección estable.
  */
 export function centralUrlActual(): string {
   if (typeof window !== 'undefined' && window.location?.origin) {

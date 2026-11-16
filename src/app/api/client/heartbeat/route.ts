@@ -29,7 +29,7 @@ async function handle(
   });
 
   // Migrado al modelo real `Version`. Solicitud #9.
-  const activas = await db.version.findMany({ where: { activo: true } });
+  const activas = await db.version.findMany({ where: { activo: true }, select: { version: true } });
   let latest: { version: string } | null = null;
   for (const u of activas) {
     if (!latest || compareVersions(u.version, latest.version) > 0) latest = u;

@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   const version = (body.version as string).trim().replace(/^v/i, '')
-  const previas = await db.version.findMany()
+  const previas = await db.version.findMany({ select: { version: true } })
   const previa = pickLatest(previas)
   if (previa && cmpVersion(version, previa.version) <= 0 && body.forzar !== true) {
     return NextResponse.json(

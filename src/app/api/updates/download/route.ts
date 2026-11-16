@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   let version = (sp.get('version') || sp.get('v') || '').trim()
 
   if (!version) {
-    const versiones = await db.version.findMany({ where: { activo: true } })
+    const versiones = await db.version.findMany({ where: { activo: true }, select: { version: true } })
     const latest = pickLatest(versiones)
     if (!latest) {
       return new Response(JSON.stringify({ error: 'sin_versiones' }), {

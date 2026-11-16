@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   const [equipos, versiones] = await Promise.all([
     db.clientMachine.findMany({ orderBy: { lastSeenAt: 'desc' } }),
-    db.version.findMany({ where: { activo: true } }),
+    db.version.findMany({ where: { activo: true }, select: { version: true } }),
   ])
 
   let ultima: { version: string } | null = null
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
   const [equipos, versiones] = await Promise.all([
     db.clientMachine.findMany(),
-    db.version.findMany({ where: { activo: true } }),
+    db.version.findMany({ where: { activo: true }, select: { version: true } }),
   ])
   let ultima: { version: string } | null = null
   for (const v of versiones) {

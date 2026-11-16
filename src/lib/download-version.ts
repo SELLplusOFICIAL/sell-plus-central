@@ -12,7 +12,11 @@ export async function handleDownload(
 ): Promise<NextResponse> {
   const vDecoded = decodeURIComponent(versionParam)
 
-  const versiones = await db.version.findMany({ where: { activo: true } })
+  // Consulta ligera: solo los campos que la descarga necesita.
+  const versiones = await db.version.findMany({
+    where: { activo: true },
+    select: { id: true, version: true, fileName: true, externalUrl: true, fileSize: true, sha256: true },
+  })
   const latest = pickLatest(versiones)
 
   if (!latest || latest.version !== vDecoded) {

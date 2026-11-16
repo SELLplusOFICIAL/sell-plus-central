@@ -39,7 +39,7 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
       }
     } catch {
       setEstado('error')
-      setDetalle('No hubo respuesta del servidor. Si el sitio temporal está apagado, escríbeme en el chat y lo enciendo.')
+      setDetalle('No hubo respuesta del servidor. Revisa tu conexión y vuelve a intentar; si sigue sin abrir, escríbeme en el chat.')
     }
   }
 
@@ -148,21 +148,18 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
         </CardHeader>
         <CardContent className="text-sm text-amber-900 space-y-2">
           <p>
-            Estamos en la fase de <strong>sitio temporal</strong>: vive en mi entorno de trabajo y
-            puede apagarse cuando no estoy activamente conectado. Es normal en esta etapa.
+            Tu Central vive en internet <strong>24/7</strong> (hosting permanente en Vercel, sin
+            depender de ninguna PC). Si un día no abriera, es un incidente puntual y se corrige
+            publicando de nuevo la Central.
           </p>
           <ol className="list-decimal list-inside space-y-1 text-sm">
-            <li>Espera unos minutos y vuelve a intentar (yo mismo la re-enciendo al start de cada sesión).</li>
-            <li>Escríbeme en el chat: “enciende la central” y en un par de minutos vuelve a estar en línea.</li>
+            <li>Espera unos minutos y vuelve a intentar (las fallas de red normalmente pasan solas).</li>
+            <li>Escríbeme en el chat: lo reviso y te confirmo cuando esté de vuelta.</li>
             <li>
               Tu software <strong>no se afecta</strong>: sigue vendiendo y trabajando normal, y
               reintenta la conexión solo.
             </li>
           </ol>
-          <p className="text-xs text-amber-700">
-            Siguiente paso del proyecto: mudarla a hosting permanente (Vercel) para que esté en
-            línea 24/7 y este aviso desaparezca para siempre.
-          </p>
         </CardContent>
       </Card>
 

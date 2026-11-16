@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     let version = (searchParams.get("version") ?? "").trim();
 
     if (!version) {
-      const publicadas = await db.version.findMany({ where: { activo: true } });
+      const publicadas = await db.version.findMany({ where: { activo: true }, select: { version: true } });
       const latest = pickLatest(publicadas);
       if (!latest) {
         return NextResponse.json(

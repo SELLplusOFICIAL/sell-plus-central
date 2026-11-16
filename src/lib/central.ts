@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import type { Version } from '@prisma/client'
 
-// URL pública de fábrica (coincide con central-url.txt del software instalado)
-export const PUBLIC_BASE =
-  'https://preview-chat-84403353-6e78-4cf3-8a17-b0d05bfe9666.space-z.ai'
+// URL pública de fábrica (coincide con central-url.txt del software instalado
+// y con URL_FABRICA del auto-actualizador). Solo se usa como respaldo cuando
+// la petición llega por un host interno; en producción el origen real sale de
+// las cabeceras x-forwarded-host / host.
+export const PUBLIC_BASE = 'https://sell-plus-central-f7t1.vercel.app'
 
 export const CORS_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -52,14 +53,30 @@ export function cmpVersion(a: string, b: string): number {
   return 0
 }
 
-/** Versión más alta entre las activas */
-export function pickLatest(versiones: Version[]): Version | null {
-  let latest: Version | null = null
+/**
+ * Versión más alta de una lista. Genérica: sirve con filas completas de
+ * Prisma o con seleccionas mínimas ({ version }) de las consultas optimizadas.
+ */
+export function pickLatest<T extends { version: string }>(versiones: T[]): T | null {
+  let latest: T | null = null
   for (const v of versiones) {
     if (!latest || cmpVersion(v.version, latest.version) > 0) latest = v
   }
   return latest
 }
+
+/** Campos mínimos para decidir y anunciar la última versión (consulta ligera).
+ *  Sin `notas`: las notas completas se leen aparte, solo de la versión que
+ *  realmente se anuncia — antes cada chequeo traía las notas de TODAS las
+ *  versiones (~200 KB de texto) desde la base de datos. */
+export const SELECT_VERSION_MINIMA = {
+  id: true,
+  version: true,
+  titulo: true,
+  fileName: true,
+  fileSize: true,
+  sha256: true,
+} as const
 
 /** Registra actividad evitando spam (mismo detalle < 10 min se ignora) */
 export async function logActividad(tipo: string, detalle: string) {
@@ -104,7 +121,10 @@ export async function gestionarOrdenEquipo(
     const equipo = await db.clientMachine.findUnique({ where: { machineId } })
     if (!equipo || !equipo.ordenActualizar) return { orden: null, versionDestino: null }
 
-    const versiones = await db.version.findMany({ where: { activo: true } })
+    const versiones = await db.version.findMany({
+      where: { activo: true },
+      select: { version: true },
+    })
     const latest = pickLatest(versiones)
     const destino = equipo.ordenVersion || latest?.version || null
     if (!destino) return { orden: null, versionDestino: null }
@@ -174,7 +194,12 @@ export async function handleCheck(req: NextRequest) {
   }
   versionCliente = (versionCliente || '0.0.0').trim().replace(/^v/i, '')
 
-  const versiones = await db.version.findMany({ where: { activo: true } })
+  // Consulta ligera: solo los campos del contrato; las notas completas se
+  // leen aparte SOLO de la última versión (antes traían las 100+ filas).
+  const versiones = await db.version.findMany({
+    where: { activo: true },
+    select: SELECT_VERSION_MINIMA,
+  })
   const latest = pickLatest(versiones)
   const hasUpdate = latest ? cmpVersion(latest.version, versionCliente) > 0 : false
 
@@ -216,7 +241,10 @@ export async function handleCheck(req: NextRequest) {
     }`
   )
 
-  const notas = latest?.notas || ''
+  const filaNotas = latest
+    ? await db.version.findUnique({ where: { id: latest.id }, select: { notas: true } })
+    : null
+  const notas = filaNotas?.notas || ''
   const payload = {
     // Estado
     hasUpdate,

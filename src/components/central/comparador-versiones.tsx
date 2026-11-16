@@ -1,18 +1,20 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   GitCompareArrows,
   Plus,
   Wrench,
   AlertTriangle,
   ArrowRight,
+  Loader2,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { VersionItem, fechaCorta } from '@/lib/types'
+import { VersionItem, compararVersiones } from '@/lib/types'
 import { AREAS, NOMBRE_AREA, clasificarArea, huella, parseNotas } from '@/lib/areas'
+import { toast } from 'sonner'
 
 type Grupo = {
   anade: string[]
@@ -29,24 +31,60 @@ type Analisis = {
 
 const ORDEN_AREAS = [...AREAS.map((a) => a.id), 'otros']
 
+/**
+ * Comparador de versiones (entrega «Cifra Fresca»): recibe el registro
+ * resumido y trae las notas completas de SOLO las dos versiones elegidas,
+ * en una sola petición, cuando el dueño quiere comparar.
+ */
 export default function ComparadorVersiones({ versiones }: { versiones: VersionItem[] }) {
   const ordenadas = useMemo(
-    () => [...versiones].sort((a, b) => +new Date(b.fecha) - +new Date(a.fecha)),
+    () => [...versiones].sort((a, b) => compararVersiones(b.version, a.version)),
     [versiones],
   )
   const [antSel, setAntSel] = useState<string | null>(null)
   const [nuevaSel, setNuevaSel] = useState<string | null>(null)
+  // Último par de notas descargadas: { anterior, nueva, nA, nN }. nA/nN vacíos = sin notas.
+  const [notasPar, setNotasPar] = useState<{ anterior: string; nueva: string; nA: string; nN: string } | null>(null)
 
   const anterior = antSel ?? ordenadas[1]?.version ?? ''
   const nueva = nuevaSel ?? ordenadas[0]?.version ?? ''
 
+  const pideNotas = !!anterior && !!nueva && anterior !== nueva
+  const parCargado = !!notasPar && notasPar.anterior === anterior && notasPar.nueva === nueva
+  const cargando = pideNotas && !parCargado
+  const sinNotas = parCargado && (!notasPar!.nA || !notasPar!.nN)
+
+  // Trae las notas del par elegido (una sola petición, solo dos versiones).
+  // Todo setState vive dentro de callbacks asíncronos: nada de renders en cascada.
+  useEffect(() => {
+    if (!pideNotas || parCargado) return
+    let vivo = true
+    fetch(`/api/versiones?notas=${encodeURIComponent(anterior)},${encodeURIComponent(nueva)}`, {
+      cache: 'no-store',
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => {
+        if (!vivo) return
+        const nA = String(data.notas?.[anterior] ?? '').trim()
+        const nN = String(data.notas?.[nueva] ?? '').trim()
+        if (!nA || !nN) toast.error('No hay notas registradas para ese par de versiones')
+        setNotasPar({ anterior, nueva, nA, nN })
+      })
+      .catch(() => {
+        if (vivo) {
+          toast.error('No se pudieron cargar las notas')
+          setNotasPar({ anterior, nueva, nA: '', nN: '' })
+        }
+      })
+    return () => {
+      vivo = false
+    }
+  }, [anterior, nueva, pideNotas, parCargado])
+
   const analisis = useMemo<Analisis | null>(() => {
-    if (!anterior || !nueva || anterior === nueva) return null
-    const vA = ordenadas.find((v) => v.version === anterior)
-    const vN = ordenadas.find((v) => v.version === nueva)
-    if (!vA || !vN) return null
-    const nA = parseNotas(vA.notas)
-    const nN = parseNotas(vN.notas)
+    if (!parCargado || !notasPar) return null
+    const nA = parseNotas(notasPar.nA)
+    const nN = parseNotas(notasPar.nN)
 
     const mapa = new Map<string, Grupo>()
     const push = (area: string, campo: keyof Grupo, linea: string) => {
@@ -72,7 +110,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
       totalRetirada: grupos.reduce((n, g) => n + g.grupo.retirada.length, 0),
       grupos,
     }
-  }, [anterior, nueva, ordenadas])
+  }, [notasPar, parCargado])
 
   return (
     <Card className="shadow-sm border-stone-300">
@@ -95,7 +133,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
             <SelectContent>
               {ordenadas.map((v) => (
                 <SelectItem key={v.id} value={v.version}>
-                  v{v.version} · {fechaCorta(v.fecha)}
+                  v{v.version} · {v.titulo.split('—')[0].trim()}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -108,18 +146,33 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
             <SelectContent>
               {ordenadas.map((v) => (
                 <SelectItem key={v.id} value={v.version}>
-                  v{v.version} · {fechaCorta(v.fecha)}
+                  v{v.version} · {v.titulo.split('—')[0].trim()}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        {analisis === null ? (
+        {cargando && (
+          <p className="mt-3 text-sm text-stone-500 flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            Buscando las notas de v{anterior} y v{nueva}…
+          </p>
+        )}
+
+        {!cargando && sinNotas ? (
+          <p className="mt-3 text-sm text-stone-500">
+            No hay notas registradas para ese par de versiones.
+          </p>
+        ) : null}
+
+        {!cargando && !sinNotas && analisis === null ? (
           <p className="mt-3 text-sm text-stone-500">
             Elige dos versiones distintas para ver la comparación.
           </p>
-        ) : (
+        ) : null}
+
+        {!cargando && !sinNotas && analisis !== null && (
           <>
             <div className="mt-3 flex flex-wrap gap-2">
               <Badge className="bg-emerald-100 text-emerald-900 border-emerald-200 hover:bg-emerald-100">

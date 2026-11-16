@@ -5,7 +5,11 @@ import { pickLatest } from '@/lib/central'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const versiones = await db.version.findMany({ where: { activo: true } })
+  // Consulta ligera: solo la columna `version` decide la última.
+  const versiones = await db.version.findMany({
+    where: { activo: true },
+    select: { version: true },
+  })
   const latest = pickLatest(versiones)
   return corsJson({
     ok: true,

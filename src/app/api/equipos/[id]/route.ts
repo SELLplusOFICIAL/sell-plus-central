@@ -38,7 +38,7 @@ export async function PATCH(
 
   // ---------- Mandar actualización ----------
   if (accion === 'mandar_actualizacion') {
-    const versiones = await db.version.findMany({ where: { activo: true } })
+    const versiones = await db.version.findMany({ where: { activo: true }, select: { version: true } })
     let ultima: { version: string } | null = null
     for (const v of versiones) {
       if (!ultima || compareVersions(v.version, ultima.version) > 0) ultima = v
