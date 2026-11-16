@@ -9,6 +9,8 @@
 
 /** Resumen curado por versión (las visibles: 6.0.0 en adelante). */
 export const RESUMENES: Record<string, string> = {
+  '6.7.0':
+    'Central con registro resumido y fluido (una línea por versión, 6.0.0+ a la vista, notas a demanda) y software barrido sin errores heredados.',
   '6.6.2':
     'Notificaciones, historial de tickets y catálogo aparecen desde el PRIMER inicio de sesión: la caja reintenta sola y el motor espera a la base lista antes de abrir.',
   '6.6.1':
