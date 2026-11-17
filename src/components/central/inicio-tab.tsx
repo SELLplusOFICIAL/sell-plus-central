@@ -1,8 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CheckCircle2, Clock, RefreshCw, Layers3, MessageSquarePlus, BookOpenCheck, Activity, ArrowRight, Sparkles, Copy, Check } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  CheckCircle2,
+  Clock,
+  RefreshCw,
+  Layers3,
+  MessageSquarePlus,
+  PlayCircle,
+  BookOpenCheck,
+  Activity,
+  ArrowRight,
+  Sparkles,
+  Copy,
+  Check,
+} from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ResumenData, haceCuando } from '@/lib/types'
@@ -35,7 +48,7 @@ export default function InicioTab({
   if (!resumen) {
     return (
       <div className="space-y-4">
-        <Skeleton className="h-36 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-2xl" />
         <div className="grid grid-cols-3 gap-3">
           <Skeleton className="h-24 rounded-xl" />
           <Skeleton className="h-24 rounded-xl" />
@@ -69,111 +82,104 @@ export default function InicioTab({
   }
 
   return (
-    <div className="space-y-5">
-      {/* Estado del software */}
-      <Card className="border-cyan-400/20 shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-br from-cyan-400/10 to-white/5 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <CheckCircle2 className="h-12 w-12 text-cyan-400 shrink-0" aria-hidden />
-          <div className="flex-1 min-w-0">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-50">
-              Tu software está al día
-            </h2>
-            {ultima && (
-              <p className="text-sm text-slate-300 mt-0.5">
-                Última versión publicada:{' '}
-                <span className="font-semibold text-cyan-200">v{ultima.version}</span>
-                {' — '}
-                {ultima.titulo}
+    <div className="space-y-4">
+      {/* Estado del software — tarjeta destacada con aro degradado */}
+      <div className="sp-story rounded-[18px] p-[1.5px]">
+        <Card className="border-0 bg-[#0a0e17] shadow-none">
+          <CardContent className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:px-6">
+            <div className="sp-glow flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400/30 to-cyan-500/30">
+              <CheckCircle2 className="h-7 w-7 text-emerald-300" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg font-bold tracking-tight text-white">Tu software está al día</h2>
+              {ultima && (
+                <p className="mt-0.5 text-sm text-slate-300">
+                  Oficial: <span className="font-semibold text-cyan-300">v{ultima.version}</span>
+                  {' — '}
+                  {ultima.titulo}
+                </p>
+              )}
+              <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
+                <Clock className="h-3.5 w-3.5" aria-hidden />
+                {resumen.ultimaConexion
+                  ? `Última conexión de tu software: ${haceCuando(resumen.ultimaConexion.fecha)}`
+                  : 'Tu software se conectará solo en cuanto esté abierto (revisa cada 15 min)'}
+                {minutos > 0 && resumen.ultimaConexion ? ` · página abierta ${minutos} min` : ''}
               </p>
-            )}
-            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" aria-hidden />
-              {resumen.ultimaConexion
-                ? `Última conexión de tu software: ${haceCuando(resumen.ultimaConexion.fecha)}`
-                : 'Tu software se conectará solo en cuanto esté abierto (revisa cada 15 min)'}
-              {minutos > 0 && resumen.ultimaConexion ? ` · página abierta ${minutos} min` : ''}
-            </p>
-          </div>
-          <Button
-            onClick={() => irA('actualizaciones')}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white shrink-0"
-          >
-            Ver novedades
-          </Button>
-        </div>
-      </Card>
-
-      {/* Cifras rápidas */}
-      <div className="grid grid-cols-3 gap-3">
-        <Card className="shadow-sm border-white/10">
-          <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-            <Layers3 className="h-5 w-5 text-cyan-300" aria-hidden />
-            <span className="text-2xl font-bold text-slate-100">{resumen.totalVersiones}</span>
-            <span className="text-[11px] sm:text-xs text-slate-400 leading-tight">
-              versiones publicadas
-            </span>
-          </CardContent>
-        </Card>
-        <Card className="shadow-sm border-white/10">
-          <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-            <BookOpenCheck className="h-5 w-5 text-cyan-300" aria-hidden />
-            <span className="text-2xl font-bold text-slate-100">1</span>
-            <span className="text-[11px] sm:text-xs text-slate-400 leading-tight">
-              instructivo oficial (v6.7.0)
-            </span>
-          </CardContent>
-        </Card>
-        <Card className="shadow-sm border-white/10">
-          <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-            <MessageSquarePlus className="h-5 w-5 text-cyan-300" aria-hidden />
-            <span className="text-2xl font-bold text-slate-100">{resumen.solicitudesAbiertas}</span>
-            <span className="text-[11px] sm:text-xs text-slate-400 leading-tight">
-              solicitudes abiertas
-            </span>
+            </div>
+            <Button
+              onClick={() => irA('actualizaciones')}
+              className="sp-btn-grad shrink-0 border-0 shadow-none"
+            >
+              Ver novedades
+            </Button>
           </CardContent>
         </Card>
       </div>
 
+      {/* Cifras rápidas */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { icono: <Layers3 className="h-5 w-5 text-cyan-300" aria-hidden />, n: resumen.totalVersiones, t: 'versiones publicadas' },
+          { icono: <PlayCircle className="h-5 w-5 text-fuchsia-300" aria-hidden />, n: '6 + PDF', t: 'instructivos (v6.7.0)' },
+          { icono: <MessageSquarePlus className="h-5 w-5 text-amber-300" aria-hidden />, n: resumen.solicitudesAbiertas, t: 'solicitudes abiertas' },
+        ].map((c) => (
+          <Card key={c.t} className="sp-hover-lift">
+            <CardContent className="flex flex-col items-center gap-1 p-4 text-center">
+              {c.icono}
+              <span className="text-2xl font-bold tracking-tight text-white">{c.n}</span>
+              <span className="text-[11px] leading-tight text-slate-400 sm:text-xs">{c.t}</span>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       {/* Accesos rápidos */}
-      <div className="grid sm:grid-cols-2 gap-3">
-        <Card className="shadow-sm border-white/10 hover:border-cyan-400/30 transition-colors cursor-pointer" onClick={() => irA('solicitudes')}>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-amber-400/15 flex items-center justify-center shrink-0">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Card
+          className="sp-hover-lift cursor-pointer"
+          onClick={() => irA('solicitudes')}
+        >
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-300/20 bg-amber-400/10">
               <MessageSquarePlus className="h-5 w-5 text-amber-300" aria-hidden />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-slate-100">¿Quieres un cambio en tu software?</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-slate-100">¿Quieres un cambio en tu software?</p>
               <p className="text-xs text-slate-400">Pídelo en Solicitudes y lo trabajamos</p>
             </div>
-            <ArrowRight className="h-4 w-4 text-slate-500" aria-hidden />
+            <ArrowRight className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
           </CardContent>
         </Card>
-        <Card className="shadow-sm border-white/10 hover:border-cyan-400/30 transition-colors cursor-pointer" onClick={() => irA('aprende')}>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-cyan-400/15 flex items-center justify-center shrink-0">
-              <BookOpenCheck className="h-5 w-5 text-cyan-300" aria-hidden />
+        <Card
+          className="sp-hover-lift cursor-pointer"
+          onClick={() => irA('aprende')}
+        >
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-fuchsia-300/20 bg-fuchsia-400/10">
+              <BookOpenCheck className="h-5 w-5 text-fuchsia-300" aria-hidden />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-slate-100">Aprende a usar funciones nuevas</p>
-              <p className="text-xs text-slate-400">Guías cortas, en español y sin tecnicismos</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-slate-100">Aprende a usar tu software</p>
+              <p className="text-xs text-slate-400">Videos cortos, PDF imprimible y referencia rápida</p>
             </div>
-            <ArrowRight className="h-4 w-4 text-slate-500" aria-hidden />
+            <ArrowRight className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
           </CardContent>
         </Card>
       </div>
 
       {/* Poder de IA */}
-      <Card className="shadow-sm border-violet-400/30 overflow-hidden">
-        <div className="sp-glass bg-gradient-to-br from-violet-400/10 to-white/5 p-5 border border-violet-400/25 rounded-2xl">
+      <Card className="sp-hover-lift border-violet-300/15">
+        <CardContent className="p-5">
           <div className="flex items-start gap-3">
-            <div className="h-10 w-10 rounded-lg bg-violet-400/15 flex items-center justify-center shrink-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-300/20 bg-violet-400/10">
               <Sparkles className="h-5 w-5 text-violet-300" aria-hidden />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <h3 className="font-bold text-slate-100">Poder de IA — tu desarrollador a un clic</h3>
-              <p className="text-sm text-slate-300 mt-1">
-                Esta Central ya trabaja sola en internet. Cuando quieras añadir funciones o cambios,
-                abre el chat de IA, pega la frase de contexto y el asistente retomará tu proyecto.
+              <p className="mt-1 text-sm leading-relaxed text-slate-300">
+                Cuando quieras añadir funciones o cambios: abre el chat de IA, pega la frase de
+                contexto y el asistente retomará tu proyecto con todo el historial.
               </p>
             </div>
           </div>
@@ -181,65 +187,69 @@ export default function InicioTab({
             <Button
               size="sm"
               onClick={() => window.open('https://chat.z.ai', '_blank', 'noopener')}
-              className="bg-violet-700 hover:bg-violet-800 text-white"
+              className="border-0 bg-violet-500 text-white shadow-[0_4px_18px_-6px_rgba(139,92,246,0.6)] hover:bg-violet-400"
             >
-              <Sparkles className="h-4 w-4 mr-1.5" aria-hidden />
+              <Sparkles className="h-4 w-4" aria-hidden />
               Abrir chat de IA
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={copiarFrase}
-              className="border-violet-300 text-violet-300 hover:bg-violet-400/15"
+              className="border-violet-300/30 bg-transparent text-violet-200 hover:bg-violet-400/10 hover:text-violet-100"
             >
               {copiada ? (
-                <Check className="h-4 w-4 mr-1.5" aria-hidden />
+                <Check className="h-4 w-4" aria-hidden />
               ) : (
-                <Copy className="h-4 w-4 mr-1.5" aria-hidden />
+                <Copy className="h-4 w-4" aria-hidden />
               )}
               {copiada ? '¡Copiada!' : 'Copiar frase de contexto'}
             </Button>
           </div>
-          <pre className="mt-3 overflow-x-auto rounded-lg border border-violet-400/30 bg-white/5 p-3 text-[11px] leading-relaxed text-slate-300 select-all whitespace-pre-wrap break-words">
+          <pre className="sp-scroll mt-3 max-h-40 overflow-y-auto rounded-xl border border-violet-300/15 bg-violet-400/[0.05] p-3 text-[11px] leading-relaxed break-words whitespace-pre-wrap text-slate-300 select-all">
             {fraseContexto}
           </pre>
-          <p className="mt-2 text-[11px] text-slate-400">
+          <p className="mt-2 text-[11px] text-slate-500">
             Consejo: si abres este mismo chat desde tu historial de Z.ai, continúa con todo el
             contexto. Para subir cambios, el asistente te pedirá un token de GitHub.
           </p>
-        </div>
+        </CardContent>
       </Card>
 
-      {/* Bitácora */}
-      <Card className="shadow-sm border-white/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
-            <Activity className="h-4 w-4 text-cyan-300" aria-hidden />
-            Bitácora reciente
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
+      {/* Bitácora — contenida */}
+      <Card>
+        <CardContent className="px-5 py-4">
+          <div className="flex items-center justify-between gap-2 pb-1">
+            <p className="flex items-center gap-2 text-sm font-semibold text-slate-100">
+              <Activity className="h-4 w-4 text-cyan-300" aria-hidden />
+              Bitácora reciente
+            </p>
+            <button
+              type="button"
+              onClick={recargar}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+              aria-label="Actualizar bitácora"
+            >
+              <RefreshCw className="h-3.5 w-3.5" aria-hidden />
+            </button>
+          </div>
           {resumen.actividad.length === 0 ? (
-            <p className="text-sm text-slate-400 py-3">
+            <p className="py-3 text-sm text-slate-400">
               Aún no hay actividad registrada. Cuando tu software se conecte, lo verás aquí.
             </p>
           ) : (
-            <ul className="max-h-56 divide-y divide-white/10 overflow-y-auto pr-1">
+            <ul className="sp-scroll max-h-56 divide-y divide-white/[0.06] overflow-y-auto pr-1">
               {resumen.actividad.map((a) => (
-                <li key={a.id} className="py-2.5 flex items-start gap-2.5">
+                <li key={a.id} className="flex items-start gap-2.5 py-2.5">
                   {ICONOS_TIPO[a.tipo] ?? ICONOS_TIPO.sistema}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-200 break-words line-clamp-2">{a.detalle}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2 text-sm break-words text-slate-200">{a.detalle}</p>
                     <p className="text-[11px] text-slate-500">{haceCuando(a.fecha)}</p>
                   </div>
                 </li>
               ))}
             </ul>
           )}
-          <Button variant="ghost" size="sm" onClick={recargar} className="mt-2 text-cyan-200 hover:text-cyan-300 hover:bg-cyan-400/10">
-            <RefreshCw className="h-3.5 w-3.5 mr-1.5" aria-hidden />
-            Actualizar
-          </Button>
         </CardContent>
       </Card>
     </div>

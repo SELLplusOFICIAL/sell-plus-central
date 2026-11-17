@@ -174,7 +174,7 @@ export function SeverityBadge({ severity }: { severity: string | null }) {
     critica: { label: "Crítica", className: "bg-red-400/15 text-red-300 border-red-400/30" },
     alta: { label: "Alta", className: "bg-orange-400/15 text-orange-300 border-orange-400/30" },
     media: { label: "Media", className: "bg-amber-400/15 text-amber-300 border-amber-400/30" },
-    baja: { label: "Baja", className: "bg-white/5/10 text-slate-200 border-white/10" },
+    baja: { label: "Baja", className: "bg-white/[0.06] text-slate-300 border-white/10" },
     ok: { label: "Todo bien", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
     resuelta: { label: "Resuelta", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
   };
@@ -192,7 +192,7 @@ export function StatusBadge({ status }: { status: string }) {
     nuevo: { label: "Nuevo", className: "bg-amber-400/15 text-amber-300 border-amber-400/30" },
     analizado: { label: "Analizado", className: "bg-teal-400/15 text-teal-300 border-teal-400/30" },
     resuelto: { label: "Resuelto", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
-    borrador: { label: "Borrador", className: "bg-white/5/10 text-slate-200 border-white/10" },
+    borrador: { label: "Borrador", className: "bg-white/[0.06] text-slate-300 border-white/10" },
     publicada: { label: "Publicada", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
   };
   const s = map[status] ?? { label: status, className: "" };

@@ -92,7 +92,7 @@ function FilaEquipo({
               {m.machineName || m.machineId}
             </span>
             {/* Versión instalada */}
-            <span className="rounded bg-white/5/10 px-1.5 py-0.5 font-mono text-[11px] text-slate-200">
+            <span className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-slate-200">
               v{m.version || "?"}
             </span>
             {/* Estado de actualización */}
@@ -397,7 +397,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
 
       {/* URL de conexión para el Auto-Actualizador */}
       {origin && (
-        <Card className="border-sky-400/30 bg-sky-50/50">
+        <Card className="border-sky-400/30 bg-sky-400/[0.07]">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
               <Link2 className="h-4 w-4 text-sky-300" />
@@ -420,7 +420,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
               </code>
               <button
                 type="button"
-                className="flex shrink-0 items-center gap-1.5 rounded-lg border bg-white/5 px-3 py-2 text-xs font-medium hover:bg-white/5/5"
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border bg-white/5 px-3 py-2 text-xs font-medium hover:bg-white/[0.05]"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(origin);
@@ -522,7 +522,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
 
             {/* Pulso del actualizador heredado (cajas sin identidad todavía) */}
             {stats?.ultimaRevisionAnonima && (
-              <p className="mt-3 flex items-start gap-2 rounded-lg border border-white/10 bg-white/5/5 p-2.5 text-[11px] leading-relaxed text-slate-400">
+              <p className="mt-3 flex items-start gap-2 rounded-lg border border-white/10 bg-white/[0.05] p-2.5 text-[11px] leading-relaxed text-slate-400">
                 <RadioTower className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500" />
                 <span>
                   Además, el actualizador instalado revisó{" "}
@@ -554,7 +554,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
                 {issues.map((i) => (
                   <details
                     key={i.id}
-                    className="group rounded-lg border p-3 open:bg-white/5/5"
+                    className="group rounded-lg border p-3 open:bg-white/[0.05]"
                   >
                     <summary className="cursor-pointer list-none">
                       <div className="flex items-center justify-between gap-2">

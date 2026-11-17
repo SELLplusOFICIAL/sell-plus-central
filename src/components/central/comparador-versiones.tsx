@@ -124,10 +124,10 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
   }, [notasPar, parCargado])
 
   return (
-    <Card className="shadow-sm border-white/15">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2 text-slate-100">
-          <GitCompareArrows className="h-5 w-5 text-cyan-300" aria-hidden />
+        <CardTitle className="flex items-center gap-2 text-sm text-slate-100">
+          <GitCompareArrows className="h-4 w-4 text-cyan-300" aria-hidden />
           Comparar versiones
         </CardTitle>
         <p className="text-xs text-slate-400">
@@ -138,7 +138,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
       <CardContent className="pt-0">
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
           <Select value={anterior} onValueChange={setAntSel}>
-            <SelectTrigger aria-label="Versión anterior" className="border-white/15 focus:ring-cyan-500">
+            <SelectTrigger aria-label="Versión anterior">
               <SelectValue placeholder="Versión anterior" />
             </SelectTrigger>
             <SelectContent>
@@ -151,7 +151,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
           </Select>
           <ArrowRight className="h-4 w-4 text-slate-500 rotate-90 sm:rotate-0 self-center shrink-0" aria-hidden />
           <Select value={nueva} onValueChange={setNuevaSel}>
-            <SelectTrigger aria-label="Versión nueva" className="border-white/15 focus:ring-cyan-500">
+            <SelectTrigger aria-label="Versión nueva">
               <SelectValue placeholder="Versión nueva" />
             </SelectTrigger>
             <SelectContent>
@@ -190,7 +190,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
                 <Plus className="h-3 w-3 mr-1" aria-hidden />
                 {analisis.totalAnade} novedades
               </Badge>
-              <Badge className="bg-sky-400/15 text-sky-900 border-sky-400/30 hover:bg-sky-400/15">
+              <Badge className="border border-sky-400/25 bg-sky-400/10 text-sky-300 hover:bg-sky-400/15">
                 <Wrench className="h-3 w-3 mr-1" aria-hidden />
                 {analisis.totalAjusta} correcciones
               </Badge>
@@ -202,8 +202,8 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
 
             <div className="mt-4 space-y-3">
               {analisis.grupos.map(({ area, grupo }) => (
-                <div key={area} className="rounded-lg border border-white/10 overflow-hidden">
-                  <div className="bg-white/5/5 px-3 py-2 text-sm font-semibold text-slate-200">
+                <div key={area} className="rounded-lg border border-white/[0.08] overflow-hidden">
+                  <div className="bg-white/[0.05] px-3 py-2 text-sm font-semibold text-slate-200">
                     {NOMBRE_AREA[area] ?? area}
                   </div>
                   <ul className="divide-y divide-white/10">
@@ -225,7 +225,7 @@ export default function ComparadorVersiones({ versiones }: { versiones: VersionI
                       </li>
                     ))}
                     {grupo.retirada.map((l, i) => (
-                      <li key={`r${i}`} className="px-3 py-2 text-sm text-slate-300 flex gap-2 bg-amber-50/50">
+                      <li key={`r${i}`} className="px-3 py-2 text-sm text-slate-300 flex gap-2 bg-amber-400/[0.06]">
                         <AlertTriangle className="h-3.5 w-3.5 mt-0.5 text-amber-400 shrink-0" aria-hidden />
                         <span>
                           <span className="text-[10px] font-bold uppercase tracking-wide text-amber-300 mr-1">

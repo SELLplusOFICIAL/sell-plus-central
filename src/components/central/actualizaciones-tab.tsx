@@ -6,19 +6,17 @@ import {
   PackageCheck,
   ShieldCheck,
   FileDown,
-  Download,
   ChevronDown,
   Archive,
   Clock,
   Smartphone,
+  Download,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { VersionItem, fechaCorta, mb } from '@/lib/types'
-import { VISIBLE_DESDE } from '@/lib/resumenes'
 import ComparadorVersiones from '@/components/central/comparador-versiones'
 import { toast } from 'sonner'
 
@@ -38,7 +36,6 @@ function etiqueta(titulo: string): string {
 
 /**
  * Notas completas de una versión, traídas SOLO cuando el dueño las pide.
- * El registro por defecto es resumido (entrega «Cifra Fresca»).
  */
 function NotasCompletas({ version }: { version: string }) {
   const [notas, setNotas] = useState<string | null>(null)
@@ -73,7 +70,7 @@ function NotasCompletas({ version }: { version: string }) {
         type="button"
         onClick={abrir}
         aria-expanded={notas !== null}
-        className="inline-flex items-center gap-1 rounded-md px-2 py-1 -mx-2 text-xs font-semibold text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-300 transition-colors"
+        className="-mx-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-cyan-300/90 transition-colors hover:bg-cyan-400/10 hover:text-cyan-200"
       >
         <ChevronDown
           className={`h-3.5 w-3.5 transition-transform ${notas !== null ? 'rotate-180' : ''}`}
@@ -82,10 +79,10 @@ function NotasCompletas({ version }: { version: string }) {
         {cargando ? 'Buscando notas…' : notas !== null ? 'Ocultar notas completas' : 'Ver notas completas'}
       </button>
       {notas !== null && (
-        <ul className="space-y-1 mt-2">
+        <ul className="sp-scroll mt-2 max-h-64 space-y-1 overflow-y-auto pr-1">
           {notas.split('\n').filter(Boolean).map((linea, i) => (
-            <li key={i} className="text-xs text-slate-300 flex gap-2">
-              <span className="text-cyan-400 mt-0.5" aria-hidden>•</span>
+            <li key={i} className="flex gap-2 text-xs text-slate-300">
+              <span className="mt-0.5 text-cyan-400/80" aria-hidden>•</span>
               <span>{linea.replace(/^[-•]\s*/, '')}</span>
             </li>
           ))}
@@ -97,8 +94,6 @@ function NotasCompletas({ version }: { version: string }) {
 
 /**
  * Tarjeta del APK móvil — canal propio, independiente de las versiones de PC.
- * La Central siempre ofrece la versión vigente (/api/apk) y el teléfono se
- * actualiza desde aquí instalando la nueva versión encima.
  */
 function TarjetaApk() {
   const [apk, setApk] = useState<{
@@ -128,63 +123,62 @@ function TarjetaApk() {
   if (!apk) return null
 
   return (
-    <Card className="shadow-[0_0_30px_rgba(34,211,238,0.08)] border-cyan-400/30 bg-gradient-to-br from-cyan-400/10 via-sky-400/5 to-blue-500/10">
-      <CardContent className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
-        <div className="sp-glow flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-300/40 bg-gradient-to-br from-cyan-400/80 to-blue-600/80">
-          <Smartphone className="h-6 w-6 text-white" aria-hidden />
+    <Card className="sp-hover-lift">
+      <CardContent className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:px-5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-cyan-400/25 to-blue-500/25">
+          <Smartphone className="h-5 w-5 text-cyan-300" aria-hidden />
         </div>
-        <div className="min-w-[230px] flex-1">
-          <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-cyan-200">
-            CipherPoint Móvil (APK) v{apk.version}
-            <Badge className="bg-cyan-400/25 text-cyan-100 hover:bg-cyan-400/35 shrink-0">
-              Disponible en la Central
+        <div className="min-w-[220px] flex-1">
+          <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-100">
+            CipherPoint Móvil <span className="text-slate-400">v{apk.version}</span>
+            <Badge className="border border-cyan-300/25 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20">
+              Actualizable desde la Central
             </Badge>
           </p>
-          <p className="mt-0.5 text-xs text-slate-300">
-            La app Android de la tienda. Se instala aparte de la versión de PC 6.7.0
-            (no la toca) y recibe sus actualizaciones desde la Central: descarga la
-            nueva versión e instálala encima, sin desinstalar.
+          <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
+            La app Android de la tienda. Se instala aparte de la versión de PC y recibe sus
+            actualizaciones desde aquí: instala la nueva encima, sin desinstalar.
           </p>
         </div>
         <a
           href="/api/apk/download"
-          className="sp-glow inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-transform hover:from-cyan-400 hover:to-blue-500"
+          className="sp-btn-grad inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-transform active:scale-[0.97]"
         >
           <Smartphone className="h-3.5 w-3.5" aria-hidden />
-          Descargar APK para Android
+          Descargar APK
         </a>
       </CardContent>
       {(apk.fileSize || apk.sha256 || (apk.notas && apk.notas.length > 0)) && (
-        <CardContent className="px-4 pb-4 pt-0 sm:px-5">
+        <CardContent className="px-4 pb-3.5 pt-0 sm:px-5">
           <button
             type="button"
             onClick={() => setAbierto((a) => !a)}
             aria-expanded={abierto}
-            className="inline-flex items-center gap-1 rounded-md px-2 py-1 -mx-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-400/10 hover:text-cyan-200 transition-colors"
+            className="-mx-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-slate-400 transition-colors hover:bg-white/[0.06] hover:text-slate-200"
           >
             <ChevronDown
               className={`h-3.5 w-3.5 transition-transform ${abierto ? 'rotate-180' : ''}`}
               aria-hidden
             />
-            {abierto ? 'Ocultar detalles del APK' : 'Detalles del APK'}
+            {abierto ? 'Ocultar detalles' : 'Detalles del APK'}
           </button>
           {abierto && (
-            <div className="mt-2 space-y-1.5">
-              <p className="text-xs text-slate-400 flex items-center gap-1.5 flex-wrap">
+            <div className="mt-1.5 space-y-1.5">
+              <p className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
                 <FileDown className="h-3.5 w-3.5" aria-hidden />
                 <span className="font-mono text-[11px] text-slate-300">{apk.fileName}</span>
                 {apk.fileSize ? ` · ${mb(apk.fileSize)}` : ''}
                 {apk.fecha ? ` · ${apk.fecha}` : ''}
               </p>
               {apk.sha256 && (
-                <p className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                <p className="flex items-center gap-1.5 text-[11px] text-slate-400">
                   <ShieldCheck className="h-3.5 w-3.5 text-cyan-400" aria-hidden />
                   SHA-256 verificado: <span className="font-mono">{apk.sha256.slice(0, 16)}…</span>
                 </p>
               )}
               {apk.notas?.map((n, i) => (
-                <p key={i} className="text-xs text-slate-300 flex gap-2">
-                  <span className="text-cyan-400 mt-0.5 shrink-0" aria-hidden>•</span>
+                <p key={i} className="flex gap-2 text-xs text-slate-300">
+                  <span className="mt-0.5 shrink-0 text-cyan-400/80" aria-hidden>•</span>
                   <span>{n}</span>
                 </p>
               ))}
@@ -193,6 +187,38 @@ function TarjetaApk() {
         </CardContent>
       )}
     </Card>
+  )
+}
+
+/** Fila compacta de una versión del historial: se expande con un clic. */
+function FilaHistorial({ v }: { v: VersionItem }) {
+  const [abierto, setAbierto] = useState(false)
+  return (
+    <li className="border-b border-white/[0.06] last:border-0">
+      <button
+        type="button"
+        onClick={() => setAbierto((a) => !a)}
+        aria-expanded={abierto}
+        className="flex w-full items-center gap-2.5 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-white/[0.04]"
+      >
+        <ChevronDown
+          className={`h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform ${abierto ? 'rotate-180' : ''}`}
+          aria-hidden
+        />
+        <span className="shrink-0 font-mono text-xs font-semibold text-slate-200">v{v.version}</span>
+        <span className="min-w-0 flex-1 truncate text-xs text-slate-400">{etiqueta(v.titulo)}</span>
+        <span className="hidden shrink-0 items-center gap-1 text-[10px] text-slate-600 sm:flex">
+          <Clock className="h-3 w-3" aria-hidden />
+          {fechaCorta(v.fecha)}
+        </span>
+      </button>
+      {abierto && (
+        <div className="px-2 pb-3 pl-9 pr-3">
+          <p className="text-xs leading-relaxed text-slate-300">{v.resumen}</p>
+          <NotasCompletas version={v.version} />
+        </div>
+      )}
+    </li>
   )
 }
 
@@ -225,173 +251,149 @@ export default function ActualizacionesTab() {
   if (versiones === null) {
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-bold text-slate-100">Versiones de tu software</h2>
-            <p className="text-xs text-slate-400">
-              Cada actualización se instala sola y conserva tu base de datos
-            </p>
-          </div>
-          <Button variant="outline" size="sm" disabled className="border-white/15 text-slate-200">
-            <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" aria-hidden />
-            Actualizar
-          </Button>
-        </div>
+        <Skeleton className="h-44 w-full rounded-2xl" />
         <Skeleton className="h-16 w-full rounded-2xl" />
-        <Skeleton className="h-24 w-full rounded-2xl" />
-        <Skeleton className="h-24 w-full rounded-2xl" />
+        <Skeleton className="h-16 w-full rounded-2xl" />
+        <Skeleton className="h-14 w-full rounded-2xl" />
       </div>
     )
   }
 
-  const visibles = versiones.filter((v) => v.version >= VISIBLE_DESDE)
-  const archivo = versiones.filter((v) => v.version < VISIBLE_DESDE)
+  /* Solo la versión oficial se despliega completa; todo lo demás queda plegado. */
+  const oficial = versiones.find((v) => v.version === ultima) ?? versiones[0] ?? null
+  const demas = versiones.filter((v) => v.id !== oficial?.id)
 
   return (
     <div className="space-y-4">
+      {/* Encabezado de sección */}
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-100">Versiones de tu software</h2>
+          <h2 className="text-lg font-bold tracking-tight text-slate-100">Actualizaciones</h2>
           <p className="text-xs text-slate-400">
-            La versión oficial está siempre disponible aquí; las demás quedan como historial de cambios. Tu software se actualiza solo.
+            La versión oficial se instala sola y conserva tu base de datos.
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={cargar} disabled={cargando} className="border-white/15 text-slate-200 hover:bg-cyan-400/10 hover:text-cyan-300">
-          <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${cargando ? 'animate-spin' : ''}`} aria-hidden />
-          Actualizar
-        </Button>
+        <button
+          type="button"
+          onClick={cargar}
+          disabled={cargando}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition-colors hover:bg-white/[0.08] hover:text-white disabled:opacity-60"
+          aria-label="Actualizar lista"
+        >
+          <RefreshCw className={`h-4 w-4 ${cargando ? 'animate-spin' : ''}`} aria-hidden />
+        </button>
       </div>
 
-      {/* App móvil (APK) — canal propio, siempre disponible en la Central */}
+      {/* Versión oficial — la única tarjeta desplegada */}
+      {oficial && (
+        <div className="sp-story rounded-[18px] p-[1.5px]">
+          <Card className="border-0 bg-[#0a0e17] shadow-none">
+            <CardContent className="px-5 py-5 sm:px-6">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="font-mono text-2xl font-bold tracking-tight text-white">
+                  v{oficial.version}
+                </span>
+                <span className="text-sm font-semibold text-cyan-300">«{etiqueta(oficial.titulo)}»</span>
+                <Badge className="border border-white/15 bg-white/10 text-white hover:bg-white/15">
+                  <PackageCheck className="h-3 w-3" aria-hidden />
+                  Oficial
+                </Badge>
+                <span className="flex items-center gap-1 text-[11px] text-slate-500">
+                  <Clock className="h-3 w-3" aria-hidden />
+                  {fechaCorta(oficial.fecha)}
+                </span>
+              </div>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">{oficial.resumen}</p>
+
+              {oficial.fileName && (
+                <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                  <a
+                    href={`/api/updates/download/${oficial.version}`}
+                    className="sp-btn-grad inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold transition-transform active:scale-[0.97]"
+                  >
+                    <FileDown className="h-4 w-4" aria-hidden />
+                    Descargar instalador
+                  </a>
+                  <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] text-slate-400">
+                    <span className="font-mono">{mb(oficial.fileSize ?? 0)}</span>
+                    {oficial.sha256 && (
+                      <>
+                        <span className="text-slate-600">·</span>
+                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" aria-hidden />
+                        <span className="font-mono">{oficial.sha256.slice(0, 12)}…</span>
+                      </>
+                    )}
+                  </span>
+                </div>
+              )}
+              <p className="mt-3 text-xs text-slate-500">
+                Tu software la descarga, verifica e instala solo; aquí siempre está disponible.
+              </p>
+              <div className="mt-2">
+                <NotasCompletas version={oficial.version} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* App móvil (APK) */}
       <TarjetaApk />
 
-      {/* Kit de configuración para otras PCs (clientes) */}
-      <Card className="shadow-sm border-cyan-400/20 bg-cyan-400/10">
-        <CardContent className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
-          <div className="min-w-[230px] flex-1">
-            <p className="flex items-center gap-1.5 text-sm font-semibold text-cyan-300">
-              <Download className="h-4 w-4" aria-hidden />
-              ¿Instalando Sell-Plus en otra computadora?
-            </p>
-            <p className="mt-0.5 text-xs text-slate-300">
-              Baja el kit de configuración: apunta tu Sell-Plus a esta Central en un clic y abre
-              directamente las actualizaciones y soluciones (solo información y descargas).
+      {/* Kit para otras PCs */}
+      <Card className="sp-hover-lift">
+        <CardContent className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:px-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-indigo-400/25 to-violet-500/25">
+            <Download className="h-5 w-5 text-indigo-300" aria-hidden />
+          </div>
+          <div className="min-w-[220px] flex-1">
+            <p className="text-sm font-semibold text-slate-100">¿Instalando en otra computadora?</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
+              Kit de configuración: apunta tu Sell-Plus a esta Central en un clic.
             </p>
           </div>
           <a
             href="/Sell-Plus-Kit-Clientes.zip"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-cyan-600"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-slate-100 transition-colors hover:bg-white/[0.11] hover:text-white"
           >
             <FileDown className="h-3.5 w-3.5" aria-hidden />
-            Descargar kit para tu PC
+            Kit para PC
           </a>
         </CardContent>
       </Card>
 
-      {/* Registro resumido: 6.0.0 en adelante */}
-      <ol className="relative space-y-3 border-l-2 border-cyan-400/20 ml-3">
-        {visibles.map((v) => {
-          const esUltima = v.version === ultima
-          return (
-            <li key={v.id} className="ml-6">
-              <span
-                className={`absolute -left-[9px] mt-1.5 flex h-4 w-4 items-center justify-center rounded-full border-2 ${
-                  esUltima ? 'bg-cyan-500 border-cyan-400/20' : 'bg-slate-600 border-white/10'
-                }`}
-                aria-hidden
-              />
-              <Card className={`shadow-sm ${esUltima ? 'border-cyan-400/30 bg-cyan-400/10/40' : 'border-white/10'}`}>
-                <CardContent className="px-4 sm:px-5 py-3.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <CardTitle className="text-base text-slate-50">v{v.version}</CardTitle>
-                    <span className="text-sm font-semibold text-cyan-300">
-                      «{etiqueta(v.titulo)}»
-                    </span>
-                    {esUltima && (
-                      <Badge className="bg-cyan-600 hover:bg-cyan-600 text-white">
-                        <PackageCheck className="h-3 w-3 mr-1" aria-hidden />
-                        Versión oficial — siempre disponible
-                      </Badge>
-                    )}
-                    <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                      <Clock className="h-3 w-3" aria-hidden />
-                      {fechaCorta(v.fecha)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-slate-300 mt-1.5">{v.resumen}</p>
-                  {esUltima && (
-                    <p className="text-xs text-cyan-200 mt-1">
-                      Esta es la versión que tu software instala y reinstala; la puedes descargar aquí siempre. El resto de versiones queda como historial de cambios.
-                    </p>
-                  )}
-
-                  {esUltima && v.fileName && (
-                    <div className="rounded-lg bg-white/5/5 border border-cyan-400/20 p-3 mt-3 space-y-1.5">
-                      <p className="text-xs text-slate-300 flex items-center gap-1.5 flex-wrap">
-                        <FileDown className="h-3.5 w-3.5 text-slate-400" aria-hidden />
-                        <span className="font-mono text-[11px]">{v.fileName}</span>
-                        {v.fileSize ? ` · ${mb(v.fileSize)}` : ''}
-                      </p>
-                      {v.sha256 && (
-                        <p className="text-[11px] text-slate-400 flex items-center gap-1.5">
-                          <ShieldCheck className="h-3.5 w-3.5 text-cyan-400" aria-hidden />
-                          SHA-256 verificado: <span className="font-mono">{v.sha256.slice(0, 16)}…</span>
-                        </p>
-                      )}
-                      <a
-                        href={`/api/updates/download/${v.version}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-200 hover:text-cyan-300 underline underline-offset-2"
-                      >
-                        <FileDown className="h-3.5 w-3.5" aria-hidden />
-                        Descargar instalador
-                      </a>
-                    </div>
-                  )}
-
-                  <NotasCompletas version={v.version} />
-                </CardContent>
-              </Card>
-            </li>
-          )
-        })}
-      </ol>
-
-      {/* Archivo: versiones anteriores (3.x – 5.x), colapsadas y sin notas */}
-      {archivo.length > 0 && (
+      {/* Historial de versiones — compacto y plegado por defecto */}
+      {demas.length > 0 && (
         <Collapsible>
-          <Card className="shadow-sm border-white/10">
+          <Card>
             <CollapsibleTrigger className="w-full text-left">
-              <CardHeader className="py-3 px-4 sm:px-5">
-                <CardTitle className="text-sm text-slate-200 flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-2">
-                    <Archive className="h-4 w-4 text-slate-500" aria-hidden />
-                    Versiones anteriores ({archivo.length})
-                    <span className="text-slate-500 font-normal">
-                      · de la v{archivo[archivo.length - 1].version} a la v{archivo[0].version} — historial de cambios
+              <CardContent className="flex items-center justify-between gap-2 px-5 py-3.5">
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <Archive className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
+                  <span className="truncate text-sm font-semibold text-slate-200">
+                    Historial de versiones
+                    <span className="ml-1.5 text-xs font-normal text-slate-500">
+                      ({demas.length} · de v{demas[demas.length - 1].version} a v{demas[0].version})
                     </span>
                   </span>
-                  <Badge variant="secondary">Historial</Badge>
-                </CardTitle>
-              </CardHeader>
+                </span>
+                <span className="flex shrink-0 items-center gap-2">
+                  <Badge variant="secondary" className="border border-white/10 bg-white/[0.06] text-slate-300">
+                    Historial
+                  </Badge>
+                  <ChevronDown className="h-4 w-4 text-slate-500" aria-hidden />
+                </span>
+              </CardContent>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <CardContent className="px-4 sm:px-5 pb-4 pt-0">
-                <p className="text-xs text-slate-400 mb-2">
-                  Historial completo antes de la v{VISIBLE_DESDE}. Instaladores antiguos disponibles
-                  en GitHub; tu software nunca necesita reinstalarlas.
+              <CardContent className="px-4 pb-4 pt-0 sm:px-5">
+                <p className="mb-1 px-2 text-[11px] text-slate-500">
+                  Una línea por versión; tócala para ver su resumen y notas. Nada de esto necesita
+                  instalarse: son solo el historial de cambios.
                 </p>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-                  {archivo.map((v) => (
-                    <li
-                      key={v.id}
-                      className="flex items-baseline gap-2 border-b border-white/10 py-1.5 text-sm"
-                    >
-                      <span className="font-mono text-xs text-slate-200 shrink-0">v{v.version}</span>
-                      <span className="text-xs text-slate-400 truncate flex-1">{etiqueta(v.titulo)}</span>
-                      <span className="text-[10px] text-slate-500 shrink-0">
-                        {new Date(v.fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}
-                      </span>
-                    </li>
+                <ul>
+                  {demas.map((v) => (
+                    <FilaHistorial key={v.id} v={v} />
                   ))}
                 </ul>
               </CardContent>
@@ -400,21 +402,27 @@ export default function ActualizacionesTab() {
         </Collapsible>
       )}
 
-      {/* Comparador de versiones: qué cambia entre una versión y otra, por área */}
+      {/* Comparador: qué cambia entre una versión y otra, por área */}
       {versiones.length >= 2 && <ComparadorVersiones versiones={versiones} />}
 
+      {/* FAQ — plegada */}
       <Collapsible>
-        <Card className="shadow-sm border-white/10">
+        <Card>
           <CollapsibleTrigger className="w-full text-left">
-            <CardHeader className="py-3">
-              <CardTitle className="text-sm text-slate-200 flex items-center justify-between">
+            <CardContent className="flex items-center justify-between gap-2 px-5 py-3.5">
+              <span className="text-sm font-semibold text-slate-200">
                 ¿Tengo que hacer algo cuando sale una versión nueva?
-                <Badge variant="secondary">No</Badge>
-              </CardTitle>
-            </CardHeader>
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                <Badge className="border border-emerald-300/25 bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20">
+                  No
+                </Badge>
+                <ChevronDown className="h-4 w-4 text-slate-500" aria-hidden />
+              </span>
+            </CardContent>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <CardContent className="pt-0 text-sm text-slate-300">
+            <CardContent className="px-5 pb-5 pt-0 text-sm leading-relaxed text-slate-300">
               <p>
                 No. Tu software revisa la Central cada 15 minutos mientras está abierto (y cada 6
                 horas también). Cuando publico una versión nueva aquí, tu equipo la descarga, la

@@ -7,14 +7,15 @@ import {
   Copy,
   Loader2,
   ShieldCheck,
-  Wrench,
   Wifi,
   XCircle,
   Bug,
   TimerReset,
   Paintbrush,
+  ChevronDown,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -63,9 +64,35 @@ const CONOCIDOS: { titulo: string; detalle: string; tipo: 'bug' | 'retraso' | 'c
 ]
 
 const ESTILO_TIPO: Record<string, { label: string; clase: string; icono: React.ReactNode }> = {
-  bug: { label: 'Bug curado', clase: 'bg-red-400/15 text-red-300 hover:bg-red-400/15', icono: <Bug className="h-3.5 w-3.5" aria-hidden /> },
-  retraso: { label: 'Retraso conocido', clase: 'bg-amber-400/15 text-amber-300 hover:bg-amber-400/15', icono: <TimerReset className="h-3.5 w-3.5" aria-hidden /> },
-  cosmetico: { label: 'Cosmético', clase: 'bg-white/5/10 text-slate-300 hover:bg-white/5/10', icono: <Paintbrush className="h-3.5 w-3.5" aria-hidden /> },
+  bug: { label: 'Bug curado', clase: 'border border-red-400/25 bg-red-400/10 text-red-300 hover:bg-red-400/15', icono: <Bug className="h-3 w-3" aria-hidden /> },
+  retraso: { label: 'Retraso conocido', clase: 'border border-amber-400/25 bg-amber-400/10 text-amber-300 hover:bg-amber-400/15', icono: <TimerReset className="h-3 w-3" aria-hidden /> },
+  cosmetico: { label: 'Cosmético', clase: 'border border-white/10 bg-white/[0.06] text-slate-300 hover:bg-white/[0.1]', icono: <Paintbrush className="h-3 w-3" aria-hidden /> },
+}
+
+/** Bloque de resultado compartido por el chequeo y la prueba de conexión */
+function Resultado({ estado, detalle }: { estado: 'al-dia' | 'actualizar' | 'error'; detalle: string }) {
+  if (estado === 'al-dia') {
+    return (
+      <div className="flex items-start gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/[0.08] p-3">
+        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" aria-hidden />
+        <p className="text-sm leading-relaxed text-emerald-200">{detalle}</p>
+      </div>
+    )
+  }
+  if (estado === 'actualizar') {
+    return (
+      <div className="flex items-start gap-2 rounded-xl border border-amber-400/25 bg-amber-400/[0.08] p-3">
+        <TimerReset className="h-5 w-5 shrink-0 text-amber-400" aria-hidden />
+        <p className="text-sm leading-relaxed text-amber-200">{detalle}</p>
+      </div>
+    )
+  }
+  return (
+    <div className="flex items-start gap-2 rounded-xl border border-red-400/25 bg-red-400/[0.08] p-3">
+      <XCircle className="h-5 w-5 shrink-0 text-red-400" aria-hidden />
+      <p className="text-sm leading-relaxed text-red-200">{detalle}</p>
+    </div>
+  )
 }
 
 export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | null }) {
@@ -77,6 +104,7 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
   const [urlCentral, setUrlCentral] = useState<string>(CENTRAL_URL)
   const [activas, setActivas] = useState<SolicitudItem[] | null>(null)
   const [copiado, setCopiado] = useState(false)
+  const [abierto, setAbierto] = useState<number | null>(null)
 
   const llaveAdmin = (): Record<string, string> => {
     try {
@@ -200,181 +228,189 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <Wrench className="h-5 w-5 text-cyan-300" aria-hidden />
-          Diagnóstico — especialista de la versión 6.7.0
-        </h2>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Resolvemos problemas de funcionalidad de código, bugs y retrasos de funciones de la
-          versión oficial. Verifica tu instalación, revisa los problemas conocidos y genera un
-          reporte listo para resolver.
+        <h2 className="text-lg font-bold tracking-tight text-slate-100">Diagnóstico</h2>
+        <p className="text-xs text-slate-400">
+          Especialista de la v6.7.0: código, bugs y retrasos. Verifica tu instalación, revisa lo
+          conocido y genera un reporte listo para resolver.
         </p>
       </div>
 
-      {/* Chequeo de la instalación */}
-      <Card className="shadow-sm border-white/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
-            <ShieldCheck className="h-5 w-5 text-cyan-300" aria-hidden />
-            Chequear tu instalación
-          </CardTitle>
-          <p className="text-xs text-slate-400">
-            Compara la versión que corre en tu PC contra la oficial de la Central.
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Input
-              value={versionConsulta}
-              onChange={(e) => setVersionConsulta(e.target.value)}
-              placeholder="6.7.0"
-              className="w-32 font-mono border-white/15 focus-visible:ring-cyan-500"
-              aria-label="Versión instalada en la PC"
-            />
+      {/* Herramientas: chequeo y conexión, lado a lado */}
+      <div className="grid gap-3 lg:grid-cols-2">
+        <Card className="sp-hover-lift">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-sm text-slate-100">
+              <ShieldCheck className="h-4 w-4 text-cyan-300" aria-hidden />
+              Chequear tu instalación
+            </CardTitle>
+            <p className="text-xs text-slate-400">
+              Compara tu versión contra la oficial de la Central.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Input
+                value={versionConsulta}
+                onChange={(e) => setVersionConsulta(e.target.value)}
+                placeholder="6.7.0"
+                className="w-28 font-mono"
+                aria-label="Versión instalada en la PC"
+              />
+              <Button
+                onClick={chequear}
+                disabled={chequeando}
+                size="sm"
+                className="sp-btn-grad border-0 shadow-none"
+              >
+                {chequeando ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                    Verificando…
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="h-4 w-4" aria-hidden />
+                    Verificar
+                  </>
+                )}
+              </Button>
+            </div>
+            {chequeo && <Resultado estado={chequeo.estado} detalle={chequeo.detalle} />}
+          </CardContent>
+        </Card>
+
+        <Card className="sp-hover-lift">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-sm text-slate-100">
+              <Wifi className="h-4 w-4 text-cyan-300" aria-hidden />
+              Conexión con la Central
+            </CardTitle>
+            <p className="text-xs text-slate-400">
+              Igual que lo hace tu software cada 15 minutos.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3">
             <Button
-              onClick={chequear}
-              disabled={chequeando}
-              className="bg-cyan-600 hover:bg-cyan-700 text-white"
+              onClick={probar}
+              disabled={estado === 'probando'}
+              size="sm"
+              variant="outline"
+              className="border-white/12 bg-white/[0.05] text-slate-100 hover:bg-white/[0.1] hover:text-white"
             >
-              {chequeando ? (
+              {estado === 'probando' ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden />
-                  Verificando…
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  Probando…
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="h-4 w-4 mr-1.5" aria-hidden />
-                  Verificar versión
+                  <ShieldCheck className="h-4 w-4" aria-hidden />
+                  Probar conexión
                 </>
               )}
             </Button>
-          </div>
-          {chequeo?.estado === 'al-dia' && (
-            <div className="rounded-lg bg-cyan-400/10 border border-cyan-400/20 p-3 flex items-start gap-2">
-              <CheckCircle2 className="h-5 w-5 text-cyan-400 shrink-0" aria-hidden />
-              <p className="text-sm text-cyan-300">{chequeo.detalle}</p>
-            </div>
-          )}
-          {chequeo?.estado === 'actualizar' && (
-            <div className="rounded-lg bg-amber-50 border border-amber-400/30 p-3 flex items-start gap-2">
-              <TimerReset className="h-5 w-5 text-amber-400 shrink-0" aria-hidden />
-              <p className="text-sm text-amber-300">{chequeo.detalle}</p>
-            </div>
-          )}
-          {chequeo?.estado === 'error' && (
-            <div className="rounded-lg bg-red-50 border border-red-400/30 p-3 flex items-start gap-2">
-              <XCircle className="h-5 w-5 text-red-400 shrink-0" aria-hidden />
-              <p className="text-sm text-red-300">{chequeo.detalle}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Conexión con la Central */}
-      <Card className="shadow-sm border-white/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
-            <Wifi className="h-5 w-5 text-cyan-300" aria-hidden />
-            Conexión con la Central
-          </CardTitle>
-          <p className="text-xs text-slate-400">
-            Igual que lo hace tu software automáticamente, cada 15 minutos.
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Button onClick={probar} disabled={estado === 'probando'} variant="outline" className="border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10">
-            {estado === 'probando' ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden />
-                Probando…
-              </>
-            ) : (
-              <>
-                <ShieldCheck className="h-4 w-4 mr-1.5" aria-hidden />
-                Probar conexión
-              </>
+            {estado === 'ok' && <Resultado estado="al-dia" detalle={detalle} />}
+            {estado === 'error' && <Resultado estado="error" detalle={detalle} />}
+            {resumen?.ultimaConexion && (
+              <p className="text-xs text-slate-500">
+                Última conexión recibida de tu software: {haceCuando(resumen.ultimaConexion.fecha)}
+              </p>
             )}
-          </Button>
-          {estado === 'ok' && (
-            <div className="rounded-lg bg-cyan-400/10 border border-cyan-400/20 p-3 flex items-start gap-2">
-              <CheckCircle2 className="h-5 w-5 text-cyan-400 shrink-0" aria-hidden />
-              <p className="text-sm text-cyan-300">{detalle}</p>
-            </div>
-          )}
-          {estado === 'error' && (
-            <div className="rounded-lg bg-red-50 border border-red-400/30 p-3 flex items-start gap-2">
-              <XCircle className="h-5 w-5 text-red-400 shrink-0" aria-hidden />
-              <p className="text-sm text-red-300">{detalle}</p>
-            </div>
-          )}
-          {resumen?.ultimaConexion && (
-            <p className="text-xs text-slate-400">
-              Última conexión recibida de tu software: {haceCuando(resumen.ultimaConexion.fecha)}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* Problemas conocidos de la 6.7.0 */}
-      <Card className="shadow-sm border-white/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
-            <Bug className="h-5 w-5 text-cyan-300" aria-hidden />
-            Problemas conocidos de la v6.7.0 y su estado
-          </CardTitle>
-          <p className="text-xs text-slate-400">
-            Lo que ya identificamos en el laboratorio, con la solución asignada. Ninguno bloquea la
-            venta del día.
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {CONOCIDOS.map((c) => {
-            const estilo = ESTILO_TIPO[c.tipo]
-            return (
-              <div key={c.titulo} className="rounded-lg border border-white/10 bg-white/5/5/70 p-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-semibold text-slate-100 flex-1 min-w-0 break-words">{c.titulo}</p>
-                  <Badge className={estilo.clase + ' gap-1 shrink-0'}>
-                    {estilo.icono}
-                    {estilo.label}
-                  </Badge>
-                </div>
-                <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">{c.detalle}</p>
-              </div>
-            )
-          })}
-        </CardContent>
+      {/* Problemas conocidos — compacto: plegado por defecto, una línea por problema */}
+      <Card>
+        <Collapsible open={abierto !== null} onOpenChange={(o) => { if (!o) setAbierto(null) }}>
+          <CollapsibleTrigger asChild>
+            <button type="button" className="w-full text-left" aria-expanded={abierto !== null}>
+              <CardContent className="flex items-center justify-between gap-2 px-5 py-3.5">
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <Bug className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
+                  <span className="truncate text-sm font-semibold text-slate-200">
+                    Problemas conocidos de la v6.7.0
+                    <span className="ml-1.5 text-xs font-normal text-slate-500">
+                      ({CONOCIDOS.length} registrados · ninguno bloquea la venta del día)
+                    </span>
+                  </span>
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${abierto !== null ? 'rotate-180' : ''}`}
+                  aria-hidden
+                />
+              </CardContent>
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="px-3 pb-4 pt-0">
+              <p className="mb-1 px-2 text-[11px] text-slate-500">
+                Identificados en el laboratorio, con la solución asignada. Toca uno para ver el detalle.
+              </p>
+              <ul className="space-y-0.5">
+                {CONOCIDOS.map((c, i) => {
+                  const estilo = ESTILO_TIPO[c.tipo]
+                  const desplegado = abierto === i
+                  return (
+                    <li key={c.titulo}>
+                      <button
+                        type="button"
+                        onClick={() => setAbierto(desplegado ? null : i)}
+                        aria-expanded={desplegado}
+                        className="flex w-full items-center gap-2.5 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-white/[0.04]"
+                      >
+                        <ChevronDown
+                          className={`h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform ${desplegado ? 'rotate-180' : ''}`}
+                          aria-hidden
+                        />
+                        <span className="min-w-0 flex-1 truncate text-sm text-slate-200">{c.titulo}</span>
+                        <Badge className={`${estilo.clase} shrink-0 gap-1 border-0`}>
+                          {estilo.icono}
+                          {estilo.label}
+                        </Badge>
+                      </button>
+                      {desplegado && (
+                        <p className="px-2 pb-3 pl-9 pr-3 text-xs leading-relaxed text-slate-300">
+                          {c.detalle}
+                        </p>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
       </Card>
 
       {/* Reporte para resolver de inmediato */}
-      <Card className="shadow-sm border-cyan-400/20">
+      <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
-            <ClipboardCheck className="h-5 w-5 text-cyan-300" aria-hidden />
+          <CardTitle className="flex items-center gap-2 text-sm text-slate-100">
+            <ClipboardCheck className="h-4 w-4 text-cyan-300" aria-hidden />
             Reporte listo para resolver
           </CardTitle>
           <p className="text-xs text-slate-400">
-            Copia este reporte, complétalo con lo que ves en tu PC y pégamelo en el chat de IA
-            (botón IA arriba) o en Solicitudes: lo resuelvo de inmediato.
+            Cópialo, complétalo con lo que ves en tu PC y pégamelo en el chat de IA o en Solicitudes.
           </p>
         </CardHeader>
         <CardContent className="space-y-3">
-          <pre className="rounded-lg border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap break-words select-all">
+          <pre className="sp-scroll max-h-64 overflow-y-auto rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 text-[11px] leading-relaxed text-slate-300 break-words whitespace-pre-wrap select-all">
             {armarReporte()}
           </pre>
           <Button
             size="sm"
             onClick={copiarReporte}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white"
+            className="sp-btn-grad border-0 shadow-none"
           >
             {copiado ? (
               <>
-                <CheckCircle2 className="h-4 w-4 mr-1.5" aria-hidden />
+                <CheckCircle2 className="h-4 w-4" aria-hidden />
                 ¡Copiado!
               </>
             ) : (
               <>
-                <Copy className="h-4 w-4 mr-1.5" aria-hidden />
+                <Copy className="h-4 w-4" aria-hidden />
                 Copiar reporte
               </>
             )}

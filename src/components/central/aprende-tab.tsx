@@ -17,37 +17,37 @@ const PDF_URL = '/instructivos/instructivo-cipherpoint-6.7.0.pdf'
 const VIDEOS: { archivo: string; titulo: string; desc: string; dur: string }[] = [
   {
     archivo: 'instructivo-1-entrar-y-abrir-la-caja',
-    titulo: 'Parte 1 · Entrar y abrir la caja',
+    titulo: 'Entrar y abrir la caja',
     desc: '«¿Quién está en caja?», tu nombre y PIN, apertura con efectivo y dólares, y la barra de avisos.',
     dur: '0:20',
   },
   {
     archivo: 'instructivo-2-vender-en-la-caja',
-    titulo: 'Parte 2 · Vender en la Caja',
+    titulo: 'Vender en la Caja',
     desc: 'Escáner y F10, pila de tickets con F6, cobro con F12, doble F12 y el ticket impreso.',
     dur: '0:21',
   },
   {
     archivo: 'instructivo-3-dinero-y-corte-de-caja',
-    titulo: 'Parte 3 · Dinero y corte de caja',
+    titulo: 'Dinero y corte de caja',
     desc: 'Entradas F7 y salidas F8, Cierre X para consultar y Cierre Z oficial con todo el desglose.',
     dur: '0:20',
   },
   {
     archivo: 'instructivo-4-inventarios',
-    titulo: 'Parte 4 · Inventarios',
+    titulo: 'Inventarios',
     desc: 'Catálogo y Ctrl+T, métricas, vender sin stock (SÍ/NO), Excel por lotes y el Kardex.',
     dur: '0:22',
   },
   {
     archivo: 'instructivo-5-ventas-y-cdai',
-    titulo: 'Parte 5 · Ventas y CDAI',
+    titulo: 'Ventas y CDAI',
     desc: 'Historial con F1, devoluciones con motivo, crédito (fiado), apartados, escalas y CxP.',
     dur: '0:20',
   },
   {
     archivo: 'instructivo-6-el-celular-de-la-tienda',
-    titulo: 'Parte 6 · El celular de la tienda',
+    titulo: 'El celular de la tienda',
     desc: 'Dirección de la PC y QR, instalar el APK desde la Central, escáner, mensajería e impresión.',
     dur: '0:23',
   },
@@ -123,7 +123,7 @@ const SECCIONES: { titulo: string; puntos: string[] }[] = [
 ]
 
 export default function AprendeTab() {
-  const [abiertas, setAbiertas] = useState<Set<number>>(new Set([0]))
+  const [abiertas, setAbiertas] = useState<Set<number>>(new Set())
 
   const alternar = (i: number) => {
     setAbiertas((prev) => {
@@ -137,66 +137,66 @@ export default function AprendeTab() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="sp-chrome-text text-lg font-bold flex items-center gap-2">
-          <GraduationCap className="h-5 w-5 text-cyan-300" aria-hidden />
-          Aprende
-        </h2>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Instructivo oficial de la versión 6.7.0 — cada parte básica del programa en video,
-          más un manual en PDF listo para imprimir. Para empleados.
+        <h2 className="text-lg font-bold tracking-tight text-slate-100">Aprende</h2>
+        <p className="text-xs text-slate-400">
+          Instructivo oficial de la v6.7.0 — cada parte básica en video, más un manual en PDF listo
+          para imprimir. Para empleados.
         </p>
       </div>
 
-      {/* Manual imprimible en PDF */}
-      <Card className="shadow-[0_0_30px_rgba(34,211,238,0.08)] border-cyan-400/30 bg-gradient-to-br from-cyan-400/10 via-sky-400/5 to-blue-500/10">
-        <CardContent className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
-          <div className="sp-glow flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-300/40 bg-gradient-to-br from-cyan-400/80 to-blue-600/80">
-            <FileText className="h-6 w-6 text-white" aria-hidden />
-          </div>
-          <div className="min-w-[230px] flex-1">
-            <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-cyan-200">
-              Instructivo en PDF — listo para imprimir
-              <Badge className="bg-cyan-400/25 text-cyan-100 hover:bg-cyan-400/35 shrink-0">
-                Para empleados
-              </Badge>
-            </p>
-            <p className="mt-0.5 text-xs text-slate-300">
-              Manual completo de la versión oficial 6.7.0 «Cifra Fresca»: las 12 secciones,
-              la tabla de atajos y los problemas frecuentes. Listo para imprimir en tamaño carta.
-            </p>
-          </div>
-          <div className="flex shrink-0 flex-wrap gap-2">
-            <a
-              href={PDF_URL}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-400/40 bg-cyan-400/10 px-4 py-2 text-xs font-semibold text-cyan-100 hover:bg-cyan-400/20"
-            >
-              <FileText className="h-3.5 w-3.5" aria-hidden />
-              Ver en pantalla
-            </a>
-            <a
-              href={PDF_URL}
-              download
-              className="sp-glow inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-transform hover:from-cyan-400 hover:to-blue-500"
-            >
-              <FileDown className="h-3.5 w-3.5" aria-hidden />
-              Descargar PDF
-            </a>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Manual imprimible en PDF — destacado */}
+      <div className="sp-story rounded-[18px] p-[1.5px]">
+        <Card className="border-0 bg-[#0a0e17] shadow-none">
+          <CardContent className="flex flex-wrap items-center gap-3 px-5 py-4 sm:px-6">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-fuchsia-400/25 via-violet-400/20 to-orange-400/25">
+              <FileText className="h-5 w-5 text-fuchsia-200" aria-hidden />
+            </div>
+            <div className="min-w-[220px] flex-1">
+              <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-100">
+                Instructivo en PDF
+                <Badge className="border border-fuchsia-300/25 bg-fuchsia-400/10 text-fuchsia-200 hover:bg-fuchsia-400/20">
+                  Listo para imprimir
+                </Badge>
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
+                Manual completo de la 6.7.0 «Cifra Fresca»: 12 secciones, tabla de atajos y problemas
+                frecuentes. Tamaño carta.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <a
+                href={PDF_URL}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-slate-100 transition-colors hover:bg-white/[0.11] hover:text-white"
+              >
+                <FileText className="h-3.5 w-3.5" aria-hidden />
+                Ver
+              </a>
+              <a
+                href={PDF_URL}
+                download
+                className="sp-btn-grad inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-transform active:scale-[0.97]"
+              >
+                <FileDown className="h-3.5 w-3.5" aria-hidden />
+                Descargar PDF
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Videos instructivos */}
       <div>
-        <p className="flex items-center gap-2 text-sm font-bold text-slate-100">
+        <p className="flex items-center gap-2 pb-2 text-sm font-semibold text-slate-100">
           <PlayCircle className="h-4 w-4 text-cyan-300" aria-hidden />
-          Videos instructivos (6 partes)
+          Videos instructivos
+          <span className="text-xs font-normal text-slate-500">(6 partes · 20-23 s cada una)</span>
         </p>
-        <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {VIDEOS.map((v) => (
-            <Card key={v.archivo} className="overflow-hidden shadow-sm border-white/10 bg-white/5">
-              <div className="relative bg-black/40">
+            <Card key={v.archivo} className="sp-hover-lift overflow-hidden">
+              <div className="relative bg-black/50">
                 {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <video
                   controls
@@ -209,72 +209,81 @@ export default function AprendeTab() {
                 </video>
               </div>
               <CardContent className="px-4 py-3">
-                <p className="flex items-center justify-between gap-2 text-sm font-bold text-slate-100">
+                <p className="flex items-center justify-between gap-2 text-sm font-semibold text-slate-100">
                   {v.titulo}
-                  <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-slate-400">
+                  <span className="flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-semibold text-slate-400">
                     <Clock className="h-3 w-3" aria-hidden />
                     {v.dur}
                   </span>
                 </p>
-                <p className="mt-1 text-xs text-slate-400">{v.desc}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-400">{v.desc}</p>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
 
-      {/* Referencia rápida en texto */}
-      <div>
-        <p className="flex items-center gap-2 text-sm font-bold text-slate-100">
-          <ShieldCheck className="h-4 w-4 text-cyan-300" aria-hidden />
-          Instructivo de funciones — Sell-Plus 6.7.0 (referencia rápida)
-        </p>
-      </div>
-
-      <div className="space-y-2">
-        {SECCIONES.map((sec, i) => {
-          const abierta = abiertas.has(i)
-          return (
-            <Collapsible key={sec.titulo} open={abierta} onOpenChange={() => alternar(i)}>
-              <Card className="shadow-sm border-white/10 bg-white/5">
-                <CollapsibleTrigger asChild>
-                  <button
-                    type="button"
-                    className="w-full text-left"
-                    aria-expanded={abierta}
-                  >
-                    <CardContent className="flex items-center justify-between gap-2 px-4 py-3">
-                      <span className="text-sm font-bold text-slate-100 flex-1 min-w-0 break-words">
-                        {sec.titulo}
-                      </span>
-                      <ChevronDown
-                        className={`h-4 w-4 text-slate-500 shrink-0 transition-transform ${abierta ? 'rotate-180' : ''}`}
-                        aria-hidden
-                      />
-                    </CardContent>
-                  </button>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <CardContent className="px-4 pb-4 pt-0">
-                    <ul className="space-y-1.5">
-                      {sec.puntos.map((p, j) => (
-                        <li key={j} className="text-sm text-slate-300 flex gap-2">
-                          <span className="text-cyan-400 mt-0.5 shrink-0" aria-hidden>•</span>
-                          <span>{p}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
-          )
-        })}
-      </div>
+      {/* Referencia rápida en texto — colapsada por defecto */}
+      <Collapsible>
+        <Card>
+          <CollapsibleTrigger className="w-full text-left">
+            <CardContent className="flex items-center justify-between gap-2 px-5 py-3.5">
+              <span className="flex min-w-0 items-center gap-2.5">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
+                <span className="truncate text-sm font-semibold text-slate-200">
+                  Referencia rápida de funciones
+                  <span className="ml-1.5 text-xs font-normal text-slate-500">
+                    ({SECCIONES.length} secciones, en texto)
+                  </span>
+                </span>
+              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" aria-hidden />
+            </CardContent>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="space-y-1 px-3 pb-4 pt-0">
+              {SECCIONES.map((sec, i) => {
+                const abierta = abiertas.has(i)
+                return (
+                  <Collapsible key={sec.titulo} open={abierta} onOpenChange={() => alternar(i)}>
+                    <div className="rounded-lg">
+                      <CollapsibleTrigger asChild>
+                        <button
+                          type="button"
+                          className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-white/[0.04]"
+                          aria-expanded={abierta}
+                        >
+                          <span className="min-w-0 flex-1 truncate text-sm font-medium text-slate-200">
+                            {sec.titulo}
+                          </span>
+                          <ChevronDown
+                            className={`h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform ${abierta ? 'rotate-180' : ''}`}
+                            aria-hidden
+                          />
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <ul className="space-y-1.5 px-2 pb-3 pl-9">
+                          {sec.puntos.map((p, j) => (
+                            <li key={j} className="flex gap-2 text-xs leading-relaxed text-slate-300">
+                              <span className="mt-0.5 shrink-0 text-cyan-400/80" aria-hidden>•</span>
+                              <span>{p}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
+                )
+              })}
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       <p className="text-xs text-slate-500">
         Este instructivo corresponde a la versión oficial 6.7.0. Si un empleado necesita aprender
-        algo que no está aquí, pídelo en Solicitudes y lo añado a este mismo instructivo.
+        algo que no está aquí, pídelo en Solicitudes y lo añado.
       </p>
     </div>
   )

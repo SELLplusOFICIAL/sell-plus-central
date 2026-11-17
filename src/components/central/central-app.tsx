@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import {
-  Store,
   RefreshCw,
   MonitorCheck,
   Monitor,
@@ -10,12 +9,11 @@ import {
   Wrench,
   GraduationCap,
   Lock,
-  ShieldCheck,
+  LogOut,
   Sparkles,
   KeyRound,
 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import InicioTab from '@/components/central/inicio-tab'
 import ActualizacionesTab from '@/components/central/actualizaciones-tab'
@@ -118,108 +116,130 @@ export default function CentralApp() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Encabezado chrome */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0a1220]/85 shadow-[0_8px_30px_rgba(2,8,20,0.45)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-4">
-          <div className="sp-glow flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-300/40 bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-700">
-            <Store className="h-6 w-6 text-white drop-shadow" aria-hidden />
+      {/* Encabezado fino, always-on-top, vidrio oscuro */}
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#05060b]/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4">
+          {/* Logo con aro degradado */}
+          <div className="sp-story flex shrink-0 rounded-[14px] p-[1.5px]">
+            <div className="flex h-[42px] w-[42px] items-center justify-center rounded-[12.5px] bg-[#0a0e17]">
+              <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
+                <defs>
+                  <linearGradient id="sp-logo-g" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#67e8f9" />
+                    <stop offset="55%" stopColor="#38bdf8" />
+                    <stop offset="100%" stopColor="#818cf8" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"
+                  fill="none"
+                  stroke="url(#sp-logo-g)"
+                  strokeWidth="1.6"
+                  strokeLinejoin="round"
+                />
+                <path d="M9.2 12.4v3.4h5.6v-3.4" fill="none" stroke="url(#sp-logo-g)" strokeWidth="1.6" strokeLinecap="round" />
+                <path d="M7.8 10.2h8.4" stroke="url(#sp-logo-g)" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </div>
           </div>
+
           <div className="min-w-0 flex-1">
-            <h1 className="sp-chrome-text text-lg font-bold leading-tight tracking-tight sm:text-xl">
+            <h1 className="sp-chrome-text truncate text-[17px] font-bold leading-tight tracking-tight">
               Sell-Plus Central
             </h1>
-            <p className="text-xs leading-tight text-slate-400 sm:text-sm">
+            <p className="truncate text-xs leading-tight text-slate-400">
               {esAdmin
-                ? 'Centro de actualizaciones y modificaciones · modo administrador'
-                : 'Actualizaciones, soluciones y descargas de tu software'}
+                ? 'Modo administrador · centro de control'
+                : 'Tu software, siempre al día'}
             </p>
           </div>
-          <div className="flex shrink-0 flex-col items-end gap-1">
-            <Badge className="border border-cyan-300/40 bg-cyan-400/15 text-cyan-200 shadow-[0_0_14px_rgba(34,211,238,0.25)] hover:bg-cyan-400/25">
-              v{resumen?.ultimaVersion?.version ?? '…'}
-            </Badge>
-            <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
-              </span>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-300 sm:flex">
+              <span className="sp-live-dot h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
               En línea
             </span>
-          </div>
-          <div className="flex shrink-0 items-center gap-1.5">
+            <span className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-2.5 py-1 text-[11px] font-bold text-cyan-200">
+              v{resumen?.ultimaVersion?.version ?? '—'}
+            </span>
             {esAdmin && (
-              <Button
-                size="sm"
-                variant="ghost"
+              <button
+                type="button"
                 onClick={() => window.open(URL_ASISTENTE_IA, '_blank', 'noopener')}
                 title="Poder de IA — hablar con el asistente que desarrolla tu software"
-                className="text-slate-300 hover:bg-cyan-400/10 hover:text-cyan-200"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-slate-300 transition-colors hover:bg-white/[0.07] hover:text-white"
               >
                 <Sparkles className="h-4 w-4" aria-hidden />
-                <span className="hidden sm:inline">IA</span>
-              </Button>
+              </button>
             )}
             {esAdmin ? (
-              <Button
-                size="sm"
-                variant="outline"
+              <button
+                type="button"
                 onClick={salirDeAdmin}
-                className="border-cyan-400/40 bg-transparent text-cyan-100 hover:bg-cyan-400/10 hover:text-white"
+                className="flex h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/[0.09] hover:text-white"
               >
-                <ShieldCheck className="mr-1 h-4 w-4" aria-hidden /> Salir de admin
-              </Button>
+                <LogOut className="h-3.5 w-3.5" aria-hidden />
+                <span className="hidden sm:inline">Salir</span>
+              </button>
             ) : (
-              <Button
-                size="sm"
-                variant="outline"
+              <button
+                type="button"
                 onClick={entrarComoAdmin}
-                className="border-cyan-400/40 bg-transparent text-cyan-100 hover:bg-cyan-400/10 hover:text-white"
+                className="flex h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/[0.09] hover:text-white"
               >
-                <Lock className="mr-1 h-4 w-4" aria-hidden /> Admin
-              </Button>
+                <Lock className="h-3.5 w-3.5" aria-hidden />
+                Admin
+              </button>
             )}
           </div>
+        </div>
+
+        {/* Navegación segmentada, pegada al encabezado */}
+        <div className="border-t border-white/[0.04]">
+          <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)}>
+            <div className="mx-auto max-w-5xl px-4">
+              <div className="-mx-1 overflow-x-auto sp-scroll pb-0">
+                <TabsList className="sp-glass mt-2 inline-flex h-10 min-w-full gap-0.5 rounded-full p-1 sm:min-w-0">
+                  {tabsVisibles.map((t) => (
+                    <TabsTrigger
+                      key={t.key}
+                      value={t.key}
+                      className="gap-1.5 rounded-full px-3 text-[13px] font-medium text-slate-400 transition-all hover:text-slate-100 data-[state=active]:bg-[linear-gradient(135deg,#06b6d4,#3b82f6)] data-[state=active]:text-white data-[state=active]:shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_14px_-4px_rgba(59,130,246,0.6)] sm:px-3.5"
+                    >
+                      {t.icon}
+                      <span>{t.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+            </div>
+          </Tabs>
         </div>
       </header>
 
       {/* Contenido */}
-      <main className="mx-auto w-full max-w-5xl flex-1 px-3 py-5 sm:px-4">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-3 py-6 sm:px-4">
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)}>
-          <div className="-mx-3 overflow-x-auto pb-1 sm:mx-0">
-            <TabsList className="sp-glass inline-flex h-11 min-w-full rounded-full p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:w-auto">
-              {tabsVisibles.map((t) => (
-                <TabsTrigger
-                  key={t.key}
-                  value={t.key}
-                  className="gap-1.5 rounded-full px-3 text-slate-300 transition-all hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_18px_rgba(34,211,238,0.35)] sm:px-4"
-                >
-                  {t.icon}
-                  <span>{t.label}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-
           {TABS.map((t) => {
             if (t.soloAdmin && !esAdmin) return null // sección de administración: no se monta sin llave
             return (
-              <TabsContent key={t.key} value={t.key} className="mt-4">
+              <TabsContent key={t.key} value={t.key} className="sp-rise mt-2">
                 {contenidoTab(t)}
               </TabsContent>
             )
           })}
         </Tabs>
 
-        <div className="mt-6 text-center text-xs text-slate-500">
+        <div className="mt-10 text-center text-[11px] text-slate-600">
           Dirección estable de tu software:{' '}
-          <span className="select-all font-mono text-slate-400">{urlCentral || CENTRAL_URL}</span>
+          <span className="select-all font-mono text-slate-500">{urlCentral || CENTRAL_URL}</span>
         </div>
       </main>
 
-      {/* Pie chrome */}
-      <footer className="mt-auto border-t border-white/10 bg-[#0a1220]/80 text-xs text-slate-400 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-1 px-4 py-3 sm:flex-row">
-          <span>Sell-Plus Central · Tu software, siempre al día</span>
+      {/* Pie mínimo */}
+      <footer className="mt-auto border-t border-white/[0.06] bg-[#05060b]/80">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-1 px-4 py-4 text-[11px] text-slate-500 sm:flex-row">
+          <span className="sp-chrome-text font-semibold">Sell-Plus Central</span>
           <span>Tu base de datos nunca se borra al actualizar</span>
         </div>
       </footer>

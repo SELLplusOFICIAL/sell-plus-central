@@ -37,51 +37,51 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: calc(var(--radius) - 2px);
+  --radius-xl: var(--radius);
 }
 
 /*
- * TEMA «FUTURE CHROME» — Central CipherPoint
- * Azul profundo con acentos cian y paneles de vidrio (glassmorphism).
- * Todas las variables shadcn van en modo oscuro para que Cards, Buttons,
- * Badges, Inputs y Popovers hereden el tema completo automáticamente.
+ * TEMA «AURORA CHROME» — Central CipherPoint
+ * Superficies oscuras en capas (casi negro → panel), acentos cian/azul,
+ * aro degradado tipo «historia» como motivo distintivo y tipografía precisa.
+ * Calidad visual de referencia: app social de primer nivel.
  */
 :root {
-  --radius: 0.75rem;
-  --background: #070d18;
-  --foreground: #e2e8f0;
-  --card: #0c1626;
-  --card-foreground: #e2e8f0;
-  --popover: #0c1626;
-  --popover-foreground: #e2e8f0;
+  --radius: 1rem;
+  --background: #05060b;
+  --foreground: #f2f5fa;
+  --card: #0a0e17;
+  --card-foreground: #f2f5fa;
+  --popover: #0e1322;
+  --popover-foreground: #f2f5fa;
   --primary: #22d3ee;
-  --primary-foreground: #04212b;
-  --secondary: #101d33;
-  --secondary-foreground: #cbd5e1;
-  --muted: #101d33;
-  --muted-foreground: #8ea0b8;
-  --accent: #10243a;
-  --accent-foreground: #d7f2fb;
+  --primary-foreground: #03161e;
+  --secondary: rgba(255, 255, 255, 0.06);
+  --secondary-foreground: #e2e8f0;
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-foreground: #8b95a7;
+  --accent: rgba(34, 211, 238, 0.09);
+  --accent-foreground: #d9f5fd;
   --destructive: #f87171;
-  --border: rgba(148, 163, 184, 0.16);
-  --input: rgba(148, 163, 184, 0.22);
-  --ring: rgba(34, 211, 238, 0.55);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: rgba(34, 211, 238, 0.5);
   --chart-1: #22d3ee;
   --chart-2: #38bdf8;
-  --chart-3: #818cf8;
-  --chart-4: #2dd4bf;
-  --chart-5: #f59e0b;
-  --sidebar: #0c1626;
-  --sidebar-foreground: #e2e8f0;
+  --chart-3: #8b5cf6;
+  --chart-4: #34d399;
+  --chart-5: #fbbf24;
+  --sidebar: #0a0e17;
+  --sidebar-foreground: #f2f5fa;
   --sidebar-primary: #22d3ee;
-  --sidebar-primary-foreground: #04212b;
-  --sidebar-accent: #101d33;
-  --sidebar-accent-foreground: #e2e8f0;
-  --sidebar-border: rgba(148, 163, 184, 0.16);
-  --sidebar-ring: rgba(34, 211, 238, 0.55);
+  --sidebar-primary-foreground: #03161e;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #f2f5fa;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(34, 211, 238, 0.5);
 }
 
 @layer base {
@@ -90,52 +90,179 @@
   }
   html {
     color-scheme: dark;
+    scroll-behavior: smooth;
   }
   body {
     @apply text-foreground;
-    background-color: #070d18;
+    font-feature-settings: "cv11", "ss01";
+    background-color: #05060b;
     background-image:
-      radial-gradient(1000px 540px at 10% -10%, rgba(34, 211, 238, 0.09), transparent 60%),
-      radial-gradient(900px 520px at 108% 4%, rgba(14, 116, 144, 0.13), transparent 58%),
-      radial-gradient(760px 480px at 50% 118%, rgba(56, 189, 248, 0.07), transparent 55%);
+      radial-gradient(1100px 600px at 12% -12%, rgba(34, 211, 238, 0.07), transparent 58%),
+      radial-gradient(950px 560px at 105% 0%, rgba(139, 92, 246, 0.06), transparent 55%),
+      radial-gradient(900px 620px at 50% 115%, rgba(37, 99, 235, 0.05), transparent 55%);
     background-attachment: fixed;
   }
   ::selection {
-    background: rgba(34, 211, 238, 0.35);
+    background: rgba(34, 211, 238, 0.3);
     color: #f0f9ff;
   }
-  /* Barra de desplazamiento cromada */
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: rgba(7, 13, 24, 0.6);
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(34, 211, 238, 0.35), rgba(56, 130, 246, 0.35));
+    background: rgba(148, 163, 184, 0.22);
     border-radius: 8px;
-    border: 2px solid rgba(7, 13, 24, 0.9);
+    border: 3px solid transparent;
+    background-clip: content-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, rgba(34, 211, 238, 0.6), rgba(56, 130, 246, 0.6));
+    background: rgba(148, 163, 184, 0.4);
+    background-clip: content-box;
+    border: 3px solid transparent;
   }
 }
 
 /*
- * Utilidades del tema chrome — paneles de vidrio, títulos cromados y halos.
+ * Primitivos del tema: radios y superficies coherentes en toda la app.
+ */
+[data-slot="card"] {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(var(--radius) + 2px);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 2px rgba(2, 6, 16, 0.5),
+    0 8px 28px -14px rgba(2, 6, 16, 0.6);
+}
+[data-slot="card"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+  pointer-events: none;
+}
+[data-slot="button"] {
+  border-radius: calc(var(--radius) - 4px);
+  font-weight: 600;
+  transition:
+    transform 0.12s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+[data-slot="button"]:active {
+  transform: scale(0.97);
+}
+[data-slot="badge"] {
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+[data-slot="input"],
+[data-slot="textarea"] {
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+[data-slot="input"]::placeholder,
+[data-slot="textarea"]::placeholder {
+  color: #6b7688;
+}
+
+/*
+ * Utilidades Aurora Chrome.
  */
 .sp-glass {
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 .sp-chrome-text {
-  background: linear-gradient(92deg, #f8fafc 0%, #bae6fd 45%, #67e8f9 80%);
+  background: linear-gradient(92deg, #ffffff 0%, #d6ecff 42%, #7dd3fc 78%, #22d3ee 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
+/* Aro degradado «historia»: envolver la tarjeta con class="sp-story p-[1.5px]" */
+.sp-story {
+  background: conic-gradient(
+    from 200deg,
+    #8b5cf6,
+    #d946ef,
+    #f43f5e,
+    #f97316,
+    #fbbf24,
+    #22d3ee,
+    #3b82f6,
+    #8b5cf6
+  );
+}
 .sp-glow {
-  box-shadow: 0 0 24px rgba(34, 211, 238, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.18),
+    0 4px 24px -6px rgba(34, 211, 238, 0.35);
+}
+.sp-btn-grad {
+  background-image: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 18px -6px rgba(59, 130, 246, 0.55);
+}
+.sp-btn-grad:hover {
+  background-image: linear-gradient(135deg, #22d3ee 0%, #4f8ef7 100%);
+}
+.sp-hover-lift {
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.sp-hover-lift:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+@keyframes sp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.sp-rise {
+  animation: sp-rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes sp-pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5);
+  }
+  60% {
+    box-shadow: 0 0 0 5px rgba(52, 211, 153, 0);
+  }
+}
+.sp-live-dot {
+  animation: sp-pulse-dot 2.2s ease-out infinite;
+}
+/* Scroll interno contenido (bitácora, listas largas) */
+.sp-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+.sp-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sp-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 999px;
+  border: none;
 }

@@ -53,10 +53,10 @@ function minutosRestantes(iso: string): number {
 }
 
 const ESTADO_COLOR: Record<string, string> = {
-  activo: 'border-cyan-400/30 bg-cyan-400/15 text-cyan-200',
-  usado: 'border-white/15 bg-white/5/10 text-slate-200',
-  revocado: 'border-red-300 bg-red-400/15 text-red-300',
-  expirado: 'border-amber-300 bg-amber-400/15 text-amber-300',
+  activo: 'border border-cyan-300/25 bg-cyan-400/10 text-cyan-200',
+  usado: 'border border-white/10 bg-white/[0.06] text-slate-300',
+  revocado: 'border border-red-400/25 bg-red-400/10 text-red-300',
+  expirado: 'border border-amber-400/25 bg-amber-400/10 text-amber-300',
 }
 
 export default function AccesoTab() {
@@ -166,15 +166,21 @@ export default function AccesoTab() {
 
   return (
     <div className="space-y-4">
+      <div>
+        <h2 className="text-lg font-bold tracking-tight text-slate-100">Acceso maestro</h2>
+        <p className="text-xs text-slate-400">
+          Recupera el acceso a cualquier caja cuando se olvidaron todas las claves.
+        </p>
+      </div>
+
       {/* Tarjeta principal */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <KeyRound className="h-5 w-5 text-cyan-200" aria-hidden />
-            Acceso maestro
+          <CardTitle className="flex items-center gap-2 text-sm text-slate-100">
+            <KeyRound className="h-4 w-4 text-cyan-300" aria-hidden />
+            Generar código
           </CardTitle>
-          <CardDescription>
-            Recupera el acceso a cualquier caja con Sell-Plus cuando se olvidaron todas las claves.
+          <CardDescription className="text-xs text-slate-400">
             Genera un código aquí y escríbelo en el POS: pantalla de inicio de sesión → «Acceso maestro».
           </CardDescription>
         </CardHeader>
@@ -192,29 +198,29 @@ export default function AccesoTab() {
                 placeholder="Opcional…"
               />
             </div>
-            <Button onClick={generar} disabled={generando} className="bg-cyan-700 hover:bg-cyan-600">
-              <KeyRound className="mr-1 h-4 w-4" aria-hidden />
+            <Button onClick={generar} disabled={generando} className="sp-btn-grad border-0 shadow-none">
+              <KeyRound className="h-4 w-4" aria-hidden />
               {generando ? 'Generando…' : 'Generar código maestro'}
             </Button>
           </div>
 
           {activo && (
-            <div className="rounded-xl border-2 border-cyan-400/50 bg-gradient-to-br from-cyan-400/10 to-white/5 p-4">
+            <div className="rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-cyan-400/[0.08] to-blue-500/[0.06] p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-cyan-200">
                   <Timer className="h-4 w-4" aria-hidden /> Código vigente — expira en {mmss}
                 </span>
                 <Badge className={ESTADO_COLOR.activo}>un solo uso</Badge>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <code className="select-all rounded-lg border border-cyan-400/20 bg-white/5 px-4 py-2 font-mono text-2xl font-bold tracking-[0.2em] text-cyan-300">
+                <code className="select-all rounded-xl border border-cyan-300/20 bg-white/[0.05] px-4 py-2 font-mono text-2xl font-bold tracking-[0.2em] text-cyan-200">
                   {activo.codigo}
                 </code>
-                <Button size="sm" variant="outline" onClick={() => copiar(activo.codigo)}>
-                  <Copy className="mr-1 h-3.5 w-3.5" aria-hidden /> Copiar
+                <Button size="sm" variant="outline" onClick={() => copiar(activo.codigo)} className="border-white/12 bg-white/[0.05] text-slate-100 hover:bg-white/[0.1]">
+                  <Copy className="h-3.5 w-3.5" aria-hidden /> Copiar
                 </Button>
-                <Button size="sm" variant="ghost" className="text-red-300 hover:bg-red-50" onClick={() => revocar(activo.id)}>
-                  <Ban className="mr-1 h-3.5 w-3.5" aria-hidden /> Revocar
+                <Button size="sm" variant="ghost" className="text-red-300 hover:bg-red-400/10" onClick={() => revocar(activo.id)}>
+                  <Ban className="h-3.5 w-3.5" aria-hidden /> Revocar
                 </Button>
               </div>
               <p className="mt-3 text-xs leading-relaxed text-slate-300">
@@ -226,9 +232,9 @@ export default function AccesoTab() {
             </div>
           )}
 
-          <div className="rounded-lg border border-amber-400/30 bg-amber-50 p-3 text-xs leading-relaxed text-amber-300">
+          <div className="rounded-xl border border-amber-400/25 bg-amber-400/[0.07] p-3 text-xs leading-relaxed text-amber-200/90">
             <span className="flex items-start gap-2">
-              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" aria-hidden />
               <span>
                 Esta sección está protegida por tu llave de administrador de la Central. Cada generación y cada uso
                 queda registrado en la bitácora del sistema. Si generas un código por error, revócalo aquí mismo.
@@ -241,15 +247,17 @@ export default function AccesoTab() {
       {/* Historial */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between text-base">
+          <CardTitle className="flex items-center justify-between text-sm text-slate-100">
             <span className="flex items-center gap-2">
               <MonitorSmartphone className="h-4 w-4 text-slate-400" aria-hidden /> Últimos códigos
             </span>
-            <Button size="sm" variant="ghost" onClick={cargar} disabled={cargando}>
-              <RefreshCw className={'mr-1 h-3.5 w-3.5' + (cargando ? ' animate-spin' : '')} aria-hidden /> Actualizar
+            <Button size="sm" variant="ghost" onClick={cargar} disabled={cargando} className="text-slate-300 hover:bg-white/[0.06] hover:text-white">
+              <RefreshCw className={'h-3.5 w-3.5' + (cargando ? ' animate-spin' : '')} aria-hidden /> Actualizar
             </Button>
           </CardTitle>
-          <CardDescription>Los 25 códigos más recientes, con su estado y el equipo que los usó.</CardDescription>
+          <CardDescription className="text-xs text-slate-400">
+            Los 25 códigos más recientes, con su estado y el equipo que los usó.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {codigos.length === 0 ? (
@@ -257,10 +265,10 @@ export default function AccesoTab() {
               Todavía no has generado códigos maestros.
             </p>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="sp-scroll overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b text-xs uppercase tracking-wide text-slate-500">
+                  <tr className="border-b border-white/[0.08] text-[10px] uppercase tracking-wider text-slate-500">
                     <th className="py-2 pr-3 font-medium">Código</th>
                     <th className="py-2 pr-3 font-medium">Estado</th>
                     <th className="py-2 pr-3 font-medium">Creado</th>
@@ -272,11 +280,11 @@ export default function AccesoTab() {
                 </thead>
                 <tbody>
                   {codigos.map((c) => (
-                    <tr key={c.id} className="border-b border-white/10 last:border-0">
+                    <tr key={c.id} className="border-b border-white/[0.06] last:border-0">
                       <td className="py-2 pr-3 font-mono text-xs font-semibold text-slate-100">{c.codigo}</td>
                       <td className="py-2 pr-3">
                         <Badge className={(ESTADO_COLOR[c.estado] || '') + ' border'}>
-                          {c.estado === 'usado' && <CheckCircle2 className="mr-1 h-3 w-3" aria-hidden />}
+                          {c.estado === 'usado' && <CheckCircle2 className="h-3 w-3" aria-hidden />}
                           {c.estado}
                         </Badge>
                       </td>
