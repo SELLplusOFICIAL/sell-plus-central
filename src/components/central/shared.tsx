@@ -171,12 +171,12 @@ export function relativeTime(iso: string): string {
 
 export function SeverityBadge({ severity }: { severity: string | null }) {
   const map: Record<string, { label: string; className: string }> = {
-    critica: { label: "Crítica", className: "bg-red-100 text-red-800 border-red-200" },
-    alta: { label: "Alta", className: "bg-orange-100 text-orange-800 border-orange-200" },
-    media: { label: "Media", className: "bg-amber-100 text-amber-800 border-amber-200" },
-    baja: { label: "Baja", className: "bg-stone-100 text-stone-700 border-stone-200" },
-    ok: { label: "Todo bien", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
-    resuelta: { label: "Resuelta", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
+    critica: { label: "Crítica", className: "bg-red-400/15 text-red-300 border-red-400/30" },
+    alta: { label: "Alta", className: "bg-orange-400/15 text-orange-300 border-orange-400/30" },
+    media: { label: "Media", className: "bg-amber-400/15 text-amber-300 border-amber-400/30" },
+    baja: { label: "Baja", className: "bg-white/5/10 text-slate-200 border-white/10" },
+    ok: { label: "Todo bien", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
+    resuelta: { label: "Resuelta", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
   };
   const s = severity ? map[severity] ?? map.media : null;
   if (!s) return <Badge variant="outline">Sin analizar</Badge>;
@@ -189,11 +189,11 @@ export function SeverityBadge({ severity }: { severity: string | null }) {
 
 export function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; className: string }> = {
-    nuevo: { label: "Nuevo", className: "bg-amber-100 text-amber-800 border-amber-200" },
-    analizado: { label: "Analizado", className: "bg-teal-100 text-teal-800 border-teal-200" },
-    resuelto: { label: "Resuelto", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
-    borrador: { label: "Borrador", className: "bg-stone-100 text-stone-700 border-stone-200" },
-    publicada: { label: "Publicada", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
+    nuevo: { label: "Nuevo", className: "bg-amber-400/15 text-amber-300 border-amber-400/30" },
+    analizado: { label: "Analizado", className: "bg-teal-400/15 text-teal-300 border-teal-400/30" },
+    resuelto: { label: "Resuelto", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
+    borrador: { label: "Borrador", className: "bg-white/5/10 text-slate-200 border-white/10" },
+    publicada: { label: "Publicada", className: "bg-cyan-400/15 text-cyan-200 border-cyan-400/20" },
   };
   const s = map[status] ?? { label: status, className: "" };
   return (

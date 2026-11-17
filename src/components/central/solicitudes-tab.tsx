@@ -26,16 +26,16 @@ import {
 import { toast } from 'sonner'
 
 const ESTADO_ESTILO: Record<string, { label: string; clase: string }> = {
-  recibida: { label: 'Recibida', clase: 'bg-stone-200 text-stone-700 hover:bg-stone-200' },
-  en_proceso: { label: 'En proceso', clase: 'bg-amber-200 text-amber-900 hover:bg-amber-200' },
-  lista: { label: 'Lista', clase: 'bg-emerald-200 text-emerald-900 hover:bg-emerald-200' },
-  publicada: { label: 'Publicada', clase: 'bg-emerald-800 text-white hover:bg-emerald-800' },
+  recibida: { label: 'Recibida', clase: 'bg-white/5/10 text-slate-200 hover:bg-white/5/10' },
+  en_proceso: { label: 'En proceso', clase: 'bg-amber-200 text-amber-300 hover:bg-amber-200' },
+  lista: { label: 'Lista', clase: 'bg-cyan-400/25 text-cyan-200 hover:bg-cyan-400/35' },
+  publicada: { label: 'Publicada', clase: 'bg-cyan-600 text-white hover:bg-cyan-600' },
 }
 
 const PRIORIDAD_ESTILO: Record<string, string> = {
-  alta: 'bg-red-100 text-red-800 border-red-200',
-  media: 'bg-amber-100 text-amber-800 border-amber-200',
-  baja: 'bg-stone-100 text-stone-600 border-stone-200',
+  alta: 'bg-red-400/15 text-red-300 border-red-400/30',
+  media: 'bg-amber-400/15 text-amber-300 border-amber-400/30',
+  baja: 'bg-white/5/10 text-slate-300 border-white/10',
 }
 
 /** Minutos sin avance para considerar congelada una solicitud en trabajo */
@@ -170,13 +170,13 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
 
   return (
     <div className="space-y-5">
-      <Card className="shadow-sm border-stone-200">
+      <Card className="shadow-sm border-white/10">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-stone-800">
-            <MessageSquarePlus className="h-5 w-5 text-amber-600" aria-hidden />
+          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
+            <MessageSquarePlus className="h-5 w-5 text-amber-400" aria-hidden />
             Pedir una modificación o función nueva
           </CardTitle>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Cuéntame qué necesitas: funciona como lista de pendientes entre tú y yo. Ejemplos:
             “reporte de productos próximos a caducar”, “descuento por volumen en caja”, “cambiar el
             color del ticket”.
@@ -185,7 +185,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
         <CardContent>
           <form onSubmit={enviar} className="space-y-3">
             <div className="space-y-1.5">
-              <Label htmlFor="sol-titulo" className="text-sm text-stone-700">
+              <Label htmlFor="sol-titulo" className="text-sm text-slate-200">
                 Título
               </Label>
               <Input
@@ -194,11 +194,11 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                 onChange={(e) => setTitulo(e.target.value)}
                 placeholder="Ej. Reporte de lotes por caducar esta semana"
                 maxLength={120}
-                className="border-stone-300 focus-visible:ring-emerald-700"
+                className="border-white/15 focus-visible:ring-cyan-500"
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="sol-desc" className="text-sm text-stone-700">
+              <Label htmlFor="sol-desc" className="text-sm text-slate-200">
                 Detalles
               </Label>
               <Textarea
@@ -208,16 +208,16 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                 placeholder="Describe qué quieres lograr, dónde lo necesitas (caja, inventarios, reportes…) y cualquier detalle que ayude."
                 rows={4}
                 maxLength={2000}
-                className="border-stone-300 focus-visible:ring-emerald-700 resize-none"
+                className="border-white/15 focus-visible:ring-cyan-500 resize-none"
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
               <div className="space-y-1.5 sm:w-48">
-                <Label htmlFor="sol-prio" className="text-sm text-stone-700">
+                <Label htmlFor="sol-prio" className="text-sm text-slate-200">
                   Prioridad
                 </Label>
                 <Select value={prioridad} onValueChange={setPrioridad}>
-                  <SelectTrigger id="sol-prio" className="border-stone-300 focus:ring-emerald-700">
+                  <SelectTrigger id="sol-prio" className="border-white/15 focus:ring-cyan-500">
                     <SelectValue placeholder="Elige" />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,7 +230,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
               <Button
                 type="submit"
                 disabled={enviando}
-                className="bg-emerald-800 hover:bg-emerald-900 text-white sm:ml-auto"
+                className="bg-cyan-600 hover:bg-cyan-700 text-white sm:ml-auto"
               >
                 <Send className="h-4 w-4 mr-1.5" aria-hidden />
                 {enviando ? 'Enviando…' : 'Enviar solicitud'}
@@ -241,15 +241,15 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
       </Card>
 
       <div>
-        <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-1.5">
-          <Sparkles className="h-4 w-4 text-emerald-700" aria-hidden />
+        <h3 className="text-sm font-bold text-slate-200 mb-3 flex items-center gap-1.5">
+          <Sparkles className="h-4 w-4 text-cyan-300" aria-hidden />
           Solicitudes en curso
         </h3>
         {solicitudes === null ? (
           <Skeleton className="h-24 w-full rounded-xl" />
         ) : activas.length === 0 && historial.length === 0 ? (
-          <Card className="shadow-sm border-dashed border-stone-300">
-            <CardContent className="p-6 text-center text-sm text-stone-500">
+          <Card className="shadow-sm border-dashed border-white/15">
+            <CardContent className="p-6 text-center text-sm text-slate-400">
               Aún no hay solicitudes. La primera que escribas aparecerá aquí con su estado.
             </CardContent>
           </Card>
@@ -276,10 +276,10 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                       : 'En fila — esperando revisión')
               return (
                 <li key={s.id}>
-                  <Card className="shadow-sm border-stone-200">
+                  <Card className="shadow-sm border-white/10">
                     <CardContent className="p-4 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-semibold text-sm text-stone-800 flex-1 min-w-0 break-words">
+                        <p className="font-semibold text-sm text-slate-100 flex-1 min-w-0 break-words">
                           {s.titulo}
                         </p>
                         <Badge variant="outline" className={PRIORIDAD_ESTILO[s.prioridad] ?? ''}>
@@ -287,20 +287,20 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                         </Badge>
                         <Badge className={estado.clase}>{estado.label}</Badge>
                         {estaCongelada(s) && (
-                          <Badge className="bg-orange-100 text-orange-800 border border-orange-300 gap-1 animate-pulse">
+                          <Badge className="bg-orange-400/15 text-orange-300 border border-orange-300 gap-1 animate-pulse">
                             <Snowflake className="h-3 w-3" aria-hidden />
                             Congelada — sin avance
                           </Badge>
                         )}
                       </div>
                       {/* Progreso en vivo de la solicitud */}
-                      <div className="space-y-1 rounded-lg border border-stone-100 bg-stone-50/70 p-2.5">
-                        <div className="flex items-center justify-between gap-2 text-[11px] text-stone-500">
-                          <span className="truncate font-semibold text-stone-600">{etiquetaFase}</span>
+                      <div className="space-y-1 rounded-lg border border-white/10 bg-white/5/5/70 p-2.5">
+                        <div className="flex items-center justify-between gap-2 text-[11px] text-slate-400">
+                          <span className="truncate font-semibold text-slate-300">{etiquetaFase}</span>
                           <span className="shrink-0 font-mono">{pct}%</span>
                         </div>
                         <div
-                          className="h-1.5 w-full overflow-hidden rounded-full bg-stone-200"
+                          className="h-1.5 w-full overflow-hidden rounded-full bg-white/5/10"
                           role="progressbar"
                           aria-valuenow={pct}
                           aria-valuemin={0}
@@ -308,31 +308,31 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                         >
                           <div
                             className={`h-full rounded-full transition-all ${
-                              pct >= 100 ? 'bg-emerald-600' : 'bg-amber-500'
+                              pct >= 100 ? 'bg-cyan-500' : 'bg-amber-500'
                             }`}
                             style={{ width: `${pct === 0 ? 0 : Math.max(pct, 4)}%` }}
                           />
                         </div>
                         {s.tiempoEstimado && (
-                          <p className="flex items-center gap-1 text-[11px] text-stone-400">
+                          <p className="flex items-center gap-1 text-[11px] text-slate-500">
                             <Clock className="h-3 w-3" aria-hidden />
                             Tiempo estimado: {s.tiempoEstimado}
                           </p>
                         )}
                       </div>
-                      <p className="text-sm text-stone-600 whitespace-pre-line break-words">
+                      <p className="text-sm text-slate-300 whitespace-pre-line break-words">
                         {s.descripcion}
                       </p>
                       {s.respuesta && (
-                        <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3">
-                          <p className="text-[11px] font-bold text-emerald-800 mb-0.5">
+                        <div className="rounded-lg bg-cyan-400/10 border border-cyan-400/20 p-3">
+                          <p className="text-[11px] font-bold text-cyan-200 mb-0.5">
                             Respuesta del desarrollador
                           </p>
-                          <p className="text-sm text-emerald-900 whitespace-pre-line">{s.respuesta}</p>
+                          <p className="text-sm text-cyan-300 whitespace-pre-line">{s.respuesta}</p>
                         </div>
                       )}
                       <div className="flex items-center justify-between gap-2 pt-0.5">
-                        <p className="text-[11px] text-stone-400">{haceCuando(s.fecha)}</p>
+                        <p className="text-[11px] text-slate-500">{haceCuando(s.fecha)}</p>
                         {s.estado !== 'publicada' && (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -340,7 +340,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                                 variant="outline"
                                 size="sm"
                                 disabled={reenviandoId === s.id}
-                                className="h-8 border-emerald-300 text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900"
+                                className="h-8 border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-300"
                               >
                                 <RefreshCcw className="h-3.5 w-3.5 mr-1" aria-hidden />
                                 {reenviandoId === s.id ? 'Reenviando…' : 'Reenviar'}
@@ -359,7 +359,7 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => reenviar(s)}
-                                  className="bg-emerald-800 hover:bg-emerald-900 text-white"
+                                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
                                 >
                                   <RefreshCcw className="h-4 w-4 mr-1.5" aria-hidden />
                                   Sí, poner en marcha
@@ -379,27 +379,27 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
 
           {historial.length > 0 && (
             <Collapsible className="mt-4">
-            <Card className="shadow-sm border-stone-200">
+            <Card className="shadow-sm border-white/10">
               <CollapsibleTrigger className="w-full text-left">
                 <CardHeader className="py-3 px-4 sm:px-5">
-                  <CardTitle className="text-sm text-stone-700 flex items-center justify-between gap-2">
+                  <CardTitle className="text-sm text-slate-200 flex items-center justify-between gap-2">
                     <span className="flex items-center gap-2 min-w-0">
-                      <History className="h-4 w-4 text-emerald-700 shrink-0" aria-hidden />
+                      <History className="h-4 w-4 text-cyan-300 shrink-0" aria-hidden />
                       <span className="truncate">
                         Historial de solicitudes ({historial.length}) — resueltas y publicadas
                       </span>
                     </span>
-                    <ChevronDown className="h-4 w-4 text-stone-400 shrink-0" aria-hidden />
+                    <ChevronDown className="h-4 w-4 text-slate-500 shrink-0" aria-hidden />
                   </CardTitle>
                 </CardHeader>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <CardContent className="px-4 sm:px-5 pb-4 pt-0">
-                  <p className="text-xs text-stone-500 mb-2">
+                  <p className="text-xs text-slate-400 mb-2">
                     Replegadas para ocupar el mínimo. Toca una línea para ver su detalle y la
                     respuesta del desarrollador.
                   </p>
-                  <ul className="divide-y divide-stone-100">
+                  <ul className="divide-y divide-white/10">
                     {historial.map((s) => {
                       const abierta = abiertasHistorial.has(s.id)
                       return (
@@ -407,33 +407,33 @@ export default function SolicitudesTab({ recargarResumen }: { recargarResumen: (
                           <button
                             type="button"
                             onClick={() => alternarHistorial(s.id)}
-                            className="w-full flex items-center gap-2 py-1.5 px-1 -mx-1 text-left rounded-md hover:bg-stone-50"
+                            className="w-full flex items-center gap-2 py-1.5 px-1 -mx-1 text-left rounded-md hover:bg-white/5/5"
                             aria-expanded={abierta}
                           >
                             <ChevronDown
-                              className={`h-3.5 w-3.5 text-stone-400 shrink-0 transition-transform ${abierta ? 'rotate-180' : ''}`}
+                              className={`h-3.5 w-3.5 text-slate-500 shrink-0 transition-transform ${abierta ? 'rotate-180' : ''}`}
                               aria-hidden
                             />
-                            <span className="font-mono text-[11px] text-stone-400 shrink-0">#{s.id}</span>
-                            <span className="text-sm text-stone-700 truncate flex-1 min-w-0">{s.titulo}</span>
-                            <span className="text-[10px] text-stone-400 shrink-0 hidden sm:inline">
+                            <span className="font-mono text-[11px] text-slate-500 shrink-0">#{s.id}</span>
+                            <span className="text-sm text-slate-200 truncate flex-1 min-w-0">{s.titulo}</span>
+                            <span className="text-[10px] text-slate-500 shrink-0 hidden sm:inline">
                               {haceCuando(s.fecha)}
                             </span>
-                            <Badge className="bg-emerald-800 text-white hover:bg-emerald-800 text-[10px] shrink-0">
+                            <Badge className="bg-cyan-600 text-white hover:bg-cyan-600 text-[10px] shrink-0">
                               Publicada
                             </Badge>
                           </button>
                           {abierta && (
                             <div className="pb-3 pl-6 pr-2 space-y-2">
-                              <p className="text-xs text-stone-500 whitespace-pre-line break-words">
+                              <p className="text-xs text-slate-400 whitespace-pre-line break-words">
                                 {s.descripcion}
                               </p>
                               {s.respuesta && (
-                                <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-2.5">
-                                  <p className="text-[11px] font-bold text-emerald-800 mb-0.5">
+                                <div className="rounded-lg bg-cyan-400/10 border border-cyan-400/20 p-2.5">
+                                  <p className="text-[11px] font-bold text-cyan-200 mb-0.5">
                                     Respuesta del desarrollador
                                   </p>
-                                  <p className="text-xs text-emerald-900 whitespace-pre-line">{s.respuesta}</p>
+                                  <p className="text-xs text-cyan-300 whitespace-pre-line">{s.respuesta}</p>
                                 </div>
                               )}
                             </div>

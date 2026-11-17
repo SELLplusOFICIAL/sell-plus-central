@@ -27,7 +27,7 @@ import AccesoTab from '@/components/central/acceso-tab'
 import { ResumenData, CENTRAL_URL, centralUrlActual } from '@/lib/types'
 import { toast } from 'sonner'
 
-export type TabKey = 'inicio' | 'equipos' | 'actualizaciones' | 'solicitudes' | 'acceso' | 'diagnostico' | 'aprende'
+export type TabKey = 'inicio' | 'actualizaciones' | 'solicitudes' | 'diagnostico' | 'equipos' | 'acceso' | 'aprende'
 
 type TabDef = {
   key: TabKey
@@ -36,13 +36,14 @@ type TabDef = {
   soloAdmin: boolean
 }
 
+/* Secciones reacomodadas: lo del día primero, el material de estudio al final. */
 const TABS: TabDef[] = [
   { key: 'inicio', label: 'Inicio', icon: <MonitorCheck className="h-4 w-4" aria-hidden />, soloAdmin: true },
-  { key: 'equipos', label: 'Equipos', icon: <Monitor className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'actualizaciones', label: 'Actualizaciones', icon: <RefreshCw className="h-4 w-4" aria-hidden />, soloAdmin: false },
   { key: 'solicitudes', label: 'Solicitudes', icon: <MessageSquarePlus className="h-4 w-4" aria-hidden />, soloAdmin: true },
-  { key: 'acceso', label: 'Acceso maestro', icon: <KeyRound className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'diagnostico', label: 'Diagnóstico', icon: <Wrench className="h-4 w-4" aria-hidden />, soloAdmin: true },
+  { key: 'equipos', label: 'Equipos', icon: <Monitor className="h-4 w-4" aria-hidden />, soloAdmin: true },
+  { key: 'acceso', label: 'Acceso maestro', icon: <KeyRound className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'aprende', label: 'Aprende', icon: <GraduationCap className="h-4 w-4" aria-hidden />, soloAdmin: false },
 ]
 
@@ -107,40 +108,40 @@ export default function CentralApp() {
 
   const contenidoTab = (t: TabDef) => {
     if (t.key === 'inicio') return <InicioTab resumen={resumen} recargar={cargarResumen} irA={(k) => setTab(k)} />
-    if (t.key === 'equipos') return <PanelTab refreshKey={0} />
     if (t.key === 'actualizaciones') return <ActualizacionesTab />
     if (t.key === 'solicitudes') return <SolicitudesTab recargarResumen={cargarResumen} />
-    if (t.key === 'acceso') return <AccesoTab />
     if (t.key === 'diagnostico') return <DiagnosticoTab resumen={resumen} />
+    if (t.key === 'equipos') return <PanelTab refreshKey={0} />
+    if (t.key === 'acceso') return <AccesoTab />
     return <AprendeTab />
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#eaf3fb]">
-      {/* Encabezado */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-800 text-white shadow-lg">
+    <div className="flex min-h-screen flex-col">
+      {/* Encabezado chrome */}
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0a1220]/85 shadow-[0_8px_30px_rgba(2,8,20,0.45)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-600/50 bg-emerald-700/60">
-            <Store className="h-6 w-6 text-emerald-200" aria-hidden />
+          <div className="sp-glow flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-cyan-300/40 bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-700">
+            <Store className="h-6 w-6 text-white drop-shadow" aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="text-lg font-bold leading-tight tracking-tight sm:text-xl">
+            <h1 className="sp-chrome-text text-lg font-bold leading-tight tracking-tight sm:text-xl">
               Sell-Plus Central
             </h1>
-            <p className="text-xs leading-tight text-emerald-200/90 sm:text-sm">
+            <p className="text-xs leading-tight text-slate-400 sm:text-sm">
               {esAdmin
                 ? 'Centro de actualizaciones y modificaciones · modo administrador'
                 : 'Actualizaciones, soluciones y descargas de tu software'}
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            <Badge className="border border-emerald-400/40 bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30">
+            <Badge className="border border-cyan-300/40 bg-cyan-400/15 text-cyan-200 shadow-[0_0_14px_rgba(34,211,238,0.25)] hover:bg-cyan-400/25">
               v{resumen?.ultimaVersion?.version ?? '…'}
             </Badge>
-            <span className="flex items-center gap-1.5 text-[11px] text-emerald-200/90">
+            <span className="flex items-center gap-1.5 text-[11px] text-slate-400">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
               </span>
               En línea
             </span>
@@ -152,7 +153,7 @@ export default function CentralApp() {
                 variant="ghost"
                 onClick={() => window.open(URL_ASISTENTE_IA, '_blank', 'noopener')}
                 title="Poder de IA — hablar con el asistente que desarrolla tu software"
-                className="text-emerald-200/80 hover:bg-emerald-800 hover:text-white"
+                className="text-slate-300 hover:bg-cyan-400/10 hover:text-cyan-200"
               >
                 <Sparkles className="h-4 w-4" aria-hidden />
                 <span className="hidden sm:inline">IA</span>
@@ -163,7 +164,7 @@ export default function CentralApp() {
                 size="sm"
                 variant="outline"
                 onClick={salirDeAdmin}
-                className="border-emerald-400/50 bg-transparent text-emerald-100 hover:bg-emerald-800 hover:text-white"
+                className="border-cyan-400/40 bg-transparent text-cyan-100 hover:bg-cyan-400/10 hover:text-white"
               >
                 <ShieldCheck className="mr-1 h-4 w-4" aria-hidden /> Salir de admin
               </Button>
@@ -172,7 +173,7 @@ export default function CentralApp() {
                 size="sm"
                 variant="outline"
                 onClick={entrarComoAdmin}
-                className="border-emerald-400/50 bg-transparent text-emerald-100 hover:bg-emerald-800 hover:text-white"
+                className="border-cyan-400/40 bg-transparent text-cyan-100 hover:bg-cyan-400/10 hover:text-white"
               >
                 <Lock className="mr-1 h-4 w-4" aria-hidden /> Admin
               </Button>
@@ -185,12 +186,12 @@ export default function CentralApp() {
       <main className="mx-auto w-full max-w-5xl flex-1 px-3 py-5 sm:px-4">
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)}>
           <div className="-mx-3 overflow-x-auto pb-1 sm:mx-0">
-            <TabsList className="inline-flex h-11 min-w-full border border-sky-200 bg-white shadow-sm sm:w-auto">
+            <TabsList className="sp-glass inline-flex h-11 min-w-full rounded-full p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:w-auto">
               {tabsVisibles.map((t) => (
                 <TabsTrigger
                   key={t.key}
                   value={t.key}
-                  className="gap-1.5 px-3 data-[state=active]:bg-emerald-900 data-[state=active]:text-white sm:px-4"
+                  className="gap-1.5 rounded-full px-3 text-slate-300 transition-all hover:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_18px_rgba(34,211,238,0.35)] sm:px-4"
                 >
                   {t.icon}
                   <span>{t.label}</span>
@@ -211,12 +212,12 @@ export default function CentralApp() {
 
         <div className="mt-6 text-center text-xs text-slate-500">
           Dirección estable de tu software:{' '}
-          <span className="select-all font-mono">{urlCentral || CENTRAL_URL}</span>
+          <span className="select-all font-mono text-slate-400">{urlCentral || CENTRAL_URL}</span>
         </div>
       </main>
 
-      {/* Pie pegado abajo */}
-      <footer className="mt-auto bg-emerald-950 text-xs text-emerald-200/80">
+      {/* Pie chrome */}
+      <footer className="mt-auto border-t border-white/10 bg-[#0a1220]/80 text-xs text-slate-400 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-1 px-4 py-3 sm:flex-row">
           <span>Sell-Plus Central · Tu software, siempre al día</span>
           <span>Tu base de datos nunca se borra al actualizar</span>

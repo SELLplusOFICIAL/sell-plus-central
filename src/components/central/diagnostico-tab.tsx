@@ -63,9 +63,9 @@ const CONOCIDOS: { titulo: string; detalle: string; tipo: 'bug' | 'retraso' | 'c
 ]
 
 const ESTILO_TIPO: Record<string, { label: string; clase: string; icono: React.ReactNode }> = {
-  bug: { label: 'Bug curado', clase: 'bg-red-100 text-red-800 hover:bg-red-100', icono: <Bug className="h-3.5 w-3.5" aria-hidden /> },
-  retraso: { label: 'Retraso conocido', clase: 'bg-amber-100 text-amber-900 hover:bg-amber-100', icono: <TimerReset className="h-3.5 w-3.5" aria-hidden /> },
-  cosmetico: { label: 'Cosmético', clase: 'bg-stone-100 text-stone-600 hover:bg-stone-100', icono: <Paintbrush className="h-3.5 w-3.5" aria-hidden /> },
+  bug: { label: 'Bug curado', clase: 'bg-red-400/15 text-red-300 hover:bg-red-400/15', icono: <Bug className="h-3.5 w-3.5" aria-hidden /> },
+  retraso: { label: 'Retraso conocido', clase: 'bg-amber-400/15 text-amber-300 hover:bg-amber-400/15', icono: <TimerReset className="h-3.5 w-3.5" aria-hidden /> },
+  cosmetico: { label: 'Cosmético', clase: 'bg-white/5/10 text-slate-300 hover:bg-white/5/10', icono: <Paintbrush className="h-3.5 w-3.5" aria-hidden /> },
 }
 
 export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | null }) {
@@ -200,11 +200,11 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-bold text-stone-800 flex items-center gap-2">
-          <Wrench className="h-5 w-5 text-emerald-700" aria-hidden />
+        <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+          <Wrench className="h-5 w-5 text-cyan-300" aria-hidden />
           Diagnóstico — especialista de la versión 6.7.0
         </h2>
-        <p className="text-xs text-stone-500 mt-0.5">
+        <p className="text-xs text-slate-400 mt-0.5">
           Resolvemos problemas de funcionalidad de código, bugs y retrasos de funciones de la
           versión oficial. Verifica tu instalación, revisa los problemas conocidos y genera un
           reporte listo para resolver.
@@ -212,13 +212,13 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
       </div>
 
       {/* Chequeo de la instalación */}
-      <Card className="shadow-sm border-stone-200">
+      <Card className="shadow-sm border-white/10">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-stone-800">
-            <ShieldCheck className="h-5 w-5 text-emerald-700" aria-hidden />
+          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
+            <ShieldCheck className="h-5 w-5 text-cyan-300" aria-hidden />
             Chequear tu instalación
           </CardTitle>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Compara la versión que corre en tu PC contra la oficial de la Central.
           </p>
         </CardHeader>
@@ -228,13 +228,13 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
               value={versionConsulta}
               onChange={(e) => setVersionConsulta(e.target.value)}
               placeholder="6.7.0"
-              className="w-32 font-mono border-stone-300 focus-visible:ring-emerald-700"
+              className="w-32 font-mono border-white/15 focus-visible:ring-cyan-500"
               aria-label="Versión instalada en la PC"
             />
             <Button
               onClick={chequear}
               disabled={chequeando}
-              className="bg-emerald-800 hover:bg-emerald-900 text-white"
+              className="bg-cyan-600 hover:bg-cyan-700 text-white"
             >
               {chequeando ? (
                 <>
@@ -250,39 +250,39 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
             </Button>
           </div>
           {chequeo?.estado === 'al-dia' && (
-            <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 flex items-start gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" aria-hidden />
-              <p className="text-sm text-emerald-900">{chequeo.detalle}</p>
+            <div className="rounded-lg bg-cyan-400/10 border border-cyan-400/20 p-3 flex items-start gap-2">
+              <CheckCircle2 className="h-5 w-5 text-cyan-400 shrink-0" aria-hidden />
+              <p className="text-sm text-cyan-300">{chequeo.detalle}</p>
             </div>
           )}
           {chequeo?.estado === 'actualizar' && (
-            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 flex items-start gap-2">
-              <TimerReset className="h-5 w-5 text-amber-600 shrink-0" aria-hidden />
-              <p className="text-sm text-amber-900">{chequeo.detalle}</p>
+            <div className="rounded-lg bg-amber-50 border border-amber-400/30 p-3 flex items-start gap-2">
+              <TimerReset className="h-5 w-5 text-amber-400 shrink-0" aria-hidden />
+              <p className="text-sm text-amber-300">{chequeo.detalle}</p>
             </div>
           )}
           {chequeo?.estado === 'error' && (
-            <div className="rounded-lg bg-red-50 border border-red-200 p-3 flex items-start gap-2">
-              <XCircle className="h-5 w-5 text-red-600 shrink-0" aria-hidden />
-              <p className="text-sm text-red-900">{chequeo.detalle}</p>
+            <div className="rounded-lg bg-red-50 border border-red-400/30 p-3 flex items-start gap-2">
+              <XCircle className="h-5 w-5 text-red-400 shrink-0" aria-hidden />
+              <p className="text-sm text-red-300">{chequeo.detalle}</p>
             </div>
           )}
         </CardContent>
       </Card>
 
       {/* Conexión con la Central */}
-      <Card className="shadow-sm border-stone-200">
+      <Card className="shadow-sm border-white/10">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-stone-800">
-            <Wifi className="h-5 w-5 text-emerald-700" aria-hidden />
+          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
+            <Wifi className="h-5 w-5 text-cyan-300" aria-hidden />
             Conexión con la Central
           </CardTitle>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Igual que lo hace tu software automáticamente, cada 15 minutos.
           </p>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Button onClick={probar} disabled={estado === 'probando'} variant="outline" className="border-emerald-300 text-emerald-800 hover:bg-emerald-50">
+          <Button onClick={probar} disabled={estado === 'probando'} variant="outline" className="border-cyan-400/30 text-cyan-200 hover:bg-cyan-400/10">
             {estado === 'probando' ? (
               <>
                 <Loader2 className="h-4 w-4 mr-1.5 animate-spin" aria-hidden />
@@ -296,19 +296,19 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
             )}
           </Button>
           {estado === 'ok' && (
-            <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 flex items-start gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" aria-hidden />
-              <p className="text-sm text-emerald-900">{detalle}</p>
+            <div className="rounded-lg bg-cyan-400/10 border border-cyan-400/20 p-3 flex items-start gap-2">
+              <CheckCircle2 className="h-5 w-5 text-cyan-400 shrink-0" aria-hidden />
+              <p className="text-sm text-cyan-300">{detalle}</p>
             </div>
           )}
           {estado === 'error' && (
-            <div className="rounded-lg bg-red-50 border border-red-200 p-3 flex items-start gap-2">
-              <XCircle className="h-5 w-5 text-red-600 shrink-0" aria-hidden />
-              <p className="text-sm text-red-900">{detalle}</p>
+            <div className="rounded-lg bg-red-50 border border-red-400/30 p-3 flex items-start gap-2">
+              <XCircle className="h-5 w-5 text-red-400 shrink-0" aria-hidden />
+              <p className="text-sm text-red-300">{detalle}</p>
             </div>
           )}
           {resumen?.ultimaConexion && (
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-slate-400">
               Última conexión recibida de tu software: {haceCuando(resumen.ultimaConexion.fecha)}
             </p>
           )}
@@ -316,13 +316,13 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
       </Card>
 
       {/* Problemas conocidos de la 6.7.0 */}
-      <Card className="shadow-sm border-stone-200">
+      <Card className="shadow-sm border-white/10">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-stone-800">
-            <Bug className="h-5 w-5 text-emerald-700" aria-hidden />
+          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
+            <Bug className="h-5 w-5 text-cyan-300" aria-hidden />
             Problemas conocidos de la v6.7.0 y su estado
           </CardTitle>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Lo que ya identificamos en el laboratorio, con la solución asignada. Ninguno bloquea la
             venta del día.
           </p>
@@ -331,15 +331,15 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
           {CONOCIDOS.map((c) => {
             const estilo = ESTILO_TIPO[c.tipo]
             return (
-              <div key={c.titulo} className="rounded-lg border border-stone-100 bg-stone-50/70 p-3">
+              <div key={c.titulo} className="rounded-lg border border-white/10 bg-white/5/5/70 p-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-semibold text-stone-800 flex-1 min-w-0 break-words">{c.titulo}</p>
+                  <p className="text-sm font-semibold text-slate-100 flex-1 min-w-0 break-words">{c.titulo}</p>
                   <Badge className={estilo.clase + ' gap-1 shrink-0'}>
                     {estilo.icono}
                     {estilo.label}
                   </Badge>
                 </div>
-                <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">{c.detalle}</p>
+                <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">{c.detalle}</p>
               </div>
             )
           })}
@@ -347,25 +347,25 @@ export default function DiagnosticoTab({ resumen }: { resumen: ResumenData | nul
       </Card>
 
       {/* Reporte para resolver de inmediato */}
-      <Card className="shadow-sm border-emerald-200">
+      <Card className="shadow-sm border-cyan-400/20">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-stone-800">
-            <ClipboardCheck className="h-5 w-5 text-emerald-700" aria-hidden />
+          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
+            <ClipboardCheck className="h-5 w-5 text-cyan-300" aria-hidden />
             Reporte listo para resolver
           </CardTitle>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Copia este reporte, complétalo con lo que ves en tu PC y pégamelo en el chat de IA
             (botón IA arriba) o en Solicitudes: lo resuelvo de inmediato.
           </p>
         </CardHeader>
         <CardContent className="space-y-3">
-          <pre className="rounded-lg border border-stone-200 bg-white p-3 text-[11px] leading-relaxed text-stone-600 whitespace-pre-wrap break-words select-all">
+          <pre className="rounded-lg border border-white/10 bg-white/5 p-3 text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap break-words select-all">
             {armarReporte()}
           </pre>
           <Button
             size="sm"
             onClick={copiarReporte}
-            className="bg-emerald-800 hover:bg-emerald-900 text-white"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white"
           >
             {copiado ? (
               <>

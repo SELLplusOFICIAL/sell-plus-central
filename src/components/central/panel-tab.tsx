@@ -92,26 +92,26 @@ function FilaEquipo({
               {m.machineName || m.machineId}
             </span>
             {/* Versión instalada */}
-            <span className="rounded bg-stone-100 px-1.5 py-0.5 font-mono text-[11px] text-stone-700">
+            <span className="rounded bg-white/5/10 px-1.5 py-0.5 font-mono text-[11px] text-slate-200">
               v{m.version || "?"}
             </span>
             {/* Estado de actualización */}
             {conOrden && m.estadoOrden === "entregada" ? (
-              <Badge variant="outline" className="border-violet-200 bg-violet-100 text-violet-800">
+              <Badge variant="outline" className="border-violet-400/30 bg-violet-400/15 text-violet-300">
                 <DownloadCloud className="mr-1 h-3 w-3" />
                 Instalando v{m.ordenVersion}…
               </Badge>
             ) : conOrden ? (
-              <Badge variant="outline" className="border-sky-200 bg-sky-100 text-sky-800">
+              <Badge variant="outline" className="border-sky-400/30 bg-sky-400/15 text-sky-800">
                 <Send className="mr-1 h-3 w-3" />
                 Orden enviada → v{m.ordenVersion}
               </Badge>
             ) : m.necesitaActualizacion ? (
-              <Badge variant="outline" className="border-amber-200 bg-amber-100 text-amber-800">
+              <Badge variant="outline" className="border-amber-400/30 bg-amber-400/15 text-amber-300">
                 Actualizar a v{m.ultimaVersion}
               </Badge>
             ) : (
-              <Badge variant="outline" className="border-emerald-200 bg-emerald-100 text-emerald-800">
+              <Badge variant="outline" className="border-cyan-400/20 bg-cyan-400/15 text-cyan-200">
                 <CheckCircle2 className="mr-1 h-3 w-3" />
                 Al día
               </Badge>
@@ -124,12 +124,12 @@ function FilaEquipo({
             </span>
             <span>visto {relativeTime(String(m.lastSeenAt))}</span>
             {conOrden && !online && (
-              <span className="text-sky-700">
+              <span className="text-sky-300">
                 se instalará en cuanto abran el programa
               </span>
             )}
             {!conOrden && !m.necesitaActualizacion && m.ordenCumplidaEn && (
-              <span className="text-emerald-700">
+              <span className="text-cyan-300">
                 actualizó {relativeTime(String(m.ordenCumplidaEn))}
               </span>
             )}
@@ -142,7 +142,7 @@ function FilaEquipo({
               size="sm"
               disabled={ocupado}
               onClick={() => onMandar(m)}
-              className="h-8 bg-emerald-800 px-2.5 text-xs text-white hover:bg-emerald-900"
+              className="h-8 bg-cyan-600 px-2.5 text-xs text-white hover:bg-cyan-700"
             >
               <Send className="mr-1 h-3.5 w-3.5" />
               Mandar actualización
@@ -154,7 +154,7 @@ function FilaEquipo({
               variant="ghost"
               disabled={ocupado}
               onClick={() => onCancelar(m)}
-              className="h-8 px-2 text-xs text-stone-500 hover:text-stone-800"
+              className="h-8 px-2 text-xs text-slate-400 hover:text-slate-100"
             >
               <X className="mr-1 h-3.5 w-3.5" />
               Cancelar orden
@@ -166,7 +166,7 @@ function FilaEquipo({
             disabled={ocupado}
             onClick={() => onEditar(m)}
             title="Editar nombre y ubicación"
-            className="h-8 w-8 p-0 text-stone-400 hover:text-stone-700"
+            className="h-8 w-8 p-0 text-slate-500 hover:text-slate-200"
           >
             <Pencil className="h-3.5 w-3.5" />
           </Button>
@@ -176,7 +176,7 @@ function FilaEquipo({
             disabled={ocupado}
             onClick={() => onEliminar(m)}
             title="Eliminar de la flota"
-            className="h-8 w-8 p-0 text-stone-400 hover:text-red-700"
+            className="h-8 w-8 p-0 text-slate-500 hover:text-red-300"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -185,13 +185,13 @@ function FilaEquipo({
       <div className="mt-1.5 flex items-center gap-1.5 text-xs font-medium">
         <span
           className={`h-2 w-2 rounded-full ${
-            online ? "animate-pulse bg-emerald-500" : "bg-stone-300"
+            online ? "animate-pulse bg-cyan-400/100" : "bg-slate-600"
           }`}
         />
-        <span className={online ? "text-emerald-700" : "text-stone-400"}>
+        <span className={online ? "text-cyan-300" : "text-slate-500"}>
           {online ? "En línea" : "Inactivo"}
         </span>
-        <span className="font-normal text-stone-400">
+        <span className="font-normal text-slate-500">
           · {m.os || "SO sin reportar"} · identificador {m.machineId}
         </span>
       </div>
@@ -353,21 +353,21 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
       value: stats ? String(stats.clients) : "…",
       icon: Monitor,
       hint: stats ? `${stats.activeClients} activos en las últimas 24 h` : "",
-      iconClass: "bg-emerald-100 text-emerald-700",
+      iconClass: "bg-cyan-400/15 text-cyan-300",
     },
     {
       title: "Última versión publicada",
       value: stats?.latestPublished ? `v${stats.latestPublished.version}` : "…",
       icon: Package,
       hint: stats?.latestPublished ? stats.latestPublished.title : "",
-      iconClass: "bg-teal-100 text-teal-700",
+      iconClass: "bg-teal-400/15 text-teal-300",
     },
     {
       title: "Reportes de diagnóstico",
       value: stats ? String(stats.reports) : "…",
       icon: Stethoscope,
       hint: stats ? `${stats.pendingReports} pendientes de resolver` : "",
-      iconClass: "bg-amber-100 text-amber-700",
+      iconClass: "bg-amber-400/15 text-amber-300",
     },
     {
       title: "Conversaciones con la IA",
@@ -381,10 +381,10 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
   return (
     <div className="space-y-6">
       {/* Tarjeta de estado */}
-      <Card className="border-emerald-200 bg-emerald-50/60">
+      <Card className="border-cyan-400/20 bg-cyan-400/10">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+            <CheckCircle2 className="h-5 w-5 text-cyan-400" />
             Sell-Plus 3.1.0 — Auto-Actualizador integrado
           </CardTitle>
           <CardDescription>
@@ -397,16 +397,16 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
 
       {/* URL de conexión para el Auto-Actualizador */}
       {origin && (
-        <Card className="border-sky-200 bg-sky-50/50">
+        <Card className="border-sky-400/30 bg-sky-50/50">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Link2 className="h-4 w-4 text-sky-600" />
+              <Link2 className="h-4 w-4 text-sky-300" />
               URL de conexión del Auto-Actualizador
             </CardTitle>
             <CardDescription>
               Si algún equipo aparece como &quot;sin conexión a Central&quot;, copia esta dirección
               en el archivo{" "}
-              <code className="rounded bg-sky-100 px-1 py-0.5 text-[11px]">
+              <code className="rounded bg-sky-400/15 px-1 py-0.5 text-[11px]">
                 C:\Sell-Plus\resources\app\db\central-url.txt
               </code>{" "}
               (una sola línea) y reinicia el programa. Así el programa siempre sabe dónde está este
@@ -415,12 +415,12 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <code className="flex-1 overflow-x-auto rounded-lg bg-stone-950 px-3 py-2 font-mono text-xs text-stone-100">
+              <code className="flex-1 overflow-x-auto rounded-lg bg-black/40 px-3 py-2 font-mono text-xs text-slate-100 border border-white/10">
                 {origin}
               </code>
               <button
                 type="button"
-                className="flex shrink-0 items-center gap-1.5 rounded-lg border bg-white px-3 py-2 text-xs font-medium hover:bg-stone-50"
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border bg-white/5 px-3 py-2 text-xs font-medium hover:bg-white/5/5"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(origin);
@@ -473,7 +473,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Activity className="h-4 w-4 text-emerald-600" />
+                  <Activity className="h-4 w-4 text-cyan-400" />
                   Programas instalados
                 </CardTitle>
                 <CardDescription>
@@ -486,7 +486,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
                   size="sm"
                   onClick={mandarATodos}
                   disabled={ocupado}
-                  className="shrink-0 bg-emerald-800 text-white hover:bg-emerald-900"
+                  className="shrink-0 bg-cyan-600 text-white hover:bg-cyan-700"
                 >
                   <Send className="mr-1.5 h-3.5 w-3.5" />
                   Mandar a los {flota.resumen.desactualizados} desactualizado
@@ -522,8 +522,8 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
 
             {/* Pulso del actualizador heredado (cajas sin identidad todavía) */}
             {stats?.ultimaRevisionAnonima && (
-              <p className="mt-3 flex items-start gap-2 rounded-lg border border-stone-200 bg-stone-50 p-2.5 text-[11px] leading-relaxed text-stone-500">
-                <RadioTower className="mt-0.5 h-3.5 w-3.5 shrink-0 text-stone-400" />
+              <p className="mt-3 flex items-start gap-2 rounded-lg border border-white/10 bg-white/5/5 p-2.5 text-[11px] leading-relaxed text-slate-400">
+                <RadioTower className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500" />
                 <span>
                   Además, el actualizador instalado revisó{" "}
                   {relativeTime(stats.ultimaRevisionAnonima.fecha)}: «
@@ -540,7 +540,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <ShieldAlert className="h-4 w-4 text-amber-600" />
+              <ShieldAlert className="h-4 w-4 text-amber-400" />
               Problemas conocidos y soluciones
             </CardTitle>
             <CardDescription>
@@ -554,7 +554,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
                 {issues.map((i) => (
                   <details
                     key={i.id}
-                    className="group rounded-lg border p-3 open:bg-stone-50"
+                    className="group rounded-lg border p-3 open:bg-white/5/5"
                   >
                     <summary className="cursor-pointer list-none">
                       <div className="flex items-center justify-between gap-2">
@@ -588,7 +588,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <BookOpen className="h-4 w-4 text-emerald-600" />
+            <BookOpen className="h-4 w-4 text-cyan-400" />
             Base de conocimiento del proyecto
           </CardTitle>
           <CardDescription>
@@ -603,7 +603,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
                 <AccordionItem key={e.id} value={e.id}>
                   <AccordionTrigger className="text-sm">
                     <span className="flex items-center gap-2 text-left">
-                      <Database className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                      <Database className="h-3.5 w-3.5 shrink-0 text-cyan-400" />
                       {CATEGORY_LABELS[e.category] ?? e.category}: {e.title}
                     </span>
                   </AccordionTrigger>
@@ -662,7 +662,7 @@ export function PanelTab({ refreshKey }: { refreshKey: number }) {
                 size="sm"
                 disabled={ocupado}
                 onClick={guardarEdicion}
-                className="bg-emerald-800 text-white hover:bg-emerald-900"
+                className="bg-cyan-600 text-white hover:bg-cyan-700"
               >
                 Guardar
               </Button>

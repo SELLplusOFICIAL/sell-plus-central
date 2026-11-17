@@ -9,10 +9,10 @@ import { ResumenData, haceCuando } from '@/lib/types'
 import type { TabKey } from './central-app'
 
 const ICONOS_TIPO: Record<string, React.ReactNode> = {
-  check_actualizacion: <RefreshCw className="h-4 w-4 text-emerald-600 shrink-0" aria-hidden />,
-  solicitud: <MessageSquarePlus className="h-4 w-4 text-amber-600 shrink-0" aria-hidden />,
-  descarga: <ArrowRight className="h-4 w-4 text-stone-500 shrink-0" aria-hidden />,
-  sistema: <Activity className="h-4 w-4 text-stone-400 shrink-0" aria-hidden />,
+  check_actualizacion: <RefreshCw className="h-4 w-4 text-cyan-400 shrink-0" aria-hidden />,
+  solicitud: <MessageSquarePlus className="h-4 w-4 text-amber-400 shrink-0" aria-hidden />,
+  descarga: <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" aria-hidden />,
+  sistema: <Activity className="h-4 w-4 text-slate-500 shrink-0" aria-hidden />,
 }
 
 export default function InicioTab({
@@ -71,22 +71,22 @@ export default function InicioTab({
   return (
     <div className="space-y-5">
       {/* Estado del software */}
-      <Card className="border-emerald-200 shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-br from-emerald-50 to-stone-50 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <CheckCircle2 className="h-12 w-12 text-emerald-600 shrink-0" aria-hidden />
+      <Card className="border-cyan-400/20 shadow-sm overflow-hidden">
+        <div className="bg-gradient-to-br from-cyan-400/10 to-white/5 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <CheckCircle2 className="h-12 w-12 text-cyan-400 shrink-0" aria-hidden />
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg sm:text-xl font-bold text-emerald-950">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-50">
               Tu software está al día
             </h2>
             {ultima && (
-              <p className="text-sm text-stone-600 mt-0.5">
+              <p className="text-sm text-slate-300 mt-0.5">
                 Última versión publicada:{' '}
-                <span className="font-semibold text-emerald-800">v{ultima.version}</span>
+                <span className="font-semibold text-cyan-200">v{ultima.version}</span>
                 {' — '}
                 {ultima.titulo}
               </p>
             )}
-            <p className="text-xs text-stone-500 mt-1 flex items-center gap-1.5">
+            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" aria-hidden />
               {resumen.ultimaConexion
                 ? `Última conexión de tu software: ${haceCuando(resumen.ultimaConexion.fecha)}`
@@ -96,7 +96,7 @@ export default function InicioTab({
           </div>
           <Button
             onClick={() => irA('actualizaciones')}
-            className="bg-emerald-800 hover:bg-emerald-900 text-white shrink-0"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white shrink-0"
           >
             Ver novedades
           </Button>
@@ -105,29 +105,29 @@ export default function InicioTab({
 
       {/* Cifras rápidas */}
       <div className="grid grid-cols-3 gap-3">
-        <Card className="shadow-sm border-stone-200">
+        <Card className="shadow-sm border-white/10">
           <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-            <Layers3 className="h-5 w-5 text-emerald-700" aria-hidden />
-            <span className="text-2xl font-bold text-stone-800">{resumen.totalVersiones}</span>
-            <span className="text-[11px] sm:text-xs text-stone-500 leading-tight">
+            <Layers3 className="h-5 w-5 text-cyan-300" aria-hidden />
+            <span className="text-2xl font-bold text-slate-100">{resumen.totalVersiones}</span>
+            <span className="text-[11px] sm:text-xs text-slate-400 leading-tight">
               versiones publicadas
             </span>
           </CardContent>
         </Card>
-        <Card className="shadow-sm border-stone-200">
+        <Card className="shadow-sm border-white/10">
           <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-            <BookOpenCheck className="h-5 w-5 text-emerald-700" aria-hidden />
-            <span className="text-2xl font-bold text-stone-800">1</span>
-            <span className="text-[11px] sm:text-xs text-stone-500 leading-tight">
+            <BookOpenCheck className="h-5 w-5 text-cyan-300" aria-hidden />
+            <span className="text-2xl font-bold text-slate-100">1</span>
+            <span className="text-[11px] sm:text-xs text-slate-400 leading-tight">
               instructivo oficial (v6.7.0)
             </span>
           </CardContent>
         </Card>
-        <Card className="shadow-sm border-stone-200">
+        <Card className="shadow-sm border-white/10">
           <CardContent className="p-4 flex flex-col items-center text-center gap-1">
-            <MessageSquarePlus className="h-5 w-5 text-emerald-700" aria-hidden />
-            <span className="text-2xl font-bold text-stone-800">{resumen.solicitudesAbiertas}</span>
-            <span className="text-[11px] sm:text-xs text-stone-500 leading-tight">
+            <MessageSquarePlus className="h-5 w-5 text-cyan-300" aria-hidden />
+            <span className="text-2xl font-bold text-slate-100">{resumen.solicitudesAbiertas}</span>
+            <span className="text-[11px] sm:text-xs text-slate-400 leading-tight">
               solicitudes abiertas
             </span>
           </CardContent>
@@ -136,42 +136,42 @@ export default function InicioTab({
 
       {/* Accesos rápidos */}
       <div className="grid sm:grid-cols-2 gap-3">
-        <Card className="shadow-sm border-stone-200 hover:border-emerald-300 transition-colors cursor-pointer" onClick={() => irA('solicitudes')}>
+        <Card className="shadow-sm border-white/10 hover:border-cyan-400/30 transition-colors cursor-pointer" onClick={() => irA('solicitudes')}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
-              <MessageSquarePlus className="h-5 w-5 text-amber-700" aria-hidden />
+            <div className="h-10 w-10 rounded-lg bg-amber-400/15 flex items-center justify-center shrink-0">
+              <MessageSquarePlus className="h-5 w-5 text-amber-300" aria-hidden />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-stone-800">¿Quieres un cambio en tu software?</p>
-              <p className="text-xs text-stone-500">Pídelo en Solicitudes y lo trabajamos</p>
+              <p className="font-semibold text-sm text-slate-100">¿Quieres un cambio en tu software?</p>
+              <p className="text-xs text-slate-400">Pídelo en Solicitudes y lo trabajamos</p>
             </div>
-            <ArrowRight className="h-4 w-4 text-stone-400" aria-hidden />
+            <ArrowRight className="h-4 w-4 text-slate-500" aria-hidden />
           </CardContent>
         </Card>
-        <Card className="shadow-sm border-stone-200 hover:border-emerald-300 transition-colors cursor-pointer" onClick={() => irA('aprende')}>
+        <Card className="shadow-sm border-white/10 hover:border-cyan-400/30 transition-colors cursor-pointer" onClick={() => irA('aprende')}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-              <BookOpenCheck className="h-5 w-5 text-emerald-700" aria-hidden />
+            <div className="h-10 w-10 rounded-lg bg-cyan-400/15 flex items-center justify-center shrink-0">
+              <BookOpenCheck className="h-5 w-5 text-cyan-300" aria-hidden />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-stone-800">Aprende a usar funciones nuevas</p>
-              <p className="text-xs text-stone-500">Guías cortas, en español y sin tecnicismos</p>
+              <p className="font-semibold text-sm text-slate-100">Aprende a usar funciones nuevas</p>
+              <p className="text-xs text-slate-400">Guías cortas, en español y sin tecnicismos</p>
             </div>
-            <ArrowRight className="h-4 w-4 text-stone-400" aria-hidden />
+            <ArrowRight className="h-4 w-4 text-slate-500" aria-hidden />
           </CardContent>
         </Card>
       </div>
 
       {/* Poder de IA */}
-      <Card className="shadow-sm border-violet-200 overflow-hidden">
-        <div className="bg-gradient-to-br from-violet-50 to-stone-50 p-5">
+      <Card className="shadow-sm border-violet-400/30 overflow-hidden">
+        <div className="bg-gradient-to-br from-violet-50 to-white/5 p-5">
           <div className="flex items-start gap-3">
-            <div className="h-10 w-10 rounded-lg bg-violet-100 flex items-center justify-center shrink-0">
-              <Sparkles className="h-5 w-5 text-violet-700" aria-hidden />
+            <div className="h-10 w-10 rounded-lg bg-violet-400/15 flex items-center justify-center shrink-0">
+              <Sparkles className="h-5 w-5 text-violet-300" aria-hidden />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-stone-800">Poder de IA — tu desarrollador a un clic</h3>
-              <p className="text-sm text-stone-600 mt-1">
+              <h3 className="font-bold text-slate-100">Poder de IA — tu desarrollador a un clic</h3>
+              <p className="text-sm text-slate-300 mt-1">
                 Esta Central ya trabaja sola en internet. Cuando quieras añadir funciones o cambios,
                 abre el chat de IA, pega la frase de contexto y el asistente retomará tu proyecto.
               </p>
@@ -190,7 +190,7 @@ export default function InicioTab({
               size="sm"
               variant="outline"
               onClick={copiarFrase}
-              className="border-violet-300 text-violet-800 hover:bg-violet-100"
+              className="border-violet-300 text-violet-300 hover:bg-violet-400/15"
             >
               {copiada ? (
                 <Check className="h-4 w-4 mr-1.5" aria-hidden />
@@ -200,10 +200,10 @@ export default function InicioTab({
               {copiada ? '¡Copiada!' : 'Copiar frase de contexto'}
             </Button>
           </div>
-          <pre className="mt-3 overflow-x-auto rounded-lg border border-violet-200 bg-white p-3 text-[11px] leading-relaxed text-stone-600 select-all whitespace-pre-wrap break-words">
+          <pre className="mt-3 overflow-x-auto rounded-lg border border-violet-400/30 bg-white/5 p-3 text-[11px] leading-relaxed text-slate-300 select-all whitespace-pre-wrap break-words">
             {fraseContexto}
           </pre>
-          <p className="mt-2 text-[11px] text-stone-500">
+          <p className="mt-2 text-[11px] text-slate-400">
             Consejo: si abres este mismo chat desde tu historial de Z.ai, continúa con todo el
             contexto. Para subir cambios, el asistente te pedirá un token de GitHub.
           </p>
@@ -211,32 +211,32 @@ export default function InicioTab({
       </Card>
 
       {/* Bitácora */}
-      <Card className="shadow-sm border-stone-200">
+      <Card className="shadow-sm border-white/10">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2 text-stone-800">
-            <Activity className="h-4 w-4 text-emerald-700" aria-hidden />
+          <CardTitle className="text-base flex items-center gap-2 text-slate-100">
+            <Activity className="h-4 w-4 text-cyan-300" aria-hidden />
             Bitácora reciente
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
           {resumen.actividad.length === 0 ? (
-            <p className="text-sm text-stone-500 py-3">
+            <p className="text-sm text-slate-400 py-3">
               Aún no hay actividad registrada. Cuando tu software se conecte, lo verás aquí.
             </p>
           ) : (
-            <ul className="max-h-56 divide-y divide-stone-100 overflow-y-auto pr-1">
+            <ul className="max-h-56 divide-y divide-white/10 overflow-y-auto pr-1">
               {resumen.actividad.map((a) => (
                 <li key={a.id} className="py-2.5 flex items-start gap-2.5">
                   {ICONOS_TIPO[a.tipo] ?? ICONOS_TIPO.sistema}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-stone-700 break-words line-clamp-2">{a.detalle}</p>
-                    <p className="text-[11px] text-stone-400">{haceCuando(a.fecha)}</p>
+                    <p className="text-sm text-slate-200 break-words line-clamp-2">{a.detalle}</p>
+                    <p className="text-[11px] text-slate-500">{haceCuando(a.fecha)}</p>
                   </div>
                 </li>
               ))}
             </ul>
           )}
-          <Button variant="ghost" size="sm" onClick={recargar} className="mt-2 text-emerald-800 hover:text-emerald-900 hover:bg-emerald-50">
+          <Button variant="ghost" size="sm" onClick={recargar} className="mt-2 text-cyan-200 hover:text-cyan-300 hover:bg-cyan-400/10">
             <RefreshCw className="h-3.5 w-3.5 mr-1.5" aria-hidden />
             Actualizar
           </Button>

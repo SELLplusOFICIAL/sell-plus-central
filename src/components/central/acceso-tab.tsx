@@ -53,10 +53,10 @@ function minutosRestantes(iso: string): number {
 }
 
 const ESTADO_COLOR: Record<string, string> = {
-  activo: 'border-emerald-300 bg-emerald-100 text-emerald-800',
-  usado: 'border-stone-300 bg-stone-200 text-stone-700',
-  revocado: 'border-red-300 bg-red-100 text-red-700',
-  expirado: 'border-amber-300 bg-amber-100 text-amber-800',
+  activo: 'border-cyan-400/30 bg-cyan-400/15 text-cyan-200',
+  usado: 'border-white/15 bg-white/5/10 text-slate-200',
+  revocado: 'border-red-300 bg-red-400/15 text-red-300',
+  expirado: 'border-amber-300 bg-amber-400/15 text-amber-300',
 }
 
 export default function AccesoTab() {
@@ -170,7 +170,7 @@ export default function AccesoTab() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <KeyRound className="h-5 w-5 text-emerald-800" aria-hidden />
+            <KeyRound className="h-5 w-5 text-cyan-200" aria-hidden />
             Acceso maestro
           </CardTitle>
           <CardDescription>
@@ -181,7 +181,7 @@ export default function AccesoTab() {
         <CardContent className="space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
-              <label className="mb-1 block text-xs font-medium text-stone-500" htmlFor="nota-maestro">
+              <label className="mb-1 block text-xs font-medium text-slate-400" htmlFor="nota-maestro">
                 Nota opcional para tu bitácora (p. ej. «Caja 1, se olvidó el PIN»)
               </label>
               <Input
@@ -192,32 +192,32 @@ export default function AccesoTab() {
                 placeholder="Opcional…"
               />
             </div>
-            <Button onClick={generar} disabled={generando} className="bg-emerald-900 hover:bg-emerald-800">
+            <Button onClick={generar} disabled={generando} className="bg-cyan-700 hover:bg-cyan-600">
               <KeyRound className="mr-1 h-4 w-4" aria-hidden />
               {generando ? 'Generando…' : 'Generar código maestro'}
             </Button>
           </div>
 
           {activo && (
-            <div className="rounded-xl border-2 border-emerald-700 bg-gradient-to-br from-emerald-50 to-stone-50 p-4">
+            <div className="rounded-xl border-2 border-cyan-400/50 bg-gradient-to-br from-cyan-400/10 to-white/5 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-800">
+                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-cyan-200">
                   <Timer className="h-4 w-4" aria-hidden /> Código vigente — expira en {mmss}
                 </span>
                 <Badge className={ESTADO_COLOR.activo}>un solo uso</Badge>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <code className="select-all rounded-lg border border-emerald-200 bg-white px-4 py-2 font-mono text-2xl font-bold tracking-[0.2em] text-emerald-900">
+                <code className="select-all rounded-lg border border-cyan-400/20 bg-white/5 px-4 py-2 font-mono text-2xl font-bold tracking-[0.2em] text-cyan-300">
                   {activo.codigo}
                 </code>
                 <Button size="sm" variant="outline" onClick={() => copiar(activo.codigo)}>
                   <Copy className="mr-1 h-3.5 w-3.5" aria-hidden /> Copiar
                 </Button>
-                <Button size="sm" variant="ghost" className="text-red-700 hover:bg-red-50" onClick={() => revocar(activo.id)}>
+                <Button size="sm" variant="ghost" className="text-red-300 hover:bg-red-50" onClick={() => revocar(activo.id)}>
                   <Ban className="mr-1 h-3.5 w-3.5" aria-hidden /> Revocar
                 </Button>
               </div>
-              <p className="mt-3 text-xs leading-relaxed text-stone-600">
+              <p className="mt-3 text-xs leading-relaxed text-slate-300">
                 En la caja: abre Sell-Plus y, en la pantalla de inicio de sesión, pulsa <b>«Acceso maestro»</b> y
                 escribe este código. Desde ahí podrás <b>cambiar la contraseña del administrador</b> y entrar
                 conservando los datos, o <b>resetear el programa</b> y empezar de cero. El código muere al usarse
@@ -226,7 +226,7 @@ export default function AccesoTab() {
             </div>
           )}
 
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+          <div className="rounded-lg border border-amber-400/30 bg-amber-50 p-3 text-xs leading-relaxed text-amber-300">
             <span className="flex items-start gap-2">
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
               <span>
@@ -243,7 +243,7 @@ export default function AccesoTab() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
             <span className="flex items-center gap-2">
-              <MonitorSmartphone className="h-4 w-4 text-stone-500" aria-hidden /> Últimos códigos
+              <MonitorSmartphone className="h-4 w-4 text-slate-400" aria-hidden /> Últimos códigos
             </span>
             <Button size="sm" variant="ghost" onClick={cargar} disabled={cargando}>
               <RefreshCw className={'mr-1 h-3.5 w-3.5' + (cargando ? ' animate-spin' : '')} aria-hidden /> Actualizar
@@ -253,14 +253,14 @@ export default function AccesoTab() {
         </CardHeader>
         <CardContent>
           {codigos.length === 0 ? (
-            <p className="py-6 text-center text-sm text-stone-500">
+            <p className="py-6 text-center text-sm text-slate-400">
               Todavía no has generado códigos maestros.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b text-xs uppercase tracking-wide text-stone-400">
+                  <tr className="border-b text-xs uppercase tracking-wide text-slate-500">
                     <th className="py-2 pr-3 font-medium">Código</th>
                     <th className="py-2 pr-3 font-medium">Estado</th>
                     <th className="py-2 pr-3 font-medium">Creado</th>
@@ -272,24 +272,24 @@ export default function AccesoTab() {
                 </thead>
                 <tbody>
                   {codigos.map((c) => (
-                    <tr key={c.id} className="border-b border-stone-100 last:border-0">
-                      <td className="py-2 pr-3 font-mono text-xs font-semibold text-stone-800">{c.codigo}</td>
+                    <tr key={c.id} className="border-b border-white/10 last:border-0">
+                      <td className="py-2 pr-3 font-mono text-xs font-semibold text-slate-100">{c.codigo}</td>
                       <td className="py-2 pr-3">
                         <Badge className={(ESTADO_COLOR[c.estado] || '') + ' border'}>
                           {c.estado === 'usado' && <CheckCircle2 className="mr-1 h-3 w-3" aria-hidden />}
                           {c.estado}
                         </Badge>
                       </td>
-                      <td className="py-2 pr-3 text-xs text-stone-600">{formatoFecha(c.creadoEn)}</td>
-                      <td className="py-2 pr-3 text-xs text-stone-600">
+                      <td className="py-2 pr-3 text-xs text-slate-300">{formatoFecha(c.creadoEn)}</td>
+                      <td className="py-2 pr-3 text-xs text-slate-300">
                         {formatoFecha(c.expiraEn)}
                         {c.estado === 'activo' && (
-                          <span className="ml-1 text-[11px] text-emerald-700">({minutosRestantes(c.expiraEn)} min)</span>
+                          <span className="ml-1 text-[11px] text-cyan-300">({minutosRestantes(c.expiraEn)} min)</span>
                         )}
                       </td>
-                      <td className="py-2 pr-3 text-xs text-stone-600">{formatoFecha(c.usadoEn)}</td>
-                      <td className="py-2 pr-3 text-xs text-stone-600">{c.equipo || '—'}</td>
-                      <td className="py-2 text-xs text-stone-500">{c.nota || '—'}</td>
+                      <td className="py-2 pr-3 text-xs text-slate-300">{formatoFecha(c.usadoEn)}</td>
+                      <td className="py-2 pr-3 text-xs text-slate-300">{c.equipo || '—'}</td>
+                      <td className="py-2 text-xs text-slate-400">{c.nota || '—'}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,0 +1,17 @@
+{
+  "componente": "movil",
+  "nombre": "CipherPoint Móvil (APK)",
+  "version": "6.6.0",
+  "fileName": "CipherPoint-Movil-Android.apk",
+  "fileSize": 3621807,
+  "sha256": "a329cc3321b873ec7632f53edcd7ca5ebc937f529fdc02b444b5ca82d0625e04",
+  "url": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/movil-apk-v6.6.0/CipherPoint-Movil-Android.apk",
+  "fecha": "2026-11-17",
+  "requisitos": "Android 8 o superior · mismo WiFi de la tienda · PC con CipherPoint abierto",
+  "notas": [
+    "Canal propio e independiente de la versión de PC 6.7.0 «Cifra Fresca»: el APK se publica aparte y la versión de PC no se toca.",
+    "Para actualizar una instalación existente: descarga la nueva versión desde la Central e instálala ENCIMA (sin desinstalar). Conserva la dirección de la PC guardada.",
+    "Funciones: escáner que manda productos al ticket de la PC, mensajería con respuestas e impresión de tickets desde el celular."
+  ],
+  "activo": true
+}
