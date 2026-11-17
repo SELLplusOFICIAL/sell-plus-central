@@ -164,7 +164,7 @@ export default function InicioTab({
 
       {/* Poder de IA */}
       <Card className="shadow-sm border-violet-400/30 overflow-hidden">
-        <div className="bg-gradient-to-br from-violet-50 to-white/5 p-5">
+        <div className="sp-glass bg-gradient-to-br from-violet-400/10 to-white/5 p-5 border border-violet-400/25 rounded-2xl">
           <div className="flex items-start gap-3">
             <div className="h-10 w-10 rounded-lg bg-violet-400/15 flex items-center justify-center shrink-0">
               <Sparkles className="h-5 w-5 text-violet-300" aria-hidden />
