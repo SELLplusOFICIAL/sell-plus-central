@@ -1,18 +1,18 @@
 {
   "componente": "movil",
   "nombre": "CipherPoint Móvil (APK)",
-  "version": "6.8.0",
-  "fileName": "CipherPoint-Movil-Android.apk",
-  "fileSize": 3589090,
-  "sha256": "a6201258ad30b0d1ba1c55a4f5a2861d7a7535220d54c42a6c7fe600a9859c2a",
-  "url": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/movil-apk-v6.8.0/CipherPoint-Movil-Android.apk",
-  "fecha": "2026-11-17",
-  "requisitos": "Android 6 o superior · mismo WiFi de la tienda · PC con CipherPoint abierto",
+  "version": "7.1.0",
+  "fileName": "CipherPoint-Movil-Android-7.1.0.apk",
+  "fileSize": 23142297,
+  "sha256": "6addded06b260c56b9bbaa2efcb748ba9973cbadde00905bbf79d96e759d0966",
+  "url": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/movil-apk-v7.1.0/CipherPoint-Movil-Android-7.1.0.apk",
+  "fecha": "2026-11-24",
+  "requisitos": "Android 7 o superior · mismo WiFi de la tienda · PC con CipherPoint abierto",
   "notas": [
-    "«Cifra Dúo»: pistola de escaneo EN VIVO para empleados (cámara continua con beep y vibración; cada código entra solo al ticket de la PC) y panel de gestión para administradores.",
-    "El panel gestor trae alertas con detalle (stock bajo, por caducar, apartados vencidos), sugerencias de compra calculadas de tus ventas reales y mensajería compuesta: listas, opciones y preguntas desde el celular.",
-    "Esta cápsula ya chequea actualizaciones contra la Central: cuando salga un APK nuevo, la pantalla de conexión lo avisa y te lleva a la descarga por el navegador.",
-    "Para actualizar una instalación existente: instala la nueva ENCIMA (misma firma, sin desinstalar). Conserva la dirección de la PC guardada."
+    "«Cifra Nativa»: el escáner ya es 100% nativo de Android. El visor EN VIVO funciona dentro de la app: cámara real (CameraX) + ML Kit de Google leyendo EAN-13, EAN-8, UPC, Code128, Code39, ITF, Codabar, QR, DataMatrix, PDF417 y Aztec en tiempo real, con marco animado, linterna, álbum, sonido, vibración y zoom de pellizco.",
+    "Nueva pantalla de conexión nativa: recuerda la dirección de tu PC, prueba la conexión y trae el botón «Escanear QR de la PC» para emparejarte apuntando al QR de tu programa, sin teclear nada.",
+    "Pantalla propia si se cae la conexión (Reintentar / Cambiar dirección), chequeo de actualizaciones contra la Central y arranque con logo esmeralda.",
+    "IMPORTANTE: esta versión viene con firma nueva. Si Android no la deja instalar encima de la 6.8.0, desinstala la vieja e instala la nueva (una sola vez); tus datos viven en la PC y no se pierden."
   ],
   "activo": true
 }
