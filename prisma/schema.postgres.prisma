@@ -159,3 +159,52 @@ model AccesoMaestro {
   equipo   String? // equipo del POS que lo usó (si se reportó)
   nota     String? // nota opcional que escribe el administrador
 }
+
+// ============================================================
+// CipherPoint 7.0.9 «Cifra Fiscal» — puente de facturación CFDI 4.0.
+// Tablas NUEVAS y ADITIVAS: no tocan ningún modelo existente.
+//  - FacturaTienda: la PC del dueño conectada con su clave.
+//  - FacturaCola: solicitudes de timbrado (pendiente→timbrada/error).
+//  - FacturaConfig: PAC y CSD del emisor (secretos cifrados).
+// ============================================================
+model FacturaTienda {
+  id     Int    @id @default(autoincrement())
+  clave  String @unique
+  rfc    String @unique
+  nombre String @default("")
+  creada DateTime @default(now())
+  ultima DateTime @default(now()) @updatedAt
+}
+
+model FacturaCola {
+  id            String  @id
+  claveTienda   String
+  rfcEmisor     String  @default("")
+  serie         String  @default("A")
+  folio         Int     @default(0)
+  formaPago     String  @default("PUE")
+  metodoPago    String  @default("01")
+  emisorJson    String  @default("{}")
+  receptorJson  String  @default("{}")
+  conceptosJson String  @default("[]")
+  tasaIva       Float   @default(16)
+  estado        String  @default("pendiente")
+  uuid          String?
+  serieSat      String?
+  fechaTimbrado String?
+  xml           String?
+  error         String?
+  intentos      Int     @default(0)
+  simulado      Boolean @default(false)
+  creada        DateTime @default(now())
+  actualizada   DateTime @default(now()) @updatedAt
+
+  @@index([claveTienda, estado])
+}
+
+model FacturaConfig {
+  id          Int      @id @default(autoincrement())
+  clave       String   @unique
+  valor       String   @default("")
+  actualizada DateTime @default(now()) @updatedAt
+}

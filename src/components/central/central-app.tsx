@@ -12,6 +12,7 @@ import {
   LogOut,
   Sparkles,
   KeyRound,
+  Receipt,
 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
@@ -21,11 +22,12 @@ import SolicitudesTab from '@/components/central/solicitudes-tab'
 import DiagnosticoTab from '@/components/central/diagnostico-tab'
 import AprendeTab from '@/components/central/aprende-tab'
 import { PanelTab } from '@/components/central/panel-tab'
+import FacturacionTab from '@/components/central/facturacion-tab'
 import AccesoTab from '@/components/central/acceso-tab'
 import { ResumenData, CENTRAL_URL, centralUrlActual } from '@/lib/types'
 import { toast } from 'sonner'
 
-export type TabKey = 'inicio' | 'actualizaciones' | 'solicitudes' | 'diagnostico' | 'equipos' | 'acceso' | 'aprende'
+export type TabKey = 'inicio' | 'actualizaciones' | 'facturacion' | 'solicitudes' | 'diagnostico' | 'equipos' | 'acceso' | 'aprende'
 
 type TabDef = {
   key: TabKey
@@ -38,6 +40,7 @@ type TabDef = {
 const TABS: TabDef[] = [
   { key: 'inicio', label: 'Inicio', icon: <MonitorCheck className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'actualizaciones', label: 'Actualizaciones', icon: <RefreshCw className="h-4 w-4" aria-hidden />, soloAdmin: false },
+  { key: 'facturacion', label: 'Facturación', icon: <Receipt className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'solicitudes', label: 'Solicitudes', icon: <MessageSquarePlus className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'diagnostico', label: 'Diagnóstico', icon: <Wrench className="h-4 w-4" aria-hidden />, soloAdmin: true },
   { key: 'equipos', label: 'Equipos', icon: <Monitor className="h-4 w-4" aria-hidden />, soloAdmin: true },
@@ -107,6 +110,7 @@ export default function CentralApp() {
   const contenidoTab = (t: TabDef) => {
     if (t.key === 'inicio') return <InicioTab resumen={resumen} recargar={cargarResumen} irA={(k) => setTab(k)} />
     if (t.key === 'actualizaciones') return <ActualizacionesTab />
+    if (t.key === 'facturacion') return <FacturacionTab />
     if (t.key === 'solicitudes') return <SolicitudesTab recargarResumen={cargarResumen} />
     if (t.key === 'diagnostico') return <DiagnosticoTab resumen={resumen} />
     if (t.key === 'equipos') return <PanelTab refreshKey={0} />
