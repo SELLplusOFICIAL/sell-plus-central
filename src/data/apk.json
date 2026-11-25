@@ -1,19 +1,19 @@
 {
   "componente": "movil",
   "nombre": "CipherPoint Móvil (APK)",
-  "version": "7.1.1",
-  "fileName": "CipherPoint-Movil-Android-7.1.1.apk",
-  "fileSize": 23142329,
-  "sha256": "343d4761e2d7b32789fb58235732300db7de6f3b374b63ec1eaa3b609befd611",
-  "url": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/movil-apk-v7.1.1/CipherPoint-Movil-Android-7.1.1.apk",
-  "fecha": "2026-11-24",
-  "requisitos": "Android 7 o superior · mismo WiFi de la tienda · PC con CipherPoint 7.0.3 o superior",
+  "version": "7.1.2",
+  "fileName": "CipherPoint-Movil-Android-7.1.2.apk",
+  "fileSize": 23142009,
+  "sha256": "12154a50847420532fa4c87dc5e24914aae95fc6be51c0ea85fb676de3e55050",
+  "url": "https://github.com/SELLplusOFICIAL/sell-plus-central/releases/download/movil-apk-v7.1.2/CipherPoint-Movil-Android-7.1.2.apk",
+  "fecha": "2026-11-25",
+  "requisitos": "Android 7 o superior · mismo WiFi de la tienda · PC con CipherPoint 8.0.2 o superior (funciona también con 7.0.3+)",
   "notas": [
-    "«Cifra Sólida» 7.1.1 — MISMA FIRMA que la 7.1.0: se instala encima SIN desinstalar nada y conserva tu dirección de PC.",
-    "Configuración nueva dentro de la app: permisos seleccionables (Cámara, Notificaciones, Vibración, Sonido, Galería, Linterna) con botón para pedirlos o abrir Ajustes de Android, e interruptores reales del escáner (sonido al leer, vibrar al leer, linterna automática).",
-    "Auto-conexión: si la app ya conocía tu PC, conecta sola al abrir — la pantalla de conexión ya no se interpone en el día a día.",
-    "Sesión portátil: la app recuerda tu emparejamiento y tu usuario (junto con la PC 7.0.3) — cambiar la IP de la PC, recargar o reiniciar el celular ya no pide códigos ni contraseñas otra vez.",
-    "Escáner nativo intacto: cámara en vivo real (CameraX + ML Kit, funciona sin internet), 12 formatos (EAN-13, EAN-8, UPC, Code128, Code39, ITF, Codabar, QR, DataMatrix, PDF417, Aztec), marco animado, linterna, álbum, zoom."
+    "«Cifra Exprés» 7.1.2 — MISMA FIRMA que la 7.1.0/7.1.1: se instala encima SIN desinstalar nada y conserva tu dirección de PC y tu sesión.",
+    "Pastillas de destino en el escáner de modo cola: Ticket / Producto nuevo / Inventario — eliges a dónde va cada lectura sin salir de la cámara (con la PC 7.1.2/8.0.2 el destino viaja con el código).",
+    "Cache-buster nativo al conectar: la app pide la página con un ?r=… fresco — el visor del celular JAMÁS muestra una copia vieja de la página; el arreglo exprés del acceso (PC 8.0.2) te llega en el acto.",
+    "Escáner nativo intacto: cámara en vivo real (CameraX + ML Kit, funciona sin internet), 12 formatos (EAN-13, EAN-8, UPC, Code128, Code39, ITF, Codabar, QR, DataMatrix, PDF417, Aztec), marco animado, linterna, álbum, zoom.",
+    "Configuración y sesión intactas: permisos seleccionables, sonido/vibración/linterna del escáner, auto-conexión al abrir y memoria de tu emparejamiento."
   ],
   "activo": true
 }
